@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "sdkVersion": "54.0.0",
+    "name": "NCU RentEase",
+    "slug": "ncu-rentease",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#9BB7D4"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#9BB7D4"
+      }
+    }
+  }
+}
