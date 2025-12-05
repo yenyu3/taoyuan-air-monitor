@@ -225,13 +225,15 @@ const Community = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Feather name="message-circle" size={24} color="white" />
-          <Text style={styles.headerTitle}>租屋社群</Text>
-        </View>
-        <Text style={styles.headerSubtitle}>分享經驗，互相幫助</Text>
+        <SafeAreaView>
+          <View style={styles.headerContent}>
+            <Feather name="message-circle" size={24} color="white" />
+            <Text style={styles.headerTitle}>租屋社群</Text>
+          </View>
+          <Text style={styles.headerSubtitle}>分享經驗，互相幫助</Text>
+        </SafeAreaView>
       </View>
 
       {/* 分頁標籤 */}
@@ -420,7 +422,7 @@ const Community = () => {
           <SubleaseTab />
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -473,6 +475,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingBottom: 100,
   },
   reviewsTab: {
     padding: 16,

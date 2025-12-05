@@ -60,13 +60,15 @@ const Map = () => {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Feather name="map" size={24} color="white" />
-          <Text style={styles.headerTitle}>地圖找房</Text>
-        </View>
-        <Text style={styles.headerSubtitle}>以距離為主的房源列表</Text>
+        <SafeAreaView>
+          <View style={styles.headerContent}>
+            <Feather name="map" size={24} color="white" />
+            <Text style={styles.headerTitle}>地圖找房</Text>
+          </View>
+          <Text style={styles.headerSubtitle}>以距離為主的房源列表</Text>
+        </SafeAreaView>
       </View>
 
       {/* Google Maps */}
@@ -184,7 +186,7 @@ const Map = () => {
         visible={isModalOpen}
         onClose={closeModal}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -338,7 +340,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   bottomPadding: {
-    height: 32,
+    height: 100,
   },
 });
 

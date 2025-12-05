@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Dimensions,
   StatusBar,
+  Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
@@ -24,6 +25,7 @@ const Home = () => {
   const [selectedListing, setSelectedListing] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const bounceAnim = useRef(new Animated.Value(0)).current;
   
   const filteredListings = getFilteredListings();
 
@@ -44,6 +46,25 @@ const Home = () => {
   const avgRent = filteredListings.length > 0
     ? Math.round(filteredListings.reduce((sum, listing) => sum + listing.rentMin, 0) / filteredListings.length / 1000) + 'K'
     : '0K';
+
+  useEffect(() => {
+    const bounceAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(bounceAnim, {
+          toValue: -8,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bounceAnim, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    bounceAnimation.start();
+    return () => bounceAnimation.stop();
+  }, [bounceAnim]);
 
   return (
     <View style={styles.container}>
@@ -143,13 +164,9 @@ const Home = () => {
           {/* 底部提示區域 */}
           <View style={styles.hintSection}>
             <View style={styles.scrollIndicator}>
-              <View style={styles.scrollDots}>
-                <View style={styles.activeDot} />
-                <View style={styles.inactiveDot} />
-              </View>
-              <View style={styles.scrollHint}>
-                <Feather name="chevron-down" size={20} color="rgba(255, 255, 255, 0.6)" style={styles.bounceArrow} />
-              </View>
+              <Animated.View style={[styles.scrollHint, { transform: [{ translateY: bounceAnim }] }]}>
+                <Feather name="chevron-down" size={24} color="rgba(255, 255, 255, 0.8)" />
+              </Animated.View>
             </View>
           </View>
         </LinearGradient>
@@ -404,28 +421,13 @@ const styles = StyleSheet.create({
   scrollIndicator: {
     alignItems: 'center',
   },
-  scrollDots: {
-    flexDirection: 'row',
-    marginBottom: 12,
-    gap: 8,
-  },
-  activeDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-  },
-  inactiveDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-  },
   scrollHint: {
     alignItems: 'center',
-  },
-  bounceArrow: {
-    opacity: 0.6,
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
 
   // 第二屏房源列表區域

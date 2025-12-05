@@ -40,9 +40,11 @@ export default function App() {
           tabBarStyle: {
             backgroundColor: 'white',
             borderTopColor: '#E5E7EB',
-            paddingBottom: 8,
+            paddingBottom: 20,
             paddingTop: 8,
-            height: 60,
+            height: 80,
+            position: 'absolute',
+            bottom: 0,
           },
           tabBarLabelStyle: {
             fontSize: 12,

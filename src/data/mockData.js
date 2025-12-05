@@ -859,8 +859,9 @@ export const missions = [
   }
 ];
 
-// Taylor Swift 歌曲推薦資料
+// 歌曲推薦資料
 export const songRecommendations = [
+  // Taylor Swift
   {
     id: 1,
     title: "Anti-Hero",
@@ -877,7 +878,7 @@ export const songRecommendations = [
     lengthMinutes: 3.6,
     mood: "energetic",
     album: "1989",
-    spotifyUrl: "https://open.spotify.com/album/5AEDGbliTTfjOB8TSm1sxt"
+    spotifyUrl: "https://open.spotify.com/album/64LU4c1nfjz1t4VnGhagcg"
   },
   {
     id: 3,
@@ -886,7 +887,7 @@ export const songRecommendations = [
     lengthMinutes: 3.9,
     mood: "chill",
     album: "Fearless",
-    spotifyUrl: "https://open.spotify.com/album/4hDok0OAJd57SGIT8xuWJH"
+    spotifyUrl: "https://open.spotify.com/album/08CjHpZKDVnL2gvXTDvnBI"
   },
   {
     id: 4,
@@ -895,7 +896,7 @@ export const songRecommendations = [
     lengthMinutes: 3.5,
     mood: "focus",
     album: "1989",
-    spotifyUrl: "https://open.spotify.com/album/5AEDGbliTTfjOB8TSm1sxt"
+    spotifyUrl: "https://open.spotify.com/album/4hDok0OAJd57SGIT8xuWJH"
   },
   {
     id: 5,
@@ -905,6 +906,143 @@ export const songRecommendations = [
     mood: "chill",
     album: "folklore",
     spotifyUrl: "https://open.spotify.com/album/2fenSS68JI1h4Fo296JfGr"
+  },
+  {
+    id: 6,
+    title: "22",
+    artist: "Taylor Swift",
+    lengthMinutes: 3.5,
+    mood: "energetic",
+    album: "Red",
+    spotifyUrl: "https://open.spotify.com/album/6kZ42qRrzov54LcAk4onW9"
+  },
+  {
+    id: 7,
+    title: "All Too Well",
+    artist: "Taylor Swift",
+    lengthMinutes: 5.3,
+    mood: "focus",
+    album: "Red",
+    spotifyUrl: "https://open.spotify.com/album/6kZ42qRrzov54LcAk4onW9"
+  },
+  // SEVENTEEN
+  {
+    id: 8,
+    title: "God of Music",
+    artist: "SEVENTEEN",
+    lengthMinutes: 3.3,
+    mood: "energetic",
+    album: "God of Music",
+    spotifyUrl: "https://open.spotify.com/album/1rE0Gy69MFUh4GuXafWd0f"
+  },
+  {
+    id: 9,
+    title: "Darl+ing",
+    artist: "SEVENTEEN",
+    lengthMinutes: 3.2,
+    mood: "energetic",
+    album: "Face the Sun",
+    spotifyUrl: "https://open.spotify.com/album/4lfFgz2rD1irxf7dZhNJht"
+  },
+  {
+    id: 10,
+    title: "Don't Wanna Cry",
+    artist: "SEVENTEEN",
+    lengthMinutes: 4.1,
+    mood: "chill",
+    album: "Al1",
+    spotifyUrl: "https://open.spotify.com/album/2BNimvLLlD89e4Sb7ZVX6I"
+  },
+  {
+    id: 11,
+    title: "Very Nice",
+    artist: "SEVENTEEN",
+    lengthMinutes: 3.4,
+    mood: "energetic",
+    album: "Love & Letter",
+    spotifyUrl: "https://open.spotify.com/album/7mP7AFehQDonPKEQiXvpvB"
+  },
+  {
+    id: 12,
+    title: "Home",
+    artist: "SEVENTEEN",
+    lengthMinutes: 3.6,
+    mood: "chill",
+    album: "You Made My Dawn",
+    spotifyUrl: "https://open.spotify.com/album/2Jrp37x38qZqtyrIrfxN4H"
+  },
+  {
+    id: 13,
+    title: "Rock with you",
+    artist: "SEVENTEEN",
+    lengthMinutes: 3.8,
+    mood: "focus",
+    album: "Attacca",
+    spotifyUrl: "https://open.spotify.com/album/2PIReru2w5i4JXOzeZnamd"
+  },
+  // TAEYEON
+  {
+    id: 14,
+    title: "I",
+    artist: "TAEYEON",
+    lengthMinutes: 3.4,
+    mood: "chill",
+    album: "I",
+    spotifyUrl: "https://open.spotify.com/album/4e7kLQu7SKBUiMtV5WH3A1"
+  },
+  {
+    id: 15,
+    title: "Weekend",
+    artist: "TAEYEON",
+    lengthMinutes: 3.2,
+    mood: "energetic",
+    album: "Weekend",
+    spotifyUrl: "https://open.spotify.com/album/4tJsXd2onpa4P9lFmkJIKy"
+  },
+  {
+    id: 16,
+    title: "INVU",
+    artist: "TAEYEON",
+    lengthMinutes: 3.5,
+    mood: "focus",
+    album: "INVU",
+    spotifyUrl: "https://open.spotify.com/album/7i2YLTVQ0dyngRuUqtGmr9"
+  },
+  {
+    id: 17,
+    title: "Fine",
+    artist: "TAEYEON",
+    lengthMinutes: 4.2,
+    mood: "chill",
+    album: "My Voice",
+    spotifyUrl: "https://open.spotify.com/album/6DlCl3hBP1Gwhn0tgitGfN"
+  },
+  {
+    id: 18,
+    title: "Can't Control Myself",
+    artist: "TAEYEON",
+    lengthMinutes: 3.1,
+    mood: "energetic",
+    album: "INVU",
+    spotifyUrl: "https://open.spotify.com/album/7i2YLTVQ0dyngRuUqtGmr9"
+  },
+  {
+    id: 19,
+    title: "Four Seasons",
+    artist: "TAEYEON",
+    lengthMinutes: 3.7,
+    mood: "focus",
+    album: "Four Seasons",
+    spotifyUrl: "https://open.spotify.com/album/3ublKZHu1qjU9ujf9A4zhH"
+  },
+  {
+    id: 20,
+    title: "11:11",
+    artist: "TAEYEON",
+    lengthMinutes: 3.3,
+    mood: "chill",
+    album: "My Voice",
+    spotifyUrl: "https://open.spotify.com/album/7MG0bxf0ZFsAyej9W3XzTO"
   }
 ];
 
@@ -929,3 +1067,53 @@ export const badgeDefinitions = [
     icon: "🗺️"
   }
 ];
+
+// 根據房源ID和距離推薦不同歌單
+export const getSongRecommendations = (listingId, walkingTimeMinutes) => {
+  const songCount = Math.ceil(walkingTimeMinutes / 3.5);
+  const mood = walkingTimeMinutes > 15 ? 'energetic' : 
+               walkingTimeMinutes < 5 ? 'focus' : 'chill';
+  
+  // 根據房源ID選擇不同的歌曲組合
+  const seedIndex = listingId % 3;
+  let availableSongs = [];
+  
+  if (seedIndex === 0) {
+    // Taylor Swift 為主
+    availableSongs = songRecommendations.filter(song => 
+      song.artist === 'Taylor Swift' && song.mood === mood
+    ).concat(
+      songRecommendations.filter(song => 
+        song.artist !== 'Taylor Swift' && song.mood === mood
+      ).slice(0, 2)
+    );
+  } else if (seedIndex === 1) {
+    // SEVENTEEN 為主
+    availableSongs = songRecommendations.filter(song => 
+      song.artist === 'SEVENTEEN' && song.mood === mood
+    ).concat(
+      songRecommendations.filter(song => 
+        song.artist !== 'SEVENTEEN' && song.mood === mood
+      ).slice(0, 2)
+    );
+  } else {
+    // TAEYEON 為主
+    availableSongs = songRecommendations.filter(song => 
+      song.artist === 'TAEYEON' && song.mood === mood
+    ).concat(
+      songRecommendations.filter(song => 
+        song.artist !== 'TAEYEON' && song.mood === mood
+      ).slice(0, 2)
+    );
+  }
+  
+  // 如果特定心情的歌曲不夠，補充其他心情的歌曲
+  if (availableSongs.length < songCount) {
+    const additionalSongs = songRecommendations.filter(song => 
+      !availableSongs.includes(song)
+    ).slice(0, songCount - availableSongs.length);
+    availableSongs = availableSongs.concat(additionalSongs);
+  }
+  
+  return availableSongs.slice(0, songCount);
+};

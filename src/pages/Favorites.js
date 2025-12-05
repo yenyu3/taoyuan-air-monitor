@@ -51,13 +51,15 @@ const Favorites = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Feather name="heart" size={24} color="white" />
-          <Text style={styles.headerTitle}>我的收藏</Text>
-        </View>
-        <Text style={styles.headerSubtitle}>管理你收藏的房源</Text>
+        <SafeAreaView>
+          <View style={styles.headerContent}>
+            <Feather name="heart" size={24} color="white" />
+            <Text style={styles.headerTitle}>我的收藏</Text>
+          </View>
+          <Text style={styles.headerSubtitle}>管理你收藏的房源</Text>
+        </SafeAreaView>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -148,7 +150,7 @@ const Favorites = () => {
         visible={isModalOpen}
         onClose={closeModal}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -178,6 +180,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingBottom: 100,
   },
   emptyState: {
     alignItems: 'center',

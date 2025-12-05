@@ -28,13 +28,15 @@ const Profile = () => {
   const pointsToNextLevel = nextLevelPoints - currentUser.points;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <Feather name="user" size={24} color="white" />
-          <Text style={styles.headerTitle}>我的檔案</Text>
-        </View>
-        <Text style={styles.headerSubtitle}>查看你的租屋成就</Text>
+        <SafeAreaView>
+          <View style={styles.headerContent}>
+            <Feather name="user" size={24} color="white" />
+            <Text style={styles.headerTitle}>我的檔案</Text>
+          </View>
+          <Text style={styles.headerSubtitle}>查看你的租屋成就</Text>
+        </SafeAreaView>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -157,7 +159,7 @@ const Profile = () => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -188,6 +190,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
+    paddingBottom: 100,
   },
   userCard: {
     backgroundColor: 'white',
