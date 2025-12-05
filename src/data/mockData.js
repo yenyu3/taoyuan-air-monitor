@@ -1,4 +1,4 @@
-// 房源資料 - 完整30筆資料
+// 房源資料 - 完整50筆資料
 export const listings = [
   {
     id: 1,
@@ -17,7 +17,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9675, lng: 121.1950 },
+    location: { lat: 24.9636, lng: 121.1900 },
     distanceToCampusMeters: 800,
     avgRating: 4.2,
     reviewsCount: 8
@@ -40,7 +40,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9650, lng: 121.1920 },
+    location: { lat: 24.9638, lng: 121.1907 },
     distanceToCampusMeters: 1200,
     avgRating: 3.8,
     reviewsCount: 5
@@ -61,7 +61,7 @@ export const listings = [
     photos: [
       "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9580, lng: 121.2010 },
+    location: { lat: 24.9649, lng: 121.1916 },
     distanceToCampusMeters: 2000,
     avgRating: 4.7,
     reviewsCount: 12
@@ -90,7 +90,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9620, lng: 121.1980 },
+    location: { lat: 24.9640, lng: 121.1907 },
     distanceToCampusMeters: 1500,
     avgRating: 4.0,
     reviewsCount: 6
@@ -116,7 +116,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9700, lng: 121.1930 },
+    location: { lat: 24.9627, lng: 121.1906 },
     distanceToCampusMeters: 900,
     avgRating: 3.9,
     reviewsCount: 4
@@ -142,7 +142,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9640, lng: 121.1960 },
+    location: { lat: 24.9645, lng: 121.1913 },
     distanceToCampusMeters: 1100,
     avgRating: 4.3,
     reviewsCount: 7
@@ -165,7 +165,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9680, lng: 121.1940 },
+    location: { lat: 24.9631, lng: 121.1907 },
     distanceToCampusMeters: 400,
     avgRating: 4.6,
     reviewsCount: 15
@@ -186,7 +186,7 @@ export const listings = [
     photos: [
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9550, lng: 121.2050 },
+    location: { lat: 24.9640, lng: 121.1904 },
     distanceToCampusMeters: 2500,
     avgRating: 3.5,
     reviewsCount: 3
@@ -212,7 +212,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9530, lng: 121.2080 },
+    location: { lat: 24.9646, lng: 121.1906 },
     distanceToCampusMeters: 2800,
     avgRating: 4.1,
     reviewsCount: 9
@@ -243,7 +243,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9660, lng: 121.1970 },
+    location: { lat: 24.9645, lng: 121.1912 },
     distanceToCampusMeters: 1000,
     avgRating: 4.5,
     reviewsCount: 18
@@ -269,7 +269,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9645, lng: 121.1955 },
+    location: { lat: 24.9646, lng: 121.1920 },
     distanceToCampusMeters: 1300,
     avgRating: 4.2,
     reviewsCount: 11
@@ -291,7 +291,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9590, lng: 121.2020 },
+    location: { lat: 24.9629, lng: 121.1949 },
     distanceToCampusMeters: 2200,
     avgRating: 3.7,
     reviewsCount: 4
@@ -314,7 +314,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9670, lng: 121.1945 },
+    location: { lat: 24.9637, lng: 121.1907 },
     distanceToCampusMeters: 700,
     avgRating: 4.0,
     reviewsCount: 6
@@ -340,7 +340,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9685, lng: 121.1935 },
+    location: { lat: 24.9635, lng: 121.1907 },
     distanceToCampusMeters: 600,
     avgRating: 4.4,
     reviewsCount: 13
@@ -372,7 +372,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9655, lng: 121.1965 },
+    location: { lat: 24.9643, lng: 121.1910 },
     distanceToCampusMeters: 1050,
     avgRating: 4.1,
     reviewsCount: 8
@@ -395,7 +395,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9650, lng: 121.1950 },
+    location: { lat: 24.9649, lng: 121.1918 },
     distanceToCampusMeters: 1250,
     avgRating: 4.3,
     reviewsCount: 12
@@ -421,7 +421,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9635, lng: 121.1975 },
+    location: { lat: 24.9647, lng: 121.1925 },
     distanceToCampusMeters: 1400,
     avgRating: 4.0,
     reviewsCount: 7
@@ -447,7 +447,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9648, lng: 121.1952 },
+    location: { lat: 24.9649, lng: 121.1917 },
     distanceToCampusMeters: 1280,
     avgRating: 3.9,
     reviewsCount: 5
@@ -472,7 +472,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9580, lng: 121.2030 },
+    location: { lat: 24.9633, lng: 121.1950 },
     distanceToCampusMeters: 2300,
     avgRating: 3.8,
     reviewsCount: 4
@@ -493,7 +493,7 @@ export const listings = [
     photos: [
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9720, lng: 121.1910 },
+    location: { lat: 24.9623, lng: 121.1905 },
     distanceToCampusMeters: 1200,
     avgRating: 4.2,
     reviewsCount: 6
@@ -519,7 +519,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9658, lng: 121.1968 },
+    location: { lat: 24.9645, lng: 121.1914 },
     distanceToCampusMeters: 1080,
     avgRating: 4.1,
     reviewsCount: 9
@@ -545,7 +545,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9662, lng: 121.1972 },
+    location: { lat: 24.9645, lng: 121.1913 },
     distanceToCampusMeters: 1020,
     avgRating: 4.4,
     reviewsCount: 14
@@ -571,7 +571,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9630, lng: 121.1990 },
+    location: { lat: 24.9646, lng: 121.1909 },
     distanceToCampusMeters: 1600,
     avgRating: 4.0,
     reviewsCount: 8
@@ -592,7 +592,7 @@ export const listings = [
     photos: [
       "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9750, lng: 121.1880 },
+    location: { lat: 24.9614, lng: 121.1907 },
     distanceToCampusMeters: 1800,
     avgRating: 3.6,
     reviewsCount: 3
@@ -619,7 +619,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9710, lng: 121.1920 },
+    location: { lat: 24.9630, lng: 121.1906 },
     distanceToCampusMeters: 850,
     avgRating: 4.3,
     reviewsCount: 10
@@ -645,7 +645,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9570, lng: 121.2040 },
+    location: { lat: 24.9630, lng: 121.1949 },
     distanceToCampusMeters: 2400,
     avgRating: 3.4,
     reviewsCount: 2
@@ -671,7 +671,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9540, lng: 121.2100 },
+    location: { lat: 24.9638, lng: 121.1943 },
     distanceToCampusMeters: 3200,
     avgRating: 3.7,
     reviewsCount: 5
@@ -697,7 +697,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9600, lng: 121.2000 },
+    location: { lat: 24.9629, lng: 121.1954 },
     distanceToCampusMeters: 2000,
     avgRating: 4.2,
     reviewsCount: 11
@@ -724,7 +724,7 @@ export const listings = [
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9520, lng: 121.2120 },
+    location: { lat: 24.9637, lng: 121.1905 },
     distanceToCampusMeters: 3500,
     avgRating: 3.9,
     reviewsCount: 6
@@ -756,10 +756,520 @@ export const listings = [
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"
     ],
-    location: { lat: 24.9665, lng: 121.1975 },
+    location: { lat: 24.9643, lng: 121.1910 },
     distanceToCampusMeters: 950,
     avgRating: 4.6,
     reviewsCount: 16
+  },
+  {
+    id: 31,
+    title: "房間出租 套房8間",
+    rentMin: 3833,
+    rentMax: 3833,
+    address: "桃園市中壢區中壢市五興路270巷102號",
+    contactName: "朱先生",
+    contactPhones: ["0989596243"],
+    rooms: "套房",
+    indoorFacilities: ["冷氣機", "洗衣機", "脫水機", "烘乾機", "飲水機", "衣櫃", "單人床", "雙人床", "書櫃", "書桌(椅)", "寬頻網路", "第四台", "電話"],
+    publicFacilities: ["公共陽台", "中庭", "停車場", "光纖網路"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "中央大學房東聯誼會成員較能配合學校政策執行賃居作為，已完成103學年賃居訪視安全評核",
+    photos: [
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9639, lng: 121.1973 },
+    distanceToCampusMeters: 2100,
+    avgRating: 4.1,
+    reviewsCount: 8
+  },
+  {
+    id: 32,
+    title: "房間出租 套房10間",
+    rentMin: 3833,
+    rentMax: 3833,
+    address: "桃園市中壢區中央路216巷9號",
+    contactName: "莊房東",
+    contactPhones: ["0952660298"],
+    rooms: "套房",
+    indoorFacilities: ["電冰箱", "中央空調", "洗衣機", "脫水機", "烘乾機", "沙發", "衣櫃", "單人床", "雙人床", "書櫃", "檯燈", "光纖網路"],
+    publicFacilities: ["中庭", "停車場"],
+    extraFees: { water: 180, electricity: 180, management: 0 },
+    notes: "已完成107學年賃居消防安全檢查，已於98/12/24通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9645, lng: 121.1912 },
+    distanceToCampusMeters: 1000,
+    avgRating: 3.8,
+    reviewsCount: 6
+  },
+  {
+    id: 33,
+    title: "房間出租 套房10間",
+    rentMin: 3833,
+    rentMax: 3833,
+    address: "桃園市中壢區中央路232巷7號",
+    contactName: "吳小姐",
+    contactPhones: ["0919941095"],
+    rooms: "套房",
+    indoorFacilities: ["冷氣機", "洗衣機", "脫水機", "飲水機", "衣櫃", "雙人床", "書櫃", "書桌(椅)", "光纖網路"],
+    publicFacilities: ["中庭", "停車場", "電梯", "光纖網路"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "中央大學房東聯誼會成員較能配合學校政策執行賃居作為，已完成103學年賃居訪視安全評核，已於98/12/18通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9649, lng: 121.1911 },
+    distanceToCampusMeters: 1200,
+    avgRating: 4.0,
+    reviewsCount: 9
+  },
+  {
+    id: 34,
+    title: "房間出租 套房3間",
+    rentMin: 3833,
+    rentMax: 3833,
+    address: "桃園市中壢區中央路232巷39號",
+    contactName: "陳小姐",
+    contactPhones: ["0921091737"],
+    rooms: "套房",
+    indoorFacilities: ["電視機", "電冰箱", "冷氣機", "中央空調", "脫水機", "烘乾機", "飲水機", "沙發", "衣櫃", "雙人床", "書櫃", "光纖網路"],
+    publicFacilities: ["光纖網路"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "中央大學房東聯誼會成員較能配合學校政策執行賃居作為，已完成106學年賃居訪視安全評核，有定期檢查記錄，已完成107學年賃居消防安全檢查，已於98/12/22通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9649, lng: 121.1922 },
+    distanceToCampusMeters: 1300,
+    avgRating: 4.3,
+    reviewsCount: 12
+  },
+  {
+    id: 35,
+    title: "房間出租 套房3間",
+    rentMin: 4000,
+    rentMax: 4000,
+    address: "桃園市平鎮區中央路145-3號",
+    contactName: "林小姐",
+    contactPhones: ["0938168707"],
+    rooms: "套房",
+    indoorFacilities: ["電冰箱", "中央空調", "脫水機", "烘乾機", "沙發", "衣櫃", "雙人床", "書櫃", "檯燈"],
+    publicFacilities: ["中庭", "停車場"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "已完成106學年賃居訪視安全評核，已完成107學年賃居消防安全檢查，已於98/12/30通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9641, lng: 121.1896 },
+    distanceToCampusMeters: 2900,
+    avgRating: 3.7,
+    reviewsCount: 5
+  },
+  {
+    id: 36,
+    title: "房間出租 套房20間",
+    rentMin: 4000,
+    rentMax: 4000,
+    address: "桃園市平鎮區中央路51巷19號",
+    contactName: "詹房東",
+    contactPhones: ["0932369713"],
+    rooms: "套房",
+    indoorFacilities: ["電視機", "電冰箱", "中央空調", "洗衣機", "脫水機", "烘乾機", "沙發", "衣櫃", "單人床", "雙人床", "書櫃", "檯燈", "寬頻網路", "光纖網路"],
+    publicFacilities: ["中庭"],
+    extraFees: { water: 0, electricity: 0, management: 450 },
+    notes: "已完成107學年賃居消防安全檢查，已完成106學年賃居訪視安全評核，已於99/05/15通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9621, lng: 121.1894 },
+    distanceToCampusMeters: 3100,
+    avgRating: 3.9,
+    reviewsCount: 7
+  },
+  {
+    id: 37,
+    title: "房間出租 套房3間",
+    rentMin: 4000,
+    rentMax: 4000,
+    address: "桃園市中壢區五興路331巷76號",
+    contactName: "陳房東",
+    contactPhones: ["0966473365"],
+    rooms: "套房",
+    indoorFacilities: ["電冰箱", "冷氣機", "洗衣機", "脫水機", "烘乾機", "飲水機", "衣櫃", "單人床", "雙人床", "書櫃", "書桌(椅)", "寬頻網路"],
+    publicFacilities: ["公共陽台", "中庭", "停車場", "電梯"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "已完成107學年賃居消防安全檢查，已於98/12/25通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9637, lng: 121.1924 },
+    distanceToCampusMeters: 2200,
+    avgRating: 4.2,
+    reviewsCount: 10
+  },
+  {
+    id: 38,
+    title: "房間出租 套房10間",
+    rentMin: 4000,
+    rentMax: 4000,
+    address: "桃園市中壢區五興路331巷62號",
+    contactName: "陳先生",
+    contactPhones: ["0919368714"],
+    rooms: "套房",
+    indoorFacilities: ["電視機", "電冰箱", "中央空調", "烘乾機", "沙發", "單人床", "雙人床", "書櫃", "檯燈", "寬頻網路", "第四台"],
+    publicFacilities: ["中庭", "停車場"],
+    extraFees: { water: 1200, electricity: 1200, management: 0 },
+    notes: "已完成107學年賃居消防安全檢查，已於98/12/25通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9641, lng: 121.1927 },
+    distanceToCampusMeters: 2250,
+    avgRating: 3.6,
+    reviewsCount: 4
+  },
+  {
+    id: 39,
+    title: "房間出租 套房1間",
+    rentMin: 4000,
+    rentMax: 4000,
+    address: "桃園市中壢區中央路232巷32號",
+    contactName: "方小姐",
+    contactPhones: ["0972179583"],
+    rooms: "套房",
+    indoorFacilities: ["電冰箱", "中央空調", "洗衣機", "脫水機", "烘乾機", "沙發", "單人床", "雙人床", "書櫃", "檯燈", "寬頻網路", "光纖網路"],
+    publicFacilities: ["公共陽台", "中庭", "停車場"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "中央大學房東聯誼會成員較能配合學校政策執行賃居作為，已完成106學年賃居訪視安全評核，電梯無使用許可證（有電梯保養紀錄），已完成107學年賃居消防安全檢查，已於98/12/18通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9647, lng: 121.1918 },
+    distanceToCampusMeters: 1150,
+    avgRating: 4.0,
+    reviewsCount: 6
+  },
+  {
+    id: 40,
+    title: "【於後門生活機能優，離校步行2-3分鐘。】 房間出租 套房6間",
+    rentMin: 4133,
+    rentMax: 4133,
+    address: "桃園市中壢區中央路232巷3號",
+    contactName: "林先生",
+    contactPhones: ["0910153928"],
+    rooms: "套房",
+    indoorFacilities: ["電冰箱", "冷氣機", "洗衣機", "脫水機", "烘乾機", "飲水機", "衣櫃", "單人床", "雙人床", "書櫃", "書桌(椅)", "寬頻網路", "光纖網路1T共享"],
+    publicFacilities: ["公共陽台", "停車場", "電梯", "光纖網路1T共享"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "中央大學房東聯誼會成員較能配合學校政策執行賃居作為，已完成106學年度賃居訪視安全評核，電梯有使用許可證（有定期電梯保養紀錄），已完成107學年賃居消防安全檢查，已於98/12/18通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9649, lng: 121.1910 },
+    distanceToCampusMeters: 600,
+    avgRating: 4.7,
+    reviewsCount: 18
+  },
+  {
+    id: 41,
+    title: "房間出租 套房20間",
+    rentMin: 4167,
+    rentMax: 4167,
+    address: "桃園市平鎮區中央路145-8號",
+    contactName: "陳先生",
+    contactPhones: ["0910659291"],
+    rooms: "套房",
+    indoorFacilities: ["冷氣機", "洗衣機", "脫水機", "烘乾機", "飲水機", "衣櫃", "單人床", "雙人床", "書櫃", "光纖網路"],
+    publicFacilities: ["停車場", "電梯"],
+    extraFees: { water: 200, electricity: 200, management: 0 },
+    notes: "中央大學房東聯誼會成員較能配合學校政策執行賃居作為，已完成106學年賃居訪視安全評核，已完成107學年賃居消防安全檢查",
+    photos: [
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9643, lng: 121.1905 },
+    distanceToCampusMeters: 2950,
+    avgRating: 3.8,
+    reviewsCount: 6
+  },
+  {
+    id: 42,
+    title: "房間出租 套房3間",
+    rentMin: 4167,
+    rentMax: 4167,
+    address: "桃園市中壢區平鎮市中央路145-2號",
+    contactName: "徐小姐",
+    contactPhones: ["0928873455"],
+    rooms: "套房",
+    indoorFacilities: ["電視機", "冷氣機", "洗衣機", "脫水機", "烘乾機", "飲水機", "衣櫃", "雙人床", "書櫃", "書桌(椅)", "寬頻網路", "第四台"],
+    publicFacilities: ["停車場"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "已完成106學年賃居訪視安全評核",
+    photos: [
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9643, lng: 121.1905 },
+    distanceToCampusMeters: 2850,
+    avgRating: 3.5,
+    reviewsCount: 3
+  },
+  {
+    id: 43,
+    title: "房間出租 套房5間",
+    rentMin: 4167,
+    rentMax: 4167,
+    address: "桃園市中壢區中央路232巷41號",
+    contactName: "邱房東",
+    contactPhones: ["0930062386"],
+    rooms: "套房",
+    indoorFacilities: ["電冰箱", "中央空調", "洗衣機", "脫水機", "烘乾機", "沙發", "衣櫃", "單人床", "雙人床", "書櫃", "檯燈", "寬頻網路"],
+    publicFacilities: ["公共陽台", "中庭", "停車場"],
+    extraFees: { water: 200, electricity: 200, management: 0 },
+    notes: "中央大學房東聯誼會成員較能配合學校政策執行賃居作為，已完成106學年賃居訪視安全評核，電梯無使用許可證（有定期檢查記錄），已完成107學年賃居消防安全檢查，已於98/12/18通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9649, lng: 121.1923 },
+    distanceToCampusMeters: 1400,
+    avgRating: 4.1,
+    reviewsCount: 8
+  },
+  {
+    id: 44,
+    title: "【一樓平房，消防安全性高】 房間出租 套房2間",
+    rentMin: 4167,
+    rentMax: 4167,
+    address: "桃園市中壢區中央路130巷8號",
+    contactName: "劉小姐",
+    contactPhones: ["03-4900714", "0987223636", "0933782099"],
+    rooms: "套房",
+    indoorFacilities: ["冷氣機", "洗衣機", "飲水機", "衣櫃", "雙人床", "書櫃", "書桌(椅)", "寬頻網路"],
+    publicFacilities: ["停車場"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "一樓平房，消防安全性高",
+    photos: [
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9629, lng: 121.1909 },
+    distanceToCampusMeters: 500,
+    avgRating: 4.4,
+    reviewsCount: 11
+  },
+  {
+    id: 45,
+    title: "房間出租 套房10間",
+    rentMin: 4167,
+    rentMax: 4167,
+    address: "桃園市中壢區中央路232巷18號",
+    contactName: "羅房東",
+    contactPhones: ["0912539039"],
+    rooms: "套房",
+    indoorFacilities: ["電視機", "冷氣機", "中央空調", "洗衣機", "脫水機", "飲水機", "衣櫃", "單人床", "雙人床", "書桌(椅)", "檯燈"],
+    publicFacilities: ["公共陽台", "中庭", "光纖網路"],
+    extraFees: { water: 100, electricity: 200, management: 200 },
+    notes: "已完成107學年賃居消防安全檢查，已於98/12/18通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9647, lng: 121.1917 },
+    distanceToCampusMeters: 1100,
+    avgRating: 3.6,
+    reviewsCount: 4
+  },
+  {
+    id: 46,
+    title: "房間出租 套房1間",
+    rentMin: 4333,
+    rentMax: 4333,
+    address: "桃園市中壢區平鎮市中央路79號",
+    contactName: "劉房東",
+    contactPhones: ["0933969876"],
+    rooms: "套房",
+    indoorFacilities: ["冷氣機", "洗衣機", "脫水機", "烘乾機", "飲水機", "衣櫃", "雙人床", "書桌(椅)", "寬頻網路", "第四台"],
+    publicFacilities: ["停車場"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "2014年消防安全認證合格編號：2014052，已完成106學年賃居訪視安全評核",
+    photos: [
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9625, lng: 121.1903 },
+    distanceToCampusMeters: 2600,
+    avgRating: 3.4,
+    reviewsCount: 2
+  },
+  {
+    id: 47,
+    title: "房間出租 套房30間",
+    rentMin: 4333,
+    rentMax: 4333,
+    address: "桃園市中壢區五權里五興路230號",
+    contactName: "陳房東",
+    contactPhones: ["0910178825"],
+    rooms: "套房",
+    indoorFacilities: ["冷氣機", "洗衣機", "脫水機", "烘乾機", "飲水機", "衣櫃", "單人床", "書桌(椅)", "寬頻網路"],
+    publicFacilities: ["停車場", "電梯"],
+    extraFees: { water: 0, electricity: 0, management: 500 },
+    notes: "已完成106學年賃居訪視安全評核，電梯無使用許可證，提供網站預覽http://www.zhuyuan-inc.com.tw/web/SpecialProducts/1/10，另有雙人房可來電詢問，已完成107學年賃居消防安全檢查",
+    photos: [
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9624, lng: 121.1955 },
+    distanceToCampusMeters: 1900,
+    avgRating: 3.9,
+    reviewsCount: 7
+  },
+  {
+    id: 48,
+    title: "房間出租 套房5間",
+    rentMin: 4333,
+    rentMax: 4333,
+    address: "桃園市中壢區中央路119巷11號",
+    contactName: "林房東",
+    contactPhones: ["0919264259"],
+    rooms: "套房",
+    indoorFacilities: ["冷氣機", "洗衣機", "脫水機", "烘乾機", "飲水機", "衣櫃", "單人床", "雙人床", "書櫃", "書桌(椅)", "寬頻網路", "第四台"],
+    publicFacilities: ["停車場"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "已完成106學年賃居訪視安全評核",
+    photos: [
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9636, lng: 121.1901 },
+    distanceToCampusMeters: 750,
+    avgRating: 4.2,
+    reviewsCount: 9
+  },
+  {
+    id: 49,
+    title: "房間出租 套房5間",
+    rentMin: 4333,
+    rentMax: 4333,
+    address: "桃園市中壢區中央路216巷27號",
+    contactName: "劉房東",
+    contactPhones: ["0921639248"],
+    rooms: "套房",
+    indoorFacilities: ["電冰箱", "中央空調", "洗衣機", "脫水機", "烘乾機", "沙發", "單人床", "雙人床", "書櫃", "檯燈", "寬頻網路"],
+    publicFacilities: ["公共陽台", "中庭"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "已完成112學年賃居消防安全檢查，電梯有使用許可證，已於99/05/15通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9645, lng: 121.1914 },
+    distanceToCampusMeters: 1200,
+    avgRating: 4.0,
+    reviewsCount: 6
+  },
+  {
+    id: 50,
+    title: "房間出租 套房73間",
+    rentMin: 4333,
+    rentMax: 4333,
+    address: "桃園市平鎮區中央路149巷22號",
+    contactName: "劉房東",
+    contactPhones: ["0910432582"],
+    rooms: "套房",
+    indoorFacilities: ["電冰箱", "中央空調", "洗衣機", "脫水機", "烘乾機", "沙發", "衣櫃", "單人床", "雙人床", "書櫃", "檯燈", "寬頻網路"],
+    publicFacilities: ["中庭", "停車場", "光纖網路"],
+    extraFees: { water: 0, electricity: 0, management: 0 },
+    notes: "中央大學房東聯誼會成員較能配合學校政策執行賃居作為，已完成106學年賃居訪視安全評核，已完成107學年賃居消防安全檢查，已於106/08/25通過建築物結構耐震能力初步評估合格",
+    photos: [
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop"
+    ],
+    location: { lat: 24.9645, lng: 121.1893 },
+    distanceToCampusMeters: 3000,
+    avgRating: 3.7,
+    reviewsCount: 5
   }
 ];
 
@@ -859,9 +1369,8 @@ export const missions = [
   }
 ];
 
-// 歌曲推薦資料
+// Taylor Swift 歌曲推薦資料
 export const songRecommendations = [
-  // Taylor Swift
   {
     id: 1,
     title: "Anti-Hero",
@@ -878,7 +1387,7 @@ export const songRecommendations = [
     lengthMinutes: 3.6,
     mood: "energetic",
     album: "1989",
-    spotifyUrl: "https://open.spotify.com/album/64LU4c1nfjz1t4VnGhagcg"
+    spotifyUrl: "https://open.spotify.com/album/5AEDGbliTTfjOB8TSm1sxt"
   },
   {
     id: 3,
@@ -887,7 +1396,7 @@ export const songRecommendations = [
     lengthMinutes: 3.9,
     mood: "chill",
     album: "Fearless",
-    spotifyUrl: "https://open.spotify.com/album/08CjHpZKDVnL2gvXTDvnBI"
+    spotifyUrl: "https://open.spotify.com/album/4hDok0OAJd57SGIT8xuWJH"
   },
   {
     id: 4,
@@ -896,7 +1405,7 @@ export const songRecommendations = [
     lengthMinutes: 3.5,
     mood: "focus",
     album: "1989",
-    spotifyUrl: "https://open.spotify.com/album/4hDok0OAJd57SGIT8xuWJH"
+    spotifyUrl: "https://open.spotify.com/album/5AEDGbliTTfjOB8TSm1sxt"
   },
   {
     id: 5,
@@ -906,143 +1415,6 @@ export const songRecommendations = [
     mood: "chill",
     album: "folklore",
     spotifyUrl: "https://open.spotify.com/album/2fenSS68JI1h4Fo296JfGr"
-  },
-  {
-    id: 6,
-    title: "22",
-    artist: "Taylor Swift",
-    lengthMinutes: 3.5,
-    mood: "energetic",
-    album: "Red",
-    spotifyUrl: "https://open.spotify.com/album/6kZ42qRrzov54LcAk4onW9"
-  },
-  {
-    id: 7,
-    title: "All Too Well",
-    artist: "Taylor Swift",
-    lengthMinutes: 5.3,
-    mood: "focus",
-    album: "Red",
-    spotifyUrl: "https://open.spotify.com/album/6kZ42qRrzov54LcAk4onW9"
-  },
-  // SEVENTEEN
-  {
-    id: 8,
-    title: "God of Music",
-    artist: "SEVENTEEN",
-    lengthMinutes: 3.3,
-    mood: "energetic",
-    album: "God of Music",
-    spotifyUrl: "https://open.spotify.com/album/1rE0Gy69MFUh4GuXafWd0f"
-  },
-  {
-    id: 9,
-    title: "Darl+ing",
-    artist: "SEVENTEEN",
-    lengthMinutes: 3.2,
-    mood: "energetic",
-    album: "Face the Sun",
-    spotifyUrl: "https://open.spotify.com/album/4lfFgz2rD1irxf7dZhNJht"
-  },
-  {
-    id: 10,
-    title: "Don't Wanna Cry",
-    artist: "SEVENTEEN",
-    lengthMinutes: 4.1,
-    mood: "chill",
-    album: "Al1",
-    spotifyUrl: "https://open.spotify.com/album/2BNimvLLlD89e4Sb7ZVX6I"
-  },
-  {
-    id: 11,
-    title: "Very Nice",
-    artist: "SEVENTEEN",
-    lengthMinutes: 3.4,
-    mood: "energetic",
-    album: "Love & Letter",
-    spotifyUrl: "https://open.spotify.com/album/7mP7AFehQDonPKEQiXvpvB"
-  },
-  {
-    id: 12,
-    title: "Home",
-    artist: "SEVENTEEN",
-    lengthMinutes: 3.6,
-    mood: "chill",
-    album: "You Made My Dawn",
-    spotifyUrl: "https://open.spotify.com/album/2Jrp37x38qZqtyrIrfxN4H"
-  },
-  {
-    id: 13,
-    title: "Rock with you",
-    artist: "SEVENTEEN",
-    lengthMinutes: 3.8,
-    mood: "focus",
-    album: "Attacca",
-    spotifyUrl: "https://open.spotify.com/album/2PIReru2w5i4JXOzeZnamd"
-  },
-  // TAEYEON
-  {
-    id: 14,
-    title: "I",
-    artist: "TAEYEON",
-    lengthMinutes: 3.4,
-    mood: "chill",
-    album: "I",
-    spotifyUrl: "https://open.spotify.com/album/4e7kLQu7SKBUiMtV5WH3A1"
-  },
-  {
-    id: 15,
-    title: "Weekend",
-    artist: "TAEYEON",
-    lengthMinutes: 3.2,
-    mood: "energetic",
-    album: "Weekend",
-    spotifyUrl: "https://open.spotify.com/album/4tJsXd2onpa4P9lFmkJIKy"
-  },
-  {
-    id: 16,
-    title: "INVU",
-    artist: "TAEYEON",
-    lengthMinutes: 3.5,
-    mood: "focus",
-    album: "INVU",
-    spotifyUrl: "https://open.spotify.com/album/7i2YLTVQ0dyngRuUqtGmr9"
-  },
-  {
-    id: 17,
-    title: "Fine",
-    artist: "TAEYEON",
-    lengthMinutes: 4.2,
-    mood: "chill",
-    album: "My Voice",
-    spotifyUrl: "https://open.spotify.com/album/6DlCl3hBP1Gwhn0tgitGfN"
-  },
-  {
-    id: 18,
-    title: "Can't Control Myself",
-    artist: "TAEYEON",
-    lengthMinutes: 3.1,
-    mood: "energetic",
-    album: "INVU",
-    spotifyUrl: "https://open.spotify.com/album/7i2YLTVQ0dyngRuUqtGmr9"
-  },
-  {
-    id: 19,
-    title: "Four Seasons",
-    artist: "TAEYEON",
-    lengthMinutes: 3.7,
-    mood: "focus",
-    album: "Four Seasons",
-    spotifyUrl: "https://open.spotify.com/album/3ublKZHu1qjU9ujf9A4zhH"
-  },
-  {
-    id: 20,
-    title: "11:11",
-    artist: "TAEYEON",
-    lengthMinutes: 3.3,
-    mood: "chill",
-    album: "My Voice",
-    spotifyUrl: "https://open.spotify.com/album/7MG0bxf0ZFsAyej9W3XzTO"
   }
 ];
 
@@ -1067,53 +1439,3 @@ export const badgeDefinitions = [
     icon: "🗺️"
   }
 ];
-
-// 根據房源ID和距離推薦不同歌單
-export const getSongRecommendations = (listingId, walkingTimeMinutes) => {
-  const songCount = Math.ceil(walkingTimeMinutes / 3.5);
-  const mood = walkingTimeMinutes > 15 ? 'energetic' : 
-               walkingTimeMinutes < 5 ? 'focus' : 'chill';
-  
-  // 根據房源ID選擇不同的歌曲組合
-  const seedIndex = listingId % 3;
-  let availableSongs = [];
-  
-  if (seedIndex === 0) {
-    // Taylor Swift 為主
-    availableSongs = songRecommendations.filter(song => 
-      song.artist === 'Taylor Swift' && song.mood === mood
-    ).concat(
-      songRecommendations.filter(song => 
-        song.artist !== 'Taylor Swift' && song.mood === mood
-      ).slice(0, 2)
-    );
-  } else if (seedIndex === 1) {
-    // SEVENTEEN 為主
-    availableSongs = songRecommendations.filter(song => 
-      song.artist === 'SEVENTEEN' && song.mood === mood
-    ).concat(
-      songRecommendations.filter(song => 
-        song.artist !== 'SEVENTEEN' && song.mood === mood
-      ).slice(0, 2)
-    );
-  } else {
-    // TAEYEON 為主
-    availableSongs = songRecommendations.filter(song => 
-      song.artist === 'TAEYEON' && song.mood === mood
-    ).concat(
-      songRecommendations.filter(song => 
-        song.artist !== 'TAEYEON' && song.mood === mood
-      ).slice(0, 2)
-    );
-  }
-  
-  // 如果特定心情的歌曲不夠，補充其他心情的歌曲
-  if (availableSongs.length < songCount) {
-    const additionalSongs = songRecommendations.filter(song => 
-      !availableSongs.includes(song)
-    ).slice(0, songCount - availableSongs.length);
-    availableSongs = availableSongs.concat(additionalSongs);
-  }
-  
-  return availableSongs.slice(0, songCount);
-};
