@@ -19,7 +19,7 @@
 #### 步驟 1: 複製專案
 ```bash
 # 複製專案到本地
-git clone https://github.com/yenyu3/ncu-rentease-mobile
+git clone https://github.com/yenyu3/ncu-rentease-mobile.git
 cd ncu_rentease/react-native
 ```
 
