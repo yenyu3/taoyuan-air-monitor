@@ -2,6 +2,9 @@
 
 這是 NCU RentEase 的 React Native 版本，使用 Expo 框架開發。
 
+## 🎬 Demo影片
+https://drive.google.com/file/d/1cNNXZYyUSSqiUn7QR1lM5W35DOhsh9It/view?usp=sharing
+
 ## 🚀 快速開始
 
 ### 📋 環境需求
