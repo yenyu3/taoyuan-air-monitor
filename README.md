@@ -1,6 +1,7 @@
 # NCU RentEase - React Native 版本
 
 一款專為中央大學學生設計的租屋平台應用程式，結合了房源搜尋、地圖導航、社群評價和遊戲化體驗，讓找房變得更簡單、更有趣！
+註：房源資訊（圖片除外）來源皆有真實依據，參考資源為國立中央大學校外賃居網。
 
 ## 🎬 Demo影片
 https://drive.google.com/file/d/1cNNXZYyUSSqiUn7QR1lM5W35DOhsh9It/view?usp=sharing
@@ -179,7 +180,7 @@ react-native/
 ### 🎵 歌曲推薦系統
 - 將步行距離轉換為「約幾首歌的距離」
 - 根據距離推薦不同心情歌曲
-- 整合 Spotify 歌單連結
+- 整合 Spotify 與 Youtube Music 歌單連結
 - 讓距離感知更有趣
 
 ### 📊 房源比較表格
