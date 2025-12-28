@@ -1,5 +1,5 @@
 // 房源資料 - 完整50筆資料
-export const listings = [
+const rawListings = [
   {
     id: 1,
     title: "房間出租 套房1間 雅房2間",
@@ -14,8 +14,7 @@ export const listings = [
     extraFees: { water: 1500, electricity: 1500, management: 0 },
     notes: "已完成106學年賃居訪視安全評核",
     photos: [
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
+      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=300&fit=crop"
     ],
     location: { lat: 24.9636, lng: 121.1900 },
     distanceToCampusMeters: 800,
@@ -36,7 +35,7 @@ export const listings = [
     extraFees: { water: 0, electricity: 0, management: 0 },
     notes: "已完成107學年賃居消防安全檢查",
     photos: [
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1605774337664-7a846e9cdf17?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop"
     ],
@@ -59,7 +58,7 @@ export const listings = [
     extraFees: { water: 0, electricity: 0, management: 0 },
     notes: "中央大學房東聯誼會成員，已完成103學年賃居訪視安全評核，2010年5月13日完成建築物結構耐震能力初步評估合格處所",
     photos: [
-      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop"
+      "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop"
     ],
     location: { lat: 24.9649, lng: 121.1916 },
     distanceToCampusMeters: 2000,
@@ -80,7 +79,7 @@ export const listings = [
     extraFees: { water: 0, electricity: 0, management: 0 },
     notes: "中央大學房東聯誼會成員，已完成106學年賃居訪視安全評核",
     photos: [
-      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
@@ -109,7 +108,7 @@ export const listings = [
     extraFees: { water: 0, electricity: 0, management: 0 },
     notes: "已完成106學年賃居訪視安全評核，已完成107學年賃居消防安全檢查",
     photos: [
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1531835551805-16d864c8d311?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
@@ -135,7 +134,7 @@ export const listings = [
     extraFees: { water: 100, electricity: 100, management: 0 },
     notes: "已完成107學年賃居消防安全檢查，107年8月份期間可接受短租",
     photos: [
-      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
+      "https://plus.unsplash.com/premium_photo-1683120852623-143817d6400b?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
@@ -161,7 +160,7 @@ export const listings = [
     extraFees: { water: 0, electricity: 0, management: 0 },
     notes: "已完成112學年消防安全設備申報檢修，2010年1月23日完成建築物結構耐震能力初步評估合格處所，機車停車棚為門禁刷卡進出",
     photos: [
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1617228069096-4638a7ffc906?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop"
     ],
@@ -184,7 +183,7 @@ export const listings = [
     extraFees: { water: 100, electricity: 100, management: 0 },
     notes: "中央大學房東聯誼會成員，已完成106學年賃居訪視安全評核",
     photos: [
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop"
+      "https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?w=400&h=300&fit=crop"
     ],
     location: { lat: 24.9640, lng: 121.1904 },
     distanceToCampusMeters: 2500,
@@ -231,7 +230,7 @@ export const listings = [
     extraFees: { water: 0, electricity: 0, management: 0 },
     notes: "中央大學房東聯誼會成員，已完成112學年賃居訪視安全評核，已完成112學年賃居消防安全檢查，已於98/12/24通過建築物結構耐震能力初步評估合格",
     photos: [
-      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1632829882891-5047ccc421bc?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
@@ -262,7 +261,7 @@ export const listings = [
     extraFees: { water: 600, electricity: 600, management: 0 },
     notes: "中央大學房東聯誼會成員，已完成106學年賃居訪視安全評核，電梯有使用許可證，已完成107學年賃居消防安全檢查，已於98/12/18通過建築物結構耐震能力初步評估合格",
     photos: [
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
+      "https://plus.unsplash.com/premium_photo-1680382578857-c331ead9ed51?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
@@ -288,7 +287,7 @@ export const listings = [
     extraFees: { water: 0, electricity: 0, management: 0 },
     notes: "已完成107學年賃居消防安全檢查，已完成106學年賃居訪視安全評核",
     photos: [
-      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=400&h=300&fit=crop"
     ],
     location: { lat: 24.9629, lng: 121.1949 },
@@ -310,7 +309,7 @@ export const listings = [
     extraFees: { water: 0, electricity: 0, management: 0 },
     notes: "已完成103學年賃居訪視安全評核，已完成106學年賃居訪視安全評核",
     photos: [
-      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
     ],
@@ -333,7 +332,7 @@ export const listings = [
     extraFees: { water: 0, electricity: 0, management: 0 },
     notes: "中央大學房東聯誼會成員，已完成106學年賃居訪視安全評核，電梯無使用許可證，已完成107學年賃居消防安全檢查，已於98/12/24通過建築物結構耐震能力初步評估合格",
     photos: [
-      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop",
@@ -1273,6 +1272,9 @@ export const listings = [
   }
 ];
 
+// 為房源動態生成豐富的圖片
+export const listings = rawListings;
+
 // 使用者資料
 export const user = {
   id: 1,
@@ -1378,7 +1380,8 @@ export const songRecommendations = [
     lengthMinutes: 3.2,
     mood: "energetic",
     album: "Midnights",
-    spotifyUrl: "https://open.spotify.com/album/151w1FgRZfnKZA9FEcg9Z3"
+    spotifyUrl: "https://open.spotify.com/album/151w1FgRZfnKZA9FEcg9Z3",
+    youtubeUrl: "https://music.youtube.com/watch?v=b1kbLwvqugk"
   },
   {
     id: 2,
@@ -1387,7 +1390,8 @@ export const songRecommendations = [
     lengthMinutes: 3.1,
     mood: "energetic",
     album: "GO生",
-    spotifyUrl: "https://open.spotify.com/album/6DWLIzvmiLPAuDWYZqrLQo"
+    spotifyUrl: "https://open.spotify.com/album/6DWLIzvmiLPAuDWYZqrLQo",
+    youtubeUrl: "https://music.youtube.com/watch?v=TQTlCHxyuu8"
   },
   {
     id: 3,
@@ -1396,7 +1400,8 @@ export const songRecommendations = [
     lengthMinutes: 3.4,
     mood: "chill",
     album: "I - The 1st Mini Album",
-    spotifyUrl: "https://open.spotify.com/album/4e7kLQu7SKBUiMtV5WH3A1"
+    spotifyUrl: "https://open.spotify.com/album/4e7kLQu7SKBUiMtV5WH3A1",
+    youtubeUrl: "https://music.youtube.com/watch?v=4OrCA1OInoo"
   },
   {
     id: 4,
@@ -1405,7 +1410,8 @@ export const songRecommendations = [
     lengthMinutes: 2.9,
     mood: "energetic",
     album: "Sector 1",
-    spotifyUrl: "https://open.spotify.com/album/3q6lN3kfsDgGaQUC7kVASH"
+    spotifyUrl: "https://open.spotify.com/album/3q6lN3kfsDgGaQUC7kVASH",
+    youtubeUrl: "https://music.youtube.com/watch?v=HdZdxocqzq4"
   },
   {
     id: 5,
@@ -1414,7 +1420,8 @@ export const songRecommendations = [
     lengthMinutes: 3.9,
     mood: "chill",
     album: "Fearless",
-    spotifyUrl: "https://open.spotify.com/album/4hDok0OAJd57SGIT8xuWJH"
+    spotifyUrl: "https://open.spotify.com/album/4hDok0OAJd57SGIT8xuWJH",
+    youtubeUrl: "https://music.youtube.com/watch?v=8xg3vE8Ie_E"
   },
   {
     id: 6,
@@ -1423,7 +1430,8 @@ export const songRecommendations = [
     lengthMinutes: 3.2,
     mood: "focus",
     album: "Weekend - Single",
-    spotifyUrl: "https://open.spotify.com/album/4tJsXd2onpa4P9lFmkJIKy"
+    spotifyUrl: "https://open.spotify.com/album/4tJsXd2onpa4P9lFmkJIKy",
+    youtubeUrl: "https://music.youtube.com/watch?v=RlPwnW6a-S8"
   },
   {
     id: 7,
@@ -1432,7 +1440,8 @@ export const songRecommendations = [
     lengthMinutes: 3.3,
     mood: "energetic",
     album: "Love & Letter",
-    spotifyUrl: "https://open.spotify.com/album/7mP7AFehQDonPKEQiXvpvB"
+    spotifyUrl: "https://open.spotify.com/album/7mP7AFehQDonPKEQiXvpvB",
+    youtubeUrl: "https://music.youtube.com/watch?v=J-wFp43XOrA"
   },
   {
     id: 8,
@@ -1441,7 +1450,8 @@ export const songRecommendations = [
     lengthMinutes: 3.6,
     mood: "energetic",
     album: "1989",
-    spotifyUrl: "https://open.spotify.com/album/64LU4c1nfjz1t4VnGhagcg"
+    spotifyUrl: "https://open.spotify.com/album/64LU4c1nfjz1t4VnGhagcg",
+    youtubeUrl: "https://music.youtube.com/watch?v=nfWlot6h_JM"
   },
   {
     id: 9,
@@ -1450,7 +1460,8 @@ export const songRecommendations = [
     lengthMinutes: 3.1,
     mood: "chill",
     album: "INVU - The 3rd Album",
-    spotifyUrl: "https://open.spotify.com/album/7i2YLTVQ0dyngRuUqtGmr9"
+    spotifyUrl: "https://open.spotify.com/album/7i2YLTVQ0dyngRuUqtGmr9",
+    youtubeUrl: "https://music.youtube.com/watch?v=AbZH7XWDW_k"
   },
   {
     id: 10,
@@ -1459,7 +1470,8 @@ export const songRecommendations = [
     lengthMinutes: 4.1,
     mood: "chill",
     album: "Al1",
-    spotifyUrl: "https://open.spotify.com/album/2BNimvLLlD89e4Sb7ZVX6I"
+    spotifyUrl: "https://open.spotify.com/album/2BNimvLLlD89e4Sb7ZVX6I",
+    youtubeUrl: "https://music.youtube.com/watch?v=zEkg4GBQumc"
   },
   {
     id: 11,
@@ -1468,7 +1480,8 @@ export const songRecommendations = [
     lengthMinutes: 3.5,
     mood: "focus",
     album: "1989",
-    spotifyUrl: "https://open.spotify.com/album/64LU4c1nfjz1t4VnGhagcg"
+    spotifyUrl: "https://open.spotify.com/album/64LU4c1nfjz1t4VnGhagcg",
+    youtubeUrl: "https://music.youtube.com/watch?v=OutNWjA2gAQ"
   },
   {
     id: 12,
@@ -1477,7 +1490,8 @@ export const songRecommendations = [
     lengthMinutes: 3.2,
     mood: "energetic",
     album: "Face the Sun",
-    spotifyUrl: "https://open.spotify.com/album/4lfFgz2rD1irxf7dZhNJht"
+    spotifyUrl: "https://open.spotify.com/album/4lfFgz2rD1irxf7dZhNJht",
+    youtubeUrl: "https://music.youtube.com/watch?v=GAL8Z7QQbF0"
   },
   {
     id: 13,
@@ -1486,7 +1500,8 @@ export const songRecommendations = [
     lengthMinutes: 3.8,
     mood: "chill",
     album: "folklore",
-    spotifyUrl: "https://open.spotify.com/album/2fenSS68JI1h4Fo296JfGr"
+    spotifyUrl: "https://open.spotify.com/album/2fenSS68JI1h4Fo296JfGr",
+    youtubeUrl: "https://music.youtube.com/watch?v=K-a8s8OLBSE"
   },
   {
     id: 14,
@@ -1495,7 +1510,8 @@ export const songRecommendations = [
     lengthMinutes: 4.2,
     mood: "focus",
     album: "My Voice - The 1st Album",
-    spotifyUrl: "https://open.spotify.com/album/6DlCl3hBP1Gwhn0tgitGfN"
+    spotifyUrl: "https://open.spotify.com/album/6DlCl3hBP1Gwhn0tgitGfN",
+    youtubeUrl: "https://music.youtube.com/watch?v=NHXUM-6a3dU"
   },
   {
     id: 15,
@@ -1504,7 +1520,8 @@ export const songRecommendations = [
     lengthMinutes: 3.7,
     mood: "chill",
     album: "Attacca",
-    spotifyUrl: "https://open.spotify.com/album/2PIReru2w5i4JXOzeZnamd"
+    spotifyUrl: "https://open.spotify.com/album/2PIReru2w5i4JXOzeZnamd",
+    youtubeUrl: "https://music.youtube.com/watch?v=WpuatuzSDK4"
   }
 ];
 

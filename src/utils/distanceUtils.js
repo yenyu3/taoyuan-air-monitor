@@ -13,7 +13,7 @@ export const calculateSongCount = (walkingTimeMinutes) => {
 };
 
 // 根據步行時間推薦歌單
-export const recommendSongs = (walkingTimeMinutes) => {
+export const recommendSongs = (walkingTimeMinutes, musicPlatform = 'spotify') => {
   const songCount = calculateSongCount(walkingTimeMinutes);
   
   // 根據步行時間選擇合適的心情
@@ -34,9 +34,16 @@ export const recommendSongs = (walkingTimeMinutes) => {
     recommendedSongs = [...recommendedSongs, ...otherSongs];
   }
   
-  // 隨機選擇歌曲並限制數量
+  // 隨機選擇歌曲並限制數量，同時根據平台選擇連結
   const shuffled = recommendedSongs.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, Math.min(songCount, 5)); // 最多推薦5首
+  const selectedSongs = shuffled.slice(0, Math.min(songCount, 5)); // 最多推薦5首
+  
+  // 根據音樂平台返回對應的連結
+  return selectedSongs.map(song => ({
+    ...song,
+    url: musicPlatform === 'youtube' ? song.youtubeUrl : song.spotifyUrl,
+    platform: musicPlatform
+  }));
 };
 
 // 格式化距離顯示
@@ -48,10 +55,10 @@ export const formatDistance = (distanceMeters) => {
 };
 
 // 獲取完整的距離資訊
-export const getDistanceInfo = (distanceMeters) => {
+export const getDistanceInfo = (distanceMeters, musicPlatform = 'spotify') => {
   const walkingTime = calculateWalkingTime(distanceMeters);
   const songCount = calculateSongCount(walkingTime);
-  const recommendedSongs = recommendSongs(walkingTime);
+  const recommendedSongs = recommendSongs(walkingTime, musicPlatform);
   
   return {
     distance: formatDistance(distanceMeters),

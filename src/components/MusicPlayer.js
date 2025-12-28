@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -9,125 +9,91 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-const MusicPlayer = ({ songs, walkingTime, songCount }) => {
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+const MusicPlayer = ({ songs, musicPlatform, walkingTime }) => {
+  const handleSongPress = async (song) => {
+    try {
+      const url = song.url;
+      const canOpen = await Linking.canOpenURL(url);
+      
+      if (canOpen) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert(
+          '無法開啟連結',
+          `請確認已安裝 ${musicPlatform === 'youtube' ? 'YouTube Music' : 'Spotify'} 應用程式`
+        );
+      }
+    } catch (error) {
+      Alert.alert('錯誤', '無法開啟音樂連結');
+    }
+  };
+
+  const getPlatformIcon = () => {
+    return musicPlatform === 'youtube' ? 'play' : 'music';
+  };
+
+  const getPlatformColor = () => {
+    return musicPlatform === 'youtube' ? '#FF0000' : '#1DB954';
+  };
 
   if (!songs || songs.length === 0) {
     return null;
   }
 
-  const currentSong = songs[currentSongIndex];
-
-  const handlePlaySong = async (song) => {
-    try {
-      const supported = await Linking.canOpenURL(song.spotifyUrl);
-      if (supported) {
-        await Linking.openURL(song.spotifyUrl);
-      } else {
-        Alert.alert('錯誤', '無法開啟 Spotify 連結');
-      }
-    } catch (error) {
-      Alert.alert('錯誤', '開啟連結時發生錯誤');
-    }
-  };
-
-  const nextSong = () => {
-    setCurrentSongIndex((prev) => (prev + 1) % songs.length);
-  };
-
-  const prevSong = () => {
-    setCurrentSongIndex((prev) => (prev - 1 + songs.length) % songs.length);
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Feather name="music" size={20} color="#9BB7D4" />
-        <Text style={styles.title}>步行音樂推薦</Text>
-      </View>
-      
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>
-          步行時間約 {walkingTime} 分鐘，大概 {songCount} 首歌的距離
-        </Text>
-      </View>
-
-      <View style={styles.playerContainer}>
-        <View style={styles.songInfo}>
-          <Text style={styles.songTitle} numberOfLines={1}>
-            {currentSong.title}
-          </Text>
-          <Text style={styles.artistName} numberOfLines={1}>
-            {currentSong.artist}
-          </Text>
-          <Text style={styles.albumName} numberOfLines={1}>
-            {currentSong.album}
+        <View style={styles.headerLeft}>
+          <Feather name={getPlatformIcon()} size={20} color={getPlatformColor()} />
+          <Text style={styles.headerTitle}>
+            步行 {walkingTime} 分鐘的歌單
           </Text>
         </View>
-
-        <View style={styles.controls}>
-          <TouchableOpacity 
-            style={styles.controlButton} 
-            onPress={prevSong}
-            disabled={songs.length <= 1}
-          >
-            <Feather name="skip-back" size={20} color="#6B7280" />
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.playButton} 
-            onPress={() => handlePlaySong(currentSong)}
-          >
-            <Feather name="play" size={24} color="white" />
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.controlButton} 
-            onPress={nextSong}
-            disabled={songs.length <= 1}
-          >
-            <Feather name="skip-forward" size={20} color="#6B7280" />
-          </TouchableOpacity>
+        <View style={styles.platformBadge}>
+          <Text style={[styles.platformText, { color: getPlatformColor() }]}>
+            {musicPlatform === 'youtube' ? 'YouTube Music' : 'Spotify'}
+          </Text>
         </View>
-
-        <Text style={styles.songCounter}>
-          {currentSongIndex + 1} / {songs.length}
-        </Text>
       </View>
 
-      <View style={styles.playlistContainer}>
-        <Text style={styles.playlistTitle}>推薦歌單</Text>
+      <Text style={styles.subtitle}>
+        約 {songs.length} 首歌的距離，為你推薦適合的歌曲
+      </Text>
+
+      <View style={styles.songsList}>
         {songs.map((song, index) => (
           <TouchableOpacity
             key={song.id}
-            style={[
-              styles.songItem,
-              index === currentSongIndex && styles.currentSongItem
-            ]}
-            onPress={() => setCurrentSongIndex(index)}
+            style={styles.songItem}
+            onPress={() => handleSongPress(song)}
           >
-            <View style={styles.songItemInfo}>
-              <Text style={[
-                styles.songItemTitle,
-                index === currentSongIndex && styles.currentSongText
-              ]} numberOfLines={1}>
-                {song.title}
-              </Text>
-              <Text style={[
-                styles.songItemArtist,
-                index === currentSongIndex && styles.currentSongText
-              ]} numberOfLines={1}>
-                {song.artist} • {song.lengthMinutes.toFixed(1)}分
-              </Text>
+            <View style={styles.songInfo}>
+              <View style={styles.songNumber}>
+                <Text style={styles.songNumberText}>{index + 1}</Text>
+              </View>
+              <View style={styles.songDetails}>
+                <Text style={styles.songTitle} numberOfLines={1}>
+                  {song.title}
+                </Text>
+                <Text style={styles.songArtist} numberOfLines={1}>
+                  {song.artist} • {song.album}
+                </Text>
+              </View>
             </View>
-            <TouchableOpacity
-              style={styles.playIconButton}
-              onPress={() => handlePlaySong(song)}
-            >
-              <Feather name="external-link" size={16} color="#9BB7D4" />
-            </TouchableOpacity>
+            <View style={styles.songActions}>
+              <Text style={styles.songDuration}>
+                {Math.floor(song.lengthMinutes)}:{String(Math.round((song.lengthMinutes % 1) * 60)).padStart(2, '0')}
+              </Text>
+              <Feather name="external-link" size={16} color="#6B7280" />
+            </View>
           </TouchableOpacity>
         ))}
+      </View>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>
+          點擊歌曲即可在 {musicPlatform === 'youtube' ? 'YouTube Music' : 'Spotify'} 中播放
+        </Text>
       </View>
     </View>
   );
@@ -147,107 +113,101 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#3A4E6B',
-    marginLeft: 8,
-  },
-  infoContainer: {
-    backgroundColor: '#F0F9FF',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
-  },
-  infoText: {
-    fontSize: 14,
-    color: '#0369A1',
-    textAlign: 'center',
-  },
-  playerContainer: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  songInfo: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  songTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1F2937',
-    marginBottom: 4,
-  },
-  artistName: {
-    fontSize: 16,
-    color: '#6B7280',
-    marginBottom: 2,
-  },
-  albumName: {
-    fontSize: 14,
-    color: '#9CA3AF',
-  },
-  controls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
     marginBottom: 8,
   },
-  controlButton: {
-    padding: 8,
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
-  playButton: {
-    backgroundColor: '#9BB7D4',
-    borderRadius: 30,
-    padding: 16,
-  },
-  songCounter: {
-    fontSize: 12,
-    color: '#6B7280',
-  },
-  playlistContainer: {
-    borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
-    paddingTop: 16,
-  },
-  playlistTitle: {
-    fontSize: 14,
+  headerTitle: {
+    fontSize: 16,
     fontWeight: '600',
     color: '#374151',
-    marginBottom: 12,
+    marginLeft: 8,
+  },
+  platformBadge: {
+    backgroundColor: 'rgba(107, 155, 210, 0.1)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  platformText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  songsList: {
+    gap: 8,
   },
   songItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 8,
     borderRadius: 8,
-    marginBottom: 4,
+    backgroundColor: '#F9FAFB',
   },
-  currentSongItem: {
-    backgroundColor: '#EBF8FF',
-  },
-  songItemInfo: {
+  songInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
   },
-  songItemTitle: {
+  songNumber: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#E5E7EB',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  songNumberText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  songDetails: {
+    flex: 1,
+  },
+  songTitle: {
     fontSize: 14,
     fontWeight: '500',
     color: '#374151',
     marginBottom: 2,
   },
-  songItemArtist: {
+  songArtist: {
     fontSize: 12,
     color: '#6B7280',
   },
-  currentSongText: {
-    color: '#0369A1',
+  songActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  playIconButton: {
-    padding: 4,
+  songDuration: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  footer: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  footerText: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    textAlign: 'center',
   },
 });
 

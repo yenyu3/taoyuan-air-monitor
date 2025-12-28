@@ -12,10 +12,13 @@ import {
 import { Feather } from '@expo/vector-icons';
 import MusicPlayer from './MusicPlayer';
 import { getDistanceInfo } from '../utils/distanceUtils';
+import useStore from '../store/useStore';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const ListingDetailModal = ({ listing, visible, onClose }) => {
+  const { musicPlatform } = useStore();
+  
   if (!listing) return null;
 
   const formatPrice = (min, max) => {
@@ -160,9 +163,9 @@ const ListingDetailModal = ({ listing, visible, onClose }) => {
             {/* 音樂推薦 */}
             <View style={styles.section}>
               <MusicPlayer 
-                songs={getDistanceInfo(listing.distanceToCampusMeters).recommendedSongs}
-                walkingTime={getDistanceInfo(listing.distanceToCampusMeters).walkingTime}
-                songCount={getDistanceInfo(listing.distanceToCampusMeters).songCount}
+                songs={getDistanceInfo(listing.distanceToCampusMeters, musicPlatform).recommendedSongs}
+                musicPlatform={musicPlatform}
+                walkingTime={getDistanceInfo(listing.distanceToCampusMeters, musicPlatform).walkingTime}
               />
             </View>
 

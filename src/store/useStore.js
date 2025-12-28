@@ -17,6 +17,12 @@ const useStore = create((set, get) => ({
     hasFurniture: false
   },
   
+  // 音樂平台偏好
+  musicPlatform: 'spotify', // 'spotify' 或 'youtube'
+  
+  // 設定音樂平台
+  setMusicPlatform: (platform) => set({ musicPlatform: platform }),
+  
   // 收藏功能
   toggleFavorite: (listingId) => set((state) => {
     const currentFavorites = state.currentUser.favorites;

@@ -3,6 +3,7 @@ import {
   View,
   Text,
   ScrollView,
+  TouchableOpacity,
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
@@ -11,7 +12,7 @@ import MissionList from '../components/MissionList';
 import useStore from '../store/useStore';
 
 const Profile = () => {
-  const { currentUser, getBadgeInfo } = useStore();
+  const { currentUser, getBadgeInfo, musicPlatform, setMusicPlatform } = useStore();
   
   // 獲取徽章資訊
   const getUserBadges = () => {
@@ -87,6 +88,82 @@ const Profile = () => {
               <Text style={styles.statNumber}>{currentUser.badges.length}</Text>
               <Text style={styles.statLabel}>徽章</Text>
             </View>
+          </View>
+        </View>
+
+        {/* 音樂平台設定 */}
+        <View style={styles.musicPlatformCard}>
+          <View style={styles.sectionHeader}>
+            <Feather name="music" size={20} color="#3A4E6B" />
+            <Text style={styles.sectionTitle}>音樂平台偏好</Text>
+          </View>
+          
+          <Text style={styles.platformDescription}>
+            選擇你喜歡的音樂平台，歌曲推薦將會使用對應的連結
+          </Text>
+          
+          <View style={styles.platformOptions}>
+            <TouchableOpacity
+              style={[
+                styles.platformOption,
+                musicPlatform === 'spotify' && styles.selectedPlatform
+              ]}
+              onPress={() => setMusicPlatform('spotify')}
+            >
+              <View style={styles.platformContent}>
+                <View style={[
+                  styles.platformIcon,
+                  { backgroundColor: musicPlatform === 'spotify' ? '#1DB954' : '#E5E7EB' }
+                ]}>
+                  <Feather 
+                    name="music" 
+                    size={20} 
+                    color={musicPlatform === 'spotify' ? 'white' : '#6B7280'} 
+                  />
+                </View>
+                <View style={styles.platformInfo}>
+                  <Text style={[
+                    styles.platformName,
+                    musicPlatform === 'spotify' && styles.selectedPlatformText
+                  ]}>Spotify</Text>
+                  <Text style={styles.platformSubtitle}>全球最大的音樂串流平台</Text>
+                </View>
+              </View>
+              {musicPlatform === 'spotify' && (
+                <Feather name="check-circle" size={20} color="#1DB954" />
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.platformOption,
+                musicPlatform === 'youtube' && styles.selectedPlatform
+              ]}
+              onPress={() => setMusicPlatform('youtube')}
+            >
+              <View style={styles.platformContent}>
+                <View style={[
+                  styles.platformIcon,
+                  { backgroundColor: musicPlatform === 'youtube' ? '#FF0000' : '#E5E7EB' }
+                ]}>
+                  <Feather 
+                    name="play" 
+                    size={20} 
+                    color={musicPlatform === 'youtube' ? 'white' : '#6B7280'} 
+                  />
+                </View>
+                <View style={styles.platformInfo}>
+                  <Text style={[
+                    styles.platformName,
+                    musicPlatform === 'youtube' && styles.selectedPlatformText
+                  ]}>YouTube Music</Text>
+                  <Text style={styles.platformSubtitle}>Google 的音樂串流服務</Text>
+                </View>
+              </View>
+              {musicPlatform === 'youtube' && (
+                <Feather name="check-circle" size={20} color="#FF0000" />
+              )}
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -404,6 +481,69 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+  },
+  musicPlatformCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  platformDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  platformOptions: {
+    gap: 12,
+  },
+  platformOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    backgroundColor: '#F9FAFB',
+  },
+  selectedPlatform: {
+    borderColor: '#9BB7D4',
+    backgroundColor: 'rgba(155, 183, 212, 0.05)',
+  },
+  platformContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  platformIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  platformInfo: {
+    flex: 1,
+  },
+  platformName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 2,
+  },
+  selectedPlatformText: {
+    color: '#3A4E6B',
+  },
+  platformSubtitle: {
+    fontSize: 12,
+    color: '#6B7280',
   },
 });
 

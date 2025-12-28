@@ -18,7 +18,7 @@ import { getDistanceInfo } from '../utils/distanceUtils';
 const { width, height } = Dimensions.get('window');
 
 const Map = () => {
-  const { getFilteredListings } = useStore();
+  const { getFilteredListings, musicPlatform } = useStore();
   const [selectedListing, setSelectedListing] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState('distance'); // distance, rating, price
@@ -153,7 +153,7 @@ const Map = () => {
         </View>
         
         {sortedListings.map((listing, index) => {
-          const distanceInfo = getDistanceInfo(listing.distanceToCampusMeters);
+          const distanceInfo = getDistanceInfo(listing.distanceToCampusMeters, musicPlatform);
           return (
             <View key={listing.id} style={styles.listingWrapper}>
               <View style={styles.distanceInfo}>
@@ -164,7 +164,7 @@ const Map = () => {
                   </Text>
                 </View>
                 <View style={styles.songInfo}>
-                  <Feather name="music" size={14} color="#6B7280" />
+                  <Feather name={musicPlatform === 'youtube' ? 'play' : 'music'} size={14} color="#6B7280" />
                   <Text style={styles.songText}>
                     約 {distanceInfo.songCount} 首歌的距離
                   </Text>
