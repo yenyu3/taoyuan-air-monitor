@@ -58,20 +58,3 @@ export const getPriceDistribution = () => {
   
   return Object.entries(ranges).map(([range, count]) => ({ range, count }));
 };
-
-// 模擬用戶行為數據
-export const getUserBehaviorStats = () => {
-  return {
-    totalViews: 1250,
-    totalFavorites: 89,
-    totalSearches: 456,
-    avgSessionTime: '5分32秒',
-    topSearchKeywords: [
-      { keyword: '套房', count: 156 },
-      { keyword: '中央路', count: 89 },
-      { keyword: '3000', count: 67 },
-      { keyword: '冷氣', count: 45 },
-      { keyword: '停車場', count: 34 }
-    ]
-  };
-};

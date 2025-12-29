@@ -8,18 +8,26 @@ import {
   Image,
   StyleSheet,
   Dimensions,
+  Linking,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import MusicPlayer from './MusicPlayer';
 import { getDistanceInfo } from '../utils/distanceUtils';
+import { themes } from '../utils/themes';
 import useStore from '../store/useStore';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const ListingDetailModal = ({ listing, visible, onClose }) => {
-  const { musicPlatform } = useStore();
+  const { musicPlatform, currentTheme } = useStore();
+  const theme = themes[currentTheme];
   
   if (!listing) return null;
+
+  const handlePhoneCall = (phoneNumber) => {
+    const phoneUrl = `tel:${phoneNumber}`;
+    Linking.openURL(phoneUrl);
+  };
 
   const formatPrice = (min, max) => {
     if (min === max) {
@@ -42,12 +50,12 @@ const ListingDetailModal = ({ listing, visible, onClose }) => {
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
-        <View style={styles.header}>
+      <View style={[styles.container, { backgroundColor: theme.colors.card }]}>
+        <View style={[styles.header, { borderBottomColor: theme.colors.border }]}>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Feather name="x" size={24} color="#1F2937" />
+            <Feather name="x" size={24} color={theme.colors.text} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>房源詳情</Text>
+          <Text style={[styles.headerTitle, { color: theme.colors.text }]}>房源詳情</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -70,33 +78,33 @@ const ListingDetailModal = ({ listing, visible, onClose }) => {
 
           <View style={styles.detailsContainer}>
             {/* 標題和價格 */}
-            <Text style={styles.title}>{listing.title}</Text>
+            <Text style={[styles.title, { color: theme.colors.text }]}>{listing.title}</Text>
             <View style={styles.priceContainer}>
-              <Text style={styles.price}>
+              <Text style={[styles.price, { color: theme.colors.accent }]}>
                 {formatPrice(listing.rentMin, listing.rentMax)}
               </Text>
-              <Text style={styles.priceUnit}>/月</Text>
+              <Text style={[styles.priceUnit, { color: theme.colors.textSecondary }]}>/月</Text>
             </View>
 
             {/* 基本資訊 */}
             <View style={styles.infoSection}>
               <View style={styles.infoRow}>
                 <Feather name="map-pin" size={16} color="#6B7280" />
-                <Text style={styles.infoText}>{listing.address}</Text>
+                <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>{listing.address}</Text>
               </View>
               <View style={styles.infoRow}>
                 <Feather name="navigation" size={16} color="#6B7280" />
-                <Text style={styles.infoText}>
+                <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>
                   距離中大 {getDistanceText(listing.distanceToCampusMeters)}
                 </Text>
               </View>
               <View style={styles.infoRow}>
                 <Feather name="home" size={16} color="#6B7280" />
-                <Text style={styles.infoText}>{listing.rooms}</Text>
+                <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>{listing.rooms}</Text>
               </View>
               <View style={styles.infoRow}>
                 <Feather name="star" size={16} color="#F59E0B" />
-                <Text style={styles.infoText}>
+                <Text style={[styles.infoText, { color: theme.colors.textSecondary }]}>
                   {listing.avgRating} ({listing.reviewsCount} 評價)
                 </Text>
               </View>
@@ -104,20 +112,27 @@ const ListingDetailModal = ({ listing, visible, onClose }) => {
 
             {/* 聯絡資訊 */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>聯絡資訊</Text>
-              <Text style={styles.contactName}>{listing.contactName}</Text>
+              <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>聯絡資訊</Text>
+              <Text style={[styles.contactName, { color: theme.colors.text }]}>{listing.contactName}</Text>
               {listing.contactPhones.map((phone, index) => (
-                <Text key={index} style={styles.contactPhone}>{phone}</Text>
+                <TouchableOpacity 
+                  key={index} 
+                  style={styles.phoneButton}
+                  onPress={() => handlePhoneCall(phone)}
+                >
+                  <Feather name="phone" size={16} color={theme.colors.accent} />
+                  <Text style={[styles.phoneText, { color: theme.colors.accent }]}>{phone}</Text>
+                </TouchableOpacity>
               ))}
             </View>
 
             {/* 室內設施 */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>室內設施</Text>
+              <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>室內設施</Text>
               <View style={styles.facilitiesContainer}>
                 {listing.indoorFacilities.map((facility, index) => (
                   <View key={index} style={styles.facilityChip}>
-                    <Text style={styles.facilityText}>{facility}</Text>
+                    <Text style={[styles.facilityText, { color: theme.colors.accent }]}>{facility}</Text>
                   </View>
                 ))}
               </View>
@@ -126,11 +141,11 @@ const ListingDetailModal = ({ listing, visible, onClose }) => {
             {/* 公共設施 */}
             {listing.publicFacilities.length > 0 && (
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>公共設施</Text>
+                <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>公共設施</Text>
                 <View style={styles.facilitiesContainer}>
                   {listing.publicFacilities.map((facility, index) => (
                     <View key={index} style={styles.facilityChip}>
-                      <Text style={styles.facilityText}>{facility}</Text>
+                      <Text style={[styles.facilityText, { color: theme.colors.accent }]}>{facility}</Text>
                     </View>
                   ))}
                 </View>
@@ -139,22 +154,22 @@ const ListingDetailModal = ({ listing, visible, onClose }) => {
 
             {/* 額外費用 */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>額外費用</Text>
+              <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>額外費用</Text>
               <View style={styles.feeRow}>
-                <Text style={styles.feeLabel}>水費:</Text>
-                <Text style={styles.feeValue}>
+                <Text style={[styles.feeLabel, { color: theme.colors.textSecondary }]}>水費:</Text>
+                <Text style={[styles.feeValue, { color: theme.colors.text }]}>
                   {listing.extraFees.water === 0 ? '包含' : `$${listing.extraFees.water}`}
                 </Text>
               </View>
               <View style={styles.feeRow}>
-                <Text style={styles.feeLabel}>電費:</Text>
-                <Text style={styles.feeValue}>
+                <Text style={[styles.feeLabel, { color: theme.colors.textSecondary }]}>電費:</Text>
+                <Text style={[styles.feeValue, { color: theme.colors.text }]}>
                   {listing.extraFees.electricity === 0 ? '包含' : `$${listing.extraFees.electricity}`}
                 </Text>
               </View>
               <View style={styles.feeRow}>
-                <Text style={styles.feeLabel}>管理費:</Text>
-                <Text style={styles.feeValue}>
+                <Text style={[styles.feeLabel, { color: theme.colors.textSecondary }]}>管理費:</Text>
+                <Text style={[styles.feeValue, { color: theme.colors.text }]}>
                   {listing.extraFees.management === 0 ? '包含' : `$${listing.extraFees.management}`}
                 </Text>
               </View>
@@ -172,8 +187,8 @@ const ListingDetailModal = ({ listing, visible, onClose }) => {
             {/* 備註 */}
             {listing.notes && (
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>備註</Text>
-                <Text style={styles.notesText}>{listing.notes}</Text>
+                <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>備註</Text>
+                <Text style={[styles.notesText, { color: theme.colors.textSecondary }]}>{listing.notes}</Text>
               </View>
             )}
           </View>
@@ -186,7 +201,6 @@ const ListingDetailModal = ({ listing, visible, onClose }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
   },
   header: {
     flexDirection: 'row',
@@ -195,7 +209,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
   },
   closeButton: {
     padding: 4,
@@ -203,7 +216,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1F2937',
   },
   placeholder: {
     width: 32,
@@ -237,7 +249,6 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#3A4E6B',
   },
   priceUnit: {
     fontSize: 16,
@@ -277,6 +288,22 @@ const styles = StyleSheet.create({
     color: '#3A4E6B',
     marginBottom: 2,
   },
+  phoneButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8F9FA',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  phoneText: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 8,
+  },
   facilitiesContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -290,7 +317,6 @@ const styles = StyleSheet.create({
   },
   facilityText: {
     fontSize: 14,
-    color: '#3A4E6B',
     fontWeight: '500',
   },
   feeRow: {

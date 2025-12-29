@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,10 +12,13 @@ import { Feather } from '@expo/vector-icons';
 import ListingCard from '../components/ListingCard';
 import ListingDetailModal from '../components/ListingDetailModal';
 import CompareTable from '../components/CompareTable';
+import { themes } from '../utils/themes';
 import useStore from '../store/useStore';
 
-const Favorites = () => {
-  const { getFavoriteListings } = useStore();
+const Favorites = ({ scrollRef }) => {
+  const { getFavoriteListings, currentTheme } = useStore();
+  const theme = themes[currentTheme];
+  const scrollViewRef = useRef(null);
   const [selectedForCompare, setSelectedForCompare] = useState([]);
   const [showCompare, setShowCompare] = useState(false);
   const [selectedListing, setSelectedListing] = useState(null);
@@ -50,8 +53,14 @@ const Favorites = () => {
     setNotes(prev => ({ ...prev, [listingId]: note }));
   };
 
+  useEffect(() => {
+    if (scrollRef) {
+      scrollRef(scrollViewRef.current);
+    }
+  }, [scrollRef]);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
       <View style={styles.header}>
         <SafeAreaView>
           <View style={styles.headerContent}>
@@ -62,17 +71,17 @@ const Favorites = () => {
         </SafeAreaView>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} ref={scrollViewRef}>
         {favoriteListings.length === 0 ? (
           <View style={styles.emptyState}>
             <Feather name="heart" size={48} color="#D1D5DB" />
-            <Text style={styles.emptyStateTitle}>還沒有收藏任何房源</Text>
-            <Text style={styles.emptyStateSubtitle}>去首頁或地圖找找喜歡的房源吧！</Text>
+            <Text style={[styles.emptyStateTitle, { color: theme.colors.textSecondary }]}>還沒有收藏任何房源</Text>
+            <Text style={[styles.emptyStateSubtitle, { color: theme.colors.textSecondary }]}>去首頁或地圖找找喜歡的房源吧！</Text>
           </View>
         ) : (
           <View style={styles.listContainer}>
             <View style={styles.controlBar}>
-              <Text style={styles.countText}>已收藏 {favoriteListings.length} 間房源</Text>
+              <Text style={[styles.countText, { color: theme.colors.textSecondary }]}>已收藏 {favoriteListings.length} 間房源</Text>
               <View style={styles.controlButtons}>
                 {selectedForCompare.length >= 2 && (
                   <TouchableOpacity 
@@ -90,7 +99,7 @@ const Favorites = () => {
                     style={styles.clearButton}
                     onPress={() => setSelectedForCompare([])}
                   >
-                    <Text style={styles.clearButtonText}>清除選擇</Text>
+                    <Text style={[styles.clearButtonText, { color: theme.colors.textSecondary }]}>清除選擇</Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -98,15 +107,15 @@ const Favorites = () => {
 
             {/* 比較表格 */}
             {showCompare && selectedForCompare.length >= 2 && (
-              <View style={styles.compareTableContainer}>
-                <Text style={styles.compareTableTitle}>房源比較</Text>
+              <View style={[styles.compareTableContainer, { backgroundColor: theme.colors.card }]}>
+                <Text style={[styles.compareTableTitle, { color: theme.colors.text }]}>房源比較</Text>
                 <CompareTable listings={selectedForCompare} />
               </View>
             )}
 
             {favoriteListings.map((listing) => (
-              <View key={listing.id} style={styles.listingContainer}>
-                <View style={styles.compareSection}>
+              <View key={listing.id} style={[styles.listingContainer, { backgroundColor: theme.colors.card }]}>
+                <View style={[styles.compareSection, { backgroundColor: theme.colors.surface, borderBottomColor: theme.colors.border }]}>
                   <TouchableOpacity 
                     style={styles.checkboxContainer}
                     onPress={() => handleCompareToggle(listing)}
@@ -119,28 +128,30 @@ const Favorites = () => {
                         <Feather name="check" size={16} color="white" />
                       )}
                     </View>
-                    <Text style={styles.checkboxLabel}>加入比較</Text>
+                    <Text style={[styles.checkboxLabel, { color: theme.colors.textSecondary }]}>加入比較</Text>
                   </TouchableOpacity>
                   {selectedForCompare.length >= 3 && !selectedForCompare.some(item => item.id === listing.id) && (
-                    <Text style={styles.maxSelectText}>最多選擇3間</Text>
+                    <Text style={[styles.maxSelectText, { color: theme.colors.textSecondary }]}>最多選擇3間</Text>
                   )}
                 </View>
 
                 <ListingCard listing={listing} onPress={() => handleListingClick(listing)} />
 
-                <View style={styles.noteSection}>
-                  <Text style={styles.noteLabel}>個人筆記</Text>
+                <View style={[styles.noteSection, { backgroundColor: theme.colors.surface, borderTopColor: theme.colors.border }]}>
+                  <Text style={[styles.noteLabel, { color: theme.colors.text }]}>個人筆記</Text>
                   <TextInput
-                    style={styles.noteInput}
+                    style={[styles.noteInput, { backgroundColor: theme.colors.card, borderColor: theme.colors.border, color: theme.colors.text }]}
                     value={notes[listing.id] || ''}
                     onChangeText={(text) => handleNoteChange(listing.id, text)}
                     placeholder="記錄你對這間房源的想法..."
+                    placeholderTextColor={theme.colors.textSecondary}
                     multiline
                     numberOfLines={3}
                   />
                 </View>
               </View>
             ))}
+            <View style={{ height: 100 }} />
           </View>
         )}
       </ScrollView>
@@ -157,7 +168,6 @@ const Favorites = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
   },
   header: {
     backgroundColor: '#9BB7D4',
@@ -189,13 +199,11 @@ const styles = StyleSheet.create({
   },
   emptyStateTitle: {
     fontSize: 16,
-    color: '#6B7280',
     marginTop: 16,
     marginBottom: 8,
   },
   emptyStateSubtitle: {
     fontSize: 14,
-    color: '#9CA3AF',
     textAlign: 'center',
   },
   listContainer: {
@@ -209,7 +217,6 @@ const styles = StyleSheet.create({
   },
   countText: {
     fontSize: 14,
-    color: '#6B7280',
   },
   controlButtons: {
     flexDirection: 'row',
@@ -236,7 +243,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   clearButtonText: {
-    color: '#6B7280',
     fontSize: 12,
   },
   listingContainer: {

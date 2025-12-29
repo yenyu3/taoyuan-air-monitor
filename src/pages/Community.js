@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,11 @@ import {
   Alert,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { themes } from '../utils/themes';
 import useStore from '../store/useStore';
 
 // 轉租專區元件
-const SubleaseTab = () => {
+const SubleaseTab = ({ theme }) => {
   const [showPostForm, setShowPostForm] = useState(false);
   const [newPost, setNewPost] = useState({ title: '', content: '', contact: '' });
   const [subleaseListings, setSubleaseListings] = useState([
@@ -132,7 +133,7 @@ const SubleaseTab = () => {
       <ScrollView style={styles.postsList} showsVerticalScrollIndicator={false}>
         {subleaseListings.map((post) => (
           <View key={post.id} style={styles.postCard}>
-            <Text style={styles.postTitle}>{post.title}</Text>
+            <Text style={[styles.postTitle, { color: theme.colors.accent }]}>{post.title}</Text>
             <Text style={styles.postContent} numberOfLines={3}>{post.content}</Text>
             <View style={styles.postFooter}>
               <Text style={styles.postDate}>發布時間：{post.createdAt}</Text>
@@ -145,8 +146,10 @@ const SubleaseTab = () => {
   );
 };
 
-const Community = () => {
-  const { reviews, listings, addReview, currentUser } = useStore();
+const Community = ({ scrollRef }) => {
+  const { reviews, listings, addReview, currentUser, currentTheme } = useStore();
+  const theme = themes[currentTheme];
+  const scrollViewRef = useRef(null);
   const [activeTab, setActiveTab] = useState('reviews');
   const [selectedTag, setSelectedTag] = useState('');
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -224,8 +227,14 @@ const Community = () => {
     ));
   };
 
+  useEffect(() => {
+    if (scrollRef) {
+      scrollRef(scrollViewRef.current);
+    }
+  }, [scrollRef]);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
       <View style={styles.header}>
         <SafeAreaView>
           <View style={styles.headerContent}>
@@ -237,12 +246,12 @@ const Community = () => {
       </View>
 
       {/* 分頁標籤 */}
-      <View style={styles.tabContainer}>
+      <View style={[styles.tabContainer, { backgroundColor: theme.colors.card, borderBottomColor: theme.colors.border }]}>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'reviews' && styles.activeTab]}
           onPress={() => setActiveTab('reviews')}
         >
-          <Text style={[styles.tabText, activeTab === 'reviews' && styles.activeTabText]}>
+          <Text style={[styles.tabText, activeTab === 'reviews' && { color: theme.colors.primary, fontWeight: '500' }, activeTab !== 'reviews' && { color: theme.colors.textSecondary }]}>
             評價牆
           </Text>
         </TouchableOpacity>
@@ -250,13 +259,13 @@ const Community = () => {
           style={[styles.tab, activeTab === 'sublease' && styles.activeTab]}
           onPress={() => setActiveTab('sublease')}
         >
-          <Text style={[styles.tabText, activeTab === 'sublease' && styles.activeTabText]}>
+          <Text style={[styles.tabText, activeTab === 'sublease' && { color: theme.colors.primary, fontWeight: '500' }, activeTab !== 'sublease' && { color: theme.colors.textSecondary }]}>
             轉租專區
           </Text>
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} ref={scrollViewRef}>
         {activeTab === 'reviews' ? (
           <View style={styles.reviewsTab}>
             {/* 標籤篩選 */}
@@ -394,7 +403,7 @@ const Community = () => {
               {filteredReviews.map((review) => (
                 <View key={review.id} style={styles.reviewCard}>
                   <View style={styles.reviewHeader}>
-                    <Text style={styles.reviewTitle}>
+                    <Text style={[styles.reviewTitle, { color: theme.colors.accent }]}>
                       {getListingTitle(review.listingId)}
                     </Text>
                     <View style={styles.reviewMeta}>
@@ -416,10 +425,11 @@ const Community = () => {
                   <Text style={styles.reviewComment}>{review.comment}</Text>
                 </View>
               ))}
+              <View style={{ height: 100 }} />
             </View>
           </View>
         ) : (
-          <SubleaseTab />
+          <SubleaseTab theme={theme} />
         )}
       </ScrollView>
     </View>
@@ -429,7 +439,6 @@ const Community = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
   },
   header: {
     backgroundColor: '#9BB7D4',
@@ -452,9 +461,7 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
   },
   tab: {
     flex: 1,
@@ -467,10 +474,8 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 16,
-    color: '#6B7280',
   },
   activeTabText: {
-    color: '#9BB7D4',
     fontWeight: '500',
   },
   content: {
@@ -667,7 +672,6 @@ const styles = StyleSheet.create({
   reviewTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#3A4E6B',
     marginBottom: 4,
   },
   reviewMeta: {
@@ -752,7 +756,6 @@ const styles = StyleSheet.create({
   postTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#3A4E6B',
     marginBottom: 8,
   },
   postContent: {

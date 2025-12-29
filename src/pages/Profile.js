@@ -9,16 +9,29 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import MissionList from '../components/MissionList';
-import { StatCard, PopularListingItem } from '../components/StatisticsCharts';
-import { getPopularListings, getUserBehaviorStats } from '../utils/statisticsUtils';
+import { StatCard } from '../components/StatisticsCharts';
+import { themes } from '../utils/themes';
 import useStore from '../store/useStore';
+import { useRef, useEffect } from 'react';
 
-const Profile = () => {
-  const { currentUser, getBadgeInfo, musicPlatform, setMusicPlatform } = useStore();
+const Profile = ({ scrollRef }) => {
+  const { 
+    currentUser, 
+    getBadgeInfo, 
+    musicPlatform, 
+    setMusicPlatform,
+    getUserBehaviorStats,
+    getViewedListings,
+    currentTheme,
+    setTheme
+  } = useStore();
+  
+  const scrollViewRef = useRef(null);
   
   // 獲取統計數據
-  const popularListings = getPopularListings().slice(0, 5); // 只顯示前5名
   const userStats = getUserBehaviorStats();
+  const viewedListings = getViewedListings();
+  const theme = themes[currentTheme];
   
   // 獲取徽章資訊
   const getUserBadges = () => {
@@ -34,8 +47,14 @@ const Profile = () => {
 
   const pointsToNextLevel = nextLevelPoints - currentUser.points;
 
+  useEffect(() => {
+    if (scrollRef) {
+      scrollRef(scrollViewRef.current);
+    }
+  }, [scrollRef]);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
       <View style={styles.header}>
         <SafeAreaView>
           <View style={styles.headerContent}>
@@ -46,24 +65,24 @@ const Profile = () => {
         </SafeAreaView>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} ref={scrollViewRef}>
         {/* 使用者資訊卡片 */}
-        <View style={styles.userCard}>
+        <View style={[styles.userCard, { backgroundColor: theme.colors.card }]}>
           <View style={styles.userInfo}>
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>{currentUser.nickname.charAt(0)}</Text>
             </View>
             <View style={styles.userDetails}>
-              <Text style={styles.userName}>{currentUser.nickname}</Text>
-              <Text style={styles.userMeta}>{currentUser.department} {currentUser.grade}</Text>
+              <Text style={[styles.userName, { color: theme.colors.text }]}>{currentUser.nickname}</Text>
+              <Text style={[styles.userMeta, { color: theme.colors.textSecondary }]}>{currentUser.department} {currentUser.grade}</Text>
             </View>
           </View>
 
           {/* 等級和點數 */}
           <View style={styles.levelSection}>
             <View style={styles.levelHeader}>
-              <Text style={styles.levelText}>等級 {currentUser.level}</Text>
-              <Text style={styles.pointsText}>
+              <Text style={[styles.levelText, { color: theme.colors.text }]}>等級 {currentUser.level}</Text>
+              <Text style={[styles.pointsText, { color: theme.colors.textSecondary }]}>
                 {currentUser.points} / {nextLevelPoints} 點數
               </Text>
             </View>
@@ -75,7 +94,7 @@ const Profile = () => {
                 ]}
               />
             </View>
-            <Text style={styles.progressText}>
+            <Text style={[styles.progressText, { color: theme.colors.textSecondary }]}>
               還需要 {pointsToNextLevel} 點數升級
             </Text>
           </View>
@@ -84,27 +103,27 @@ const Profile = () => {
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{currentUser.points}</Text>
-              <Text style={styles.statLabel}>總點數</Text>
+              <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>總點數</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{currentUser.level}</Text>
-              <Text style={styles.statLabel}>等級</Text>
+              <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>等級</Text>
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>{currentUser.badges.length}</Text>
-              <Text style={styles.statLabel}>徽章</Text>
+              <Text style={[styles.statLabel, { color: theme.colors.textSecondary }]}>徽章</Text>
             </View>
           </View>
         </View>
 
         {/* 音樂平台設定 */}
-        <View style={styles.musicPlatformCard}>
+        <View style={[styles.musicPlatformCard, { backgroundColor: theme.colors.card }]}>
           <View style={styles.sectionHeader}>
             <Feather name="music" size={20} color="#3A4E6B" />
             <Text style={styles.sectionTitle}>音樂平台偏好</Text>
           </View>
           
-          <Text style={styles.platformDescription}>
+          <Text style={[styles.platformDescription, { color: theme.colors.textSecondary }]}>
             選擇你喜歡的音樂平台，歌曲推薦將會使用對應的連結
           </Text>
           
@@ -173,11 +192,47 @@ const Profile = () => {
           </View>
         </View>
 
-        {/* 用戶行為統計 */}
-        <View style={styles.statisticsCard}>
+        {/* 主題設定 */}
+        <View style={[styles.themeCard, { backgroundColor: theme.colors.card }]}>
           <View style={styles.sectionHeader}>
-            <Feather name="activity" size={20} color="#3A4E6B" />
-            <Text style={styles.sectionTitle}>用戶行為統計</Text>
+            <Feather name="moon" size={20} color={theme.colors.accent} />
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>主題設定</Text>
+          </View>
+          
+          <Text style={[styles.themeDescription, { color: theme.colors.textSecondary }]}>
+            選擇你喜歡的主題風格，個人化你的使用體驗
+          </Text>
+          
+          <View style={styles.themeOptions}>
+            {Object.entries(themes).map(([key, themeOption]) => (
+              <TouchableOpacity
+                key={key}
+                style={[
+                  styles.themeOption,
+                  { borderColor: theme.colors.border },
+                  currentTheme === key && { borderColor: theme.colors.primary, backgroundColor: theme.colors.surface }
+                ]}
+                onPress={() => setTheme(key)}
+              >
+                <View style={styles.themePreview}>
+                  <View style={[styles.themeColorPrimary, { backgroundColor: themeOption.colors.primary }]} />
+                  <View style={[styles.themeColorSecondary, { backgroundColor: themeOption.colors.secondary }]} />
+                  <View style={[styles.themeColorAccent, { backgroundColor: themeOption.colors.accent }]} />
+                </View>
+                <Text style={[styles.themeName, { color: theme.colors.text }]}>{themeOption.name}</Text>
+                {currentTheme === key && (
+                  <Feather name="check-circle" size={20} color={theme.colors.primary} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* 用戶行為統計 */}
+        <View style={[styles.statisticsCard, { backgroundColor: theme.colors.card }]}>
+          <View style={styles.sectionHeader}>
+            <Feather name="activity" size={20} color={theme.colors.accent} />
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>用戶行為統計</Text>
           </View>
           
           <View style={styles.statsRow}>
@@ -207,51 +262,70 @@ const Profile = () => {
           
           <View style={styles.keywordsSection}>
             <Text style={styles.keywordsTitle}>🔍 熱門搜尋關鍵字</Text>
-            {userStats.topSearchKeywords.slice(0, 3).map((item, index) => (
-              <View key={index} style={styles.keywordItem}>
-                <Text style={styles.keywordText}>{item.keyword}</Text>
-                <Text style={styles.keywordCount}>{item.count}次</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* 熱門房源排行 */}
-        <View style={styles.statisticsCard}>
-          <View style={styles.sectionHeader}>
-            <Feather name="trending-up" size={20} color="#3A4E6B" />
-            <Text style={styles.sectionTitle}>🔥 熱門房源 TOP 5</Text>
+            {userStats.topSearchKeywords.length > 0 ? (
+              userStats.topSearchKeywords.slice(0, 3).map((item, index) => (
+                <View key={index} style={styles.keywordItem}>
+                  <Text style={styles.keywordText}>{item.keyword}</Text>
+                  <Text style={styles.keywordCount}>{item.count}次</Text>
+                </View>
+              ))
+            ) : (
+              <Text style={styles.emptyText}>還沒有搜尋記錄</Text>
+            )}
           </View>
           
-          {popularListings.map((listing, index) => (
-            <PopularListingItem 
-              key={listing.id} 
-              listing={listing} 
-              rank={index + 1} 
-            />
-          ))}
+          <View style={styles.viewHistorySection}>
+            <Text style={styles.keywordsTitle}>👀 最近瀏覽 (3天內)</Text>
+            {viewedListings.length > 0 ? (
+              viewedListings.slice(0, 5).map((listing, index) => (
+                <View key={listing.id} style={styles.viewHistoryItem}>
+                  <View style={styles.viewHistoryInfo}>
+                    <Text style={styles.viewHistoryTitle} numberOfLines={1}>
+                      {listing.title}
+                    </Text>
+                    <Text style={styles.viewHistoryAddress} numberOfLines={1}>
+                      {listing.address}
+                    </Text>
+                    <Text style={styles.viewHistoryTime}>
+                      {new Date(listing.viewedAt).toLocaleDateString('zh-TW', {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </Text>
+                  </View>
+                  <Text style={styles.viewHistoryPrice}>
+                    NT${listing.rentMin}-{listing.rentMax}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <Text style={styles.emptyText}>還沒有瀏覽記錄</Text>
+            )}
+          </View>
         </View>
 
         {/* 徽章展示 */}
-        <View style={styles.badgesCard}>
+        <View style={[styles.badgesCard, { backgroundColor: theme.colors.card }]}>
           <View style={styles.sectionHeader}>
-            <Feather name="award" size={20} color="#3A4E6B" />
-            <Text style={styles.sectionTitle}>我的徽章 ({currentUser.badges.length})</Text>
+            <Feather name="award" size={20} color={theme.colors.accent} />
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>我的徽章 ({currentUser.badges.length})</Text>
           </View>
           
           {currentUser.badges.length === 0 ? (
             <View style={styles.emptyBadges}>
               <Feather name="award" size={48} color="#D1D5DB" />
-              <Text style={styles.emptyBadgesTitle}>還沒有獲得任何徽章</Text>
-              <Text style={styles.emptyBadgesSubtitle}>完成任務來獲得你的第一個徽章吧！</Text>
+              <Text style={[styles.emptyBadgesTitle, { color: theme.colors.textSecondary }]}>還沒有獲得任何徽章</Text>
+              <Text style={[styles.emptyBadgesSubtitle, { color: theme.colors.textSecondary }]}>完成任務來獲得你的第一個徽章吧！</Text>
             </View>
           ) : (
             <View style={styles.badgesGrid}>
               {userBadges.map((badge, index) => (
                 <View key={index} style={styles.badgeItem}>
                   <Text style={styles.badgeIcon}>{badge.icon}</Text>
-                  <Text style={styles.badgeName}>{badge.name}</Text>
-                  <Text style={styles.badgeDescription}>{badge.description}</Text>
+                  <Text style={[styles.badgeName, { color: theme.colors.accent }]}>{badge.name}</Text>
+                  <Text style={[styles.badgeDescription, { color: theme.colors.textSecondary }]}>{badge.description}</Text>
                 </View>
               ))}
             </View>
@@ -259,46 +333,8 @@ const Profile = () => {
         </View>
 
         {/* 任務系統 */}
-        <View style={styles.missionCard}>
+        <View style={[styles.missionCard, { backgroundColor: theme.colors.card }]}>
           <MissionList />
-        </View>
-
-        {/* 點數獲取方式 */}
-        <View style={styles.pointsCard}>
-          <View style={styles.sectionHeader}>
-            <Feather name="target" size={20} color="#3A4E6B" />
-            <Text style={styles.sectionTitle}>點數獲取方式</Text>
-          </View>
-          
-          <View style={styles.pointsList}>
-            <View style={styles.pointItem}>
-              <Text style={styles.pointAction}>撰寫房源評價</Text>
-              <Text style={styles.pointValue}>+15 點</Text>
-            </View>
-            <View style={styles.pointItem}>
-              <Text style={styles.pointAction}>上傳房源照片</Text>
-              <Text style={styles.pointValue}>+15 點</Text>
-            </View>
-            <View style={styles.pointItem}>
-              <Text style={styles.pointAction}>回報房源已出租</Text>
-              <Text style={styles.pointValue}>+10 點</Text>
-            </View>
-            <View style={styles.pointItem}>
-              <Text style={styles.pointAction}>新增轉租貼文</Text>
-              <Text style={styles.pointValue}>+15 點</Text>
-            </View>
-            <View style={styles.pointItem}>
-              <Text style={styles.pointAction}>每日登入</Text>
-              <Text style={styles.pointValue}>+5 點</Text>
-            </View>
-          </View>
-          
-          <View style={styles.levelRule}>
-            <Text style={styles.levelRuleTitle}>等級規則</Text>
-            <Text style={styles.levelRuleText}>
-              每 100 點數升一級，等級越高解鎖更多功能和特殊徽章！
-            </Text>
-          </View>
         </View>
       </ScrollView>
     </View>
@@ -308,7 +344,6 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
   },
   header: {
     backgroundColor: '#9BB7D4',
@@ -335,7 +370,6 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   userCard: {
-    backgroundColor: 'white',
     borderRadius: 12,
     padding: 24,
     marginBottom: 24,
@@ -369,11 +403,9 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#3A4E6B',
   },
   userMeta: {
     fontSize: 16,
-    color: '#6B7280',
   },
   levelSection: {
     marginBottom: 16,
@@ -387,11 +419,9 @@ const styles = StyleSheet.create({
   levelText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#374151',
   },
   pointsText: {
     fontSize: 14,
-    color: '#6B7280',
   },
   progressBar: {
     width: '100%',
@@ -406,7 +436,6 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 12,
-    color: '#6B7280',
     marginTop: 4,
   },
   statsContainer: {
@@ -423,7 +452,6 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     fontSize: 12,
-    color: '#6B7280',
   },
   badgesCard: {
     backgroundColor: 'white',
@@ -444,7 +472,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#3A4E6B',
     marginLeft: 8,
   },
   emptyBadges: {
@@ -453,12 +480,10 @@ const styles = StyleSheet.create({
   },
   emptyBadgesTitle: {
     fontSize: 16,
-    color: '#6B7280',
     marginTop: 8,
   },
   emptyBadgesSubtitle: {
     fontSize: 14,
-    color: '#9CA3AF',
     textAlign: 'center',
     marginTop: 4,
   },
@@ -481,13 +506,11 @@ const styles = StyleSheet.create({
   badgeName: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#3A4E6B',
     textAlign: 'center',
     marginBottom: 4,
   },
   badgeDescription: {
     fontSize: 12,
-    color: '#6B7280',
     textAlign: 'center',
     lineHeight: 16,
   },
@@ -537,10 +560,9 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   missionCard: {
-    backgroundColor: 'white',
     borderRadius: 12,
     padding: 16,
-    marginBottom: 24,
+    marginBottom: 100,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -548,7 +570,6 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   musicPlatformCard: {
-    backgroundColor: 'white',
     borderRadius: 12,
     padding: 16,
     marginBottom: 24,
@@ -560,7 +581,6 @@ const styles = StyleSheet.create({
   },
   platformDescription: {
     fontSize: 14,
-    color: '#6B7280',
     marginBottom: 16,
     lineHeight: 20,
   },
@@ -650,6 +670,100 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#9BB7D4',
+  },
+  emptyText: {
+    fontSize: 14,
+    color: '#999',
+    textAlign: 'center',
+    paddingVertical: 16,
+  },
+  viewHistorySection: {
+    marginTop: 16,
+  },
+  viewHistoryItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  viewHistoryInfo: {
+    flex: 1,
+    marginRight: 12,
+  },
+  viewHistoryTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#333',
+    marginBottom: 2,
+  },
+  viewHistoryAddress: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 2,
+  },
+  viewHistoryTime: {
+    fontSize: 11,
+    color: '#999',
+  },
+  viewHistoryPrice: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#9BB7D4',
+  },
+  themeCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  themeDescription: {
+    fontSize: 14,
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  themeOptions: {
+    gap: 12,
+  },
+  themeOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    backgroundColor: '#F9FAFB',
+  },
+  themePreview: {
+    flexDirection: 'row',
+    marginRight: 12,
+  },
+  themeColorPrimary: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    marginRight: 4,
+  },
+  themeColorSecondary: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    marginRight: 4,
+  },
+  themeColorAccent: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+  },
+  themeName: {
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
   },
 });
 

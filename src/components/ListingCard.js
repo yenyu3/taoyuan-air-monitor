@@ -7,11 +7,13 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { themes } from '../utils/themes';
 import useStore from '../store/useStore';
 
 const ListingCard = ({ listing, onPress }) => {
-  const { currentUser, toggleFavorite } = useStore();
+  const { currentUser, toggleFavorite, currentTheme } = useStore();
   const isFavorited = currentUser.favorites.includes(listing.id);
+  const theme = themes[currentTheme];
   
   const handleFavoritePress = () => {
     toggleFavorite(listing.id);
@@ -32,7 +34,7 @@ const ListingCard = ({ listing, onPress }) => {
   };
 
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
+    <TouchableOpacity style={[styles.card, { backgroundColor: theme.colors.card }]} onPress={onPress}>
       <Image source={{ uri: listing.photos[0] }} style={styles.image} />
       
       <TouchableOpacity
@@ -47,7 +49,7 @@ const ListingCard = ({ listing, onPress }) => {
       </TouchableOpacity>
       
       <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={2}>
+        <Text style={[styles.title, { color: theme.colors.text }]} numberOfLines={2}>
           {listing.title}
         </Text>
         
@@ -55,19 +57,19 @@ const ListingCard = ({ listing, onPress }) => {
           <Text style={styles.price}>
             {formatPrice(listing.rentMin, listing.rentMax)}
           </Text>
-          <Text style={styles.priceUnit}>/月</Text>
+          <Text style={[styles.priceUnit, { color: theme.colors.textSecondary }]}>/月</Text>
         </View>
         
         <View style={styles.infoRow}>
           <Feather name="map-pin" size={14} color="#6B7280" />
-          <Text style={styles.address} numberOfLines={1}>
+          <Text style={[styles.address, { color: theme.colors.textSecondary }]} numberOfLines={1}>
             {listing.address}
           </Text>
         </View>
         
         <View style={styles.infoRow}>
           <Feather name="navigation" size={14} color="#6B7280" />
-          <Text style={styles.distance}>
+          <Text style={[styles.distance, { color: theme.colors.textSecondary }]}>
             距離中大 {getDistanceText(listing.distanceToCampusMeters)}
           </Text>
         </View>
@@ -75,8 +77,8 @@ const ListingCard = ({ listing, onPress }) => {
         <View style={styles.footer}>
           <View style={styles.ratingContainer}>
             <Feather name="star" size={14} color="#F59E0B" />
-            <Text style={styles.rating}>{listing.avgRating}</Text>
-            <Text style={styles.reviewCount}>({listing.reviewsCount})</Text>
+            <Text style={[styles.rating, { color: theme.colors.text }]}>{listing.avgRating}</Text>
+            <Text style={[styles.reviewCount, { color: theme.colors.textSecondary }]}>({listing.reviewsCount})</Text>
           </View>
           
           <View style={styles.roomTypeContainer}>
@@ -90,7 +92,6 @@ const ListingCard = ({ listing, onPress }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'white',
     borderRadius: 16,
     marginBottom: 16,
     shadowColor: '#000',
@@ -119,7 +120,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1F2937',
     marginBottom: 8,
     lineHeight: 22,
   },
@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
   },
   priceUnit: {
     fontSize: 14,
-    color: '#6B7280',
     marginLeft: 4,
   },
   infoRow: {
@@ -145,13 +144,11 @@ const styles = StyleSheet.create({
   },
   address: {
     fontSize: 14,
-    color: '#6B7280',
     marginLeft: 6,
     flex: 1,
   },
   distance: {
     fontSize: 14,
-    color: '#6B7280',
     marginLeft: 6,
   },
   footer: {
@@ -167,12 +164,10 @@ const styles = StyleSheet.create({
   rating: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#1F2937',
     marginLeft: 4,
   },
   reviewCount: {
     fontSize: 12,
-    color: '#6B7280',
     marginLeft: 2,
   },
   roomTypeContainer: {

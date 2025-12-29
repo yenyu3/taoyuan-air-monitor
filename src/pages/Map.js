@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,13 +12,16 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Feather } from '@expo/vector-icons';
 import ListingCard from '../components/ListingCard';
 import ListingDetailModal from '../components/ListingDetailModal';
+import { themes } from '../utils/themes';
 import useStore from '../store/useStore';
 import { getDistanceInfo } from '../utils/distanceUtils';
 
 const { width, height } = Dimensions.get('window');
 
-const Map = () => {
-  const { getFilteredListings, musicPlatform } = useStore();
+const Map = ({ scrollRef }) => {
+  const { getFilteredListings, musicPlatform, currentTheme } = useStore();
+  const theme = themes[currentTheme];
+  const scrollViewRef = useRef(null);
   const [selectedListing, setSelectedListing] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState('distance'); // distance, rating, price
@@ -59,8 +62,14 @@ const Map = () => {
     sortBy === type && styles.activeSortButtonText
   ];
 
+  useEffect(() => {
+    if (scrollRef) {
+      scrollRef(scrollViewRef.current);
+    }
+  }, [scrollRef]);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
       <View style={styles.header}>
         <SafeAreaView>
           <View style={styles.headerContent}>
@@ -120,8 +129,8 @@ const Map = () => {
       </View>
 
       {/* 排序控制 */}
-      <View style={styles.sortContainer}>
-        <Text style={styles.sortLabel}>排序方式：</Text>
+      <View style={[styles.sortContainer, { backgroundColor: theme.colors.card }]}>
+        <Text style={[styles.sortLabel, { color: theme.colors.text }]}>排序方式：</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={styles.sortButtons}>
             <TouchableOpacity 
@@ -147,9 +156,9 @@ const Map = () => {
       </View>
 
       {/* 房源列表 */}
-      <ScrollView style={styles.listContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.listContainer} showsVerticalScrollIndicator={false} ref={scrollViewRef}>
         <View style={styles.listHeader}>
-          <Text style={styles.listTitle}>附近房源 ({sortedListings.length})</Text>
+          <Text style={[styles.listTitle, { color: theme.colors.accent }]}>附近房源 ({sortedListings.length})</Text>
         </View>
         
         {sortedListings.map((listing, index) => {
@@ -159,13 +168,13 @@ const Map = () => {
               <View style={styles.distanceInfo}>
                 <View style={styles.distanceRow}>
                   <Feather name="navigation" size={16} color="#9BB7D4" />
-                  <Text style={styles.distanceText}>
+                  <Text style={[styles.distanceText, { color: theme.colors.accent }]}>
                     {distanceInfo.distance} • 步行 {distanceInfo.walkingTime} 分鐘
                   </Text>
                 </View>
                 <View style={styles.songInfo}>
-                  <Feather name={musicPlatform === 'youtube' ? 'play' : 'music'} size={14} color="#6B7280" />
-                  <Text style={styles.songText}>
+                  <Feather name={musicPlatform === 'youtube' ? 'play' : 'music'} size={14} color={theme.colors.textSecondary} />
+                  <Text style={[styles.songText, { color: theme.colors.textSecondary }]}>
                     約 {distanceInfo.songCount} 首歌的距離
                   </Text>
                 </View>
@@ -193,7 +202,6 @@ const Map = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
   },
   header: {
     backgroundColor: '#9BB7D4',
@@ -259,7 +267,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: 'white',
     marginHorizontal: 16,
     marginTop: 16,
     borderRadius: 12,
@@ -272,7 +279,6 @@ const styles = StyleSheet.create({
   sortLabel: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#374151',
     marginRight: 12,
   },
   sortButtons: {
@@ -306,7 +312,6 @@ const styles = StyleSheet.create({
   listTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#3A4E6B',
   },
   listingWrapper: {
     marginBottom: 16,
@@ -327,7 +332,6 @@ const styles = StyleSheet.create({
   distanceText: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#3A4E6B',
     marginLeft: 6,
   },
   songInfo: {
@@ -336,7 +340,6 @@ const styles = StyleSheet.create({
   },
   songText: {
     fontSize: 12,
-    color: '#6B7280',
     marginLeft: 4,
   },
   bottomPadding: {

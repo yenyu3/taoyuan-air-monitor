@@ -8,6 +8,15 @@ const useStore = create((set, get) => ({
   currentUser: user,
   missions: missions,
   
+  // 用戶行為追蹤
+  userBehavior: {
+    viewHistory: [], // { listingId, timestamp }
+    searchHistory: [], // { query, timestamp }
+    totalViews: 0,
+    totalSearches: 0,
+    sessionStartTime: Date.now(),
+  },
+  
   // UI 狀態
   searchQuery: '',
   selectedFilters: {
@@ -20,8 +29,98 @@ const useStore = create((set, get) => ({
   // 音樂平台偏好
   musicPlatform: 'spotify', // 'spotify' 或 'youtube'
   
+  // 主題設定
+  currentTheme: 'light', // 'light', 'dark', 'sunset', 'ocean', 'forest'
+  
   // 設定音樂平台
   setMusicPlatform: (platform) => set({ musicPlatform: platform }),
+  
+  // 設定主題
+  setTheme: (theme) => set({ currentTheme: theme }),
+  
+  // 記錄房源瀏覽
+  recordListingView: (listingId) => set((state) => {
+    const now = Date.now();
+    const threeDaysAgo = now - (3 * 24 * 60 * 60 * 1000);
+    
+    // 過濾掉3天前的記錄
+    const recentViews = state.userBehavior.viewHistory.filter(
+      view => view.timestamp > threeDaysAgo
+    );
+    
+    // 添加新的瀏覽記錄
+    const newView = { listingId, timestamp: now };
+    const updatedViews = [newView, ...recentViews.filter(v => v.listingId !== listingId)];
+    
+    return {
+      userBehavior: {
+        ...state.userBehavior,
+        viewHistory: updatedViews,
+        totalViews: state.userBehavior.totalViews + 1
+      }
+    };
+  }),
+  
+  // 記錄搜尋
+  recordSearch: (query) => set((state) => {
+    if (!query.trim()) return state;
+    
+    const now = Date.now();
+    const newSearch = { query: query.trim(), timestamp: now };
+    
+    return {
+      userBehavior: {
+        ...state.userBehavior,
+        searchHistory: [newSearch, ...state.userBehavior.searchHistory.slice(0, 19)], // 保留最近20次
+        totalSearches: state.userBehavior.totalSearches + 1
+      }
+    };
+  }),
+  
+  // 獲取瀏覽記錄中的房源
+  getViewedListings: () => {
+    const { listings, userBehavior } = get();
+    const threeDaysAgo = Date.now() - (3 * 24 * 60 * 60 * 1000);
+    
+    const recentViews = userBehavior.viewHistory.filter(
+      view => view.timestamp > threeDaysAgo
+    );
+    
+    return recentViews.map(view => {
+      const listing = listings.find(l => l.id === view.listingId);
+      return { ...listing, viewedAt: view.timestamp };
+    }).filter(Boolean);
+  },
+  
+  // 獲取用戶行為統計
+  getUserBehaviorStats: () => {
+    const { userBehavior, currentUser } = get();
+    const sessionTime = Math.floor((Date.now() - userBehavior.sessionStartTime) / 1000 / 60);
+    
+    // 統計搜尋關鍵字
+    const keywordCounts = {};
+    userBehavior.searchHistory.forEach(search => {
+      const words = search.query.toLowerCase().split(' ');
+      words.forEach(word => {
+        if (word.length > 1) {
+          keywordCounts[word] = (keywordCounts[word] || 0) + 1;
+        }
+      });
+    });
+    
+    const topKeywords = Object.entries(keywordCounts)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5)
+      .map(([keyword, count]) => ({ keyword, count }));
+    
+    return {
+      totalViews: userBehavior.totalViews,
+      totalFavorites: currentUser.favorites.length,
+      totalSearches: userBehavior.totalSearches,
+      avgSessionTime: `${sessionTime}分鐘`,
+      topSearchKeywords: topKeywords
+    };
+  },
   
   // 收藏功能
   toggleFavorite: (listingId) => set((state) => {
@@ -41,7 +140,26 @@ const useStore = create((set, get) => ({
   }),
   
   // 搜尋功能
-  setSearchQuery: (query) => set({ searchQuery: query }),
+  setSearchQuery: (query) => set((state) => {
+    // 記錄搜尋
+    if (query.trim()) {
+      const now = Date.now();
+      const newSearch = { query: query.trim(), timestamp: now };
+      
+      const updatedBehavior = {
+        ...state.userBehavior,
+        searchHistory: [newSearch, ...state.userBehavior.searchHistory.slice(0, 19)],
+        totalSearches: state.userBehavior.totalSearches + 1
+      };
+      
+      return {
+        searchQuery: query,
+        userBehavior: updatedBehavior
+      };
+    }
+    
+    return { searchQuery: query };
+  }),
   
   // 篩選功能
   setFilters: (filters) => set({ selectedFilters: filters }),
