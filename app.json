@@ -1,15 +1,10 @@
 {
   "expo": {
-    "sdkVersion": "54.0.0",
-    "name": "NCU RentEase",
-    "slug": "ncu-rentease",
+    "name": "Taoyuan Air Monitoring",
+    "slug": "taoyuan-air-monitoring",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "splash": {
-      "resizeMode": "contain",
-      "backgroundColor": "#9BB7D4"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -18,7 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#9BB7D4"
+        "backgroundColor": "#F4F2E9"
       }
     }
   }
