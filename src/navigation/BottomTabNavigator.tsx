@@ -1,7 +1,5 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, StyleSheet } from 'react-native';
-import { BlurView } from 'expo-blur';
 import { Feather } from '@expo/vector-icons';
 
 import { DashboardScreen } from '../screens/DashboardScreen';
@@ -46,28 +44,26 @@ export const BottomTabNavigator: React.FC = () => {
         tabBarInactiveTintColor: '#B5C99A',
         tabBarStyle: {
           position: 'absolute',
-          bottom: 20,
-          left: 20,
-          right: 20,
-          height: 70,
-          borderRadius: 35,
-          backgroundColor: 'transparent',
-          borderTopWidth: 0,
-          elevation: 0,
-          shadowOpacity: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 80,
+          backgroundColor: '#F4F2E9',
+          borderTopWidth: 1,
+          borderTopColor: '#E2E8F0',
+          paddingBottom: 20,
+          paddingTop: 10,
+          elevation: 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
         },
-        tabBarBackground: () => (
-          <BlurView
-            intensity={20}
-            style={StyleSheet.absoluteFillObject}
-          >
-            <View style={styles.tabBarBackground} />
-          </BlurView>
-        ),
+        tabBarBackground: undefined,
         tabBarLabelStyle: {
-          fontSize: 10,
-          fontWeight: '600',
-          marginBottom: 8,
+          fontSize: 11,
+          fontWeight: '500',
+          marginBottom: 4,
         },
         tabBarItemStyle: {
           paddingTop: 8,
@@ -102,13 +98,3 @@ export const BottomTabNavigator: React.FC = () => {
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  tabBarBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(244, 242, 233, 0.9)',
-    borderRadius: 35,
-    borderWidth: 1,
-    borderColor: 'rgba(106, 141, 115, 0.2)',
-  },
-});

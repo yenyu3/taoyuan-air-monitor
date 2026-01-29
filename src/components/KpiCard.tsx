@@ -9,6 +9,7 @@ interface KpiCardProps {
   subtitle?: string;
   trend?: 'up' | 'down' | 'stable';
   color?: string;
+  style?: any;
 }
 
 export const KpiCard: React.FC<KpiCardProps> = ({ 
@@ -17,7 +18,8 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   unit, 
   subtitle, 
   trend,
-  color = '#6A8D73'
+  color = '#6A8D73',
+  style
 }) => {
   const getTrendIcon = () => {
     switch (trend) {
@@ -29,7 +31,7 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   };
 
   return (
-    <GlassCard style={styles.card}>
+    <GlassCard style={[styles.card, style]}>
       <Text style={styles.title}>{title}</Text>
       <View style={styles.valueContainer}>
         <Text style={[styles.value, { color }]}>{value}</Text>
@@ -43,8 +45,7 @@ export const KpiCard: React.FC<KpiCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    flex: 1,
-    margin: 4,
+    padding: 16,
   },
   title: {
     fontSize: 12,

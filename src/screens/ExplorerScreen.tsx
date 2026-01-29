@@ -8,6 +8,7 @@ import {
   TextInput 
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Logo } from '../components/Logo';
 import { GlassCard } from '../components/GlassCard';
 import { useStore } from '../store';
 
@@ -64,7 +65,13 @@ export const ExplorerScreen: React.FC = () => {
       style={styles.container}
     >
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>資料檢索</Text>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.titleRow}>
+            <Logo size="medium" />
+            <Text style={styles.title}>資料檢索</Text>
+          </View>
+        </View>
 
         {/* Query Conditions */}
         <GlassCard style={styles.queryCard}>
@@ -97,20 +104,16 @@ export const ExplorerScreen: React.FC = () => {
           {/* Time Range */}
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldLabel}>時間範圍</Text>
-            <View style={styles.timeInputs}>
-              <TextInput
-                style={styles.timeInput}
-                placeholder="開始時間"
-                value={timeRange.start}
-                onChangeText={(text) => setTimeRange(prev => ({ ...prev, start: text }))}
-              />
-              <Text style={styles.timeSeparator}>至</Text>
-              <TextInput
-                style={styles.timeInput}
-                placeholder="結束時間"
-                value={timeRange.end}
-                onChangeText={(text) => setTimeRange(prev => ({ ...prev, end: text }))}
-              />
+            <View style={styles.timeOptions}>
+              <TouchableOpacity style={styles.timeOption}>
+                <Text style={styles.timeOptionText}>近 24 小時</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.timeOption}>
+                <Text style={styles.timeOptionText}>近 3 天</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.timeOption, styles.activeTimeOption]}>
+                <Text style={[styles.timeOptionText, styles.activeTimeOptionText]}>近 7 天</Text>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -248,6 +251,9 @@ export const ExplorerScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
         </GlassCard>
+
+        {/* Bottom spacing */}
+        <View style={styles.bottomSpacing} />
       </ScrollView>
     </LinearGradient>
   );
@@ -259,16 +265,24 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    padding: 16,
+  },
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: 40,
+    paddingBottom: 20,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#6A8D73',
-    marginTop: 40,
-    marginBottom: 20,
   },
   queryCard: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   sectionTitle: {
@@ -309,23 +323,28 @@ const styles = StyleSheet.create({
   activePollutantButtonText: {
     color: 'white',
   },
-  timeInputs: {
+  timeOptions: {
     flexDirection: 'row',
-    alignItems: 'center',
     gap: 8,
   },
-  timeInput: {
+  timeOption: {
     flex: 1,
-    paddingVertical: 8,
+    paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 12,
     backgroundColor: 'rgba(106, 141, 115, 0.1)',
-    fontSize: 14,
-    color: '#666',
+    alignItems: 'center',
   },
-  timeSeparator: {
+  activeTimeOption: {
+    backgroundColor: '#6A8D73',
+  },
+  timeOptionText: {
     fontSize: 14,
-    color: '#666',
+    color: '#6A8D73',
+    fontWeight: '600',
+  },
+  activeTimeOptionText: {
+    color: 'white',
   },
   areaButtons: {
     flexDirection: 'row',
@@ -403,6 +422,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   resultsCard: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   resultItem: {
@@ -449,6 +469,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   lineageCard: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   lineageFlow: {
@@ -479,6 +500,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   exportCard: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   exportButtons: {
@@ -496,5 +518,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'white',
     fontWeight: '600',
+  },
+  bottomSpacing: {
+    height: 100,
   },
 });

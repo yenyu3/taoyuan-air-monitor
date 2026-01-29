@@ -9,6 +9,7 @@ import {
 import MapView, { Polygon, Marker, Region } from 'react-native-maps';
 import { useStore } from '../store';
 import { GlassCard } from '../components/GlassCard';
+import { Logo } from '../components/Logo';
 import { HealthBadge } from '../components/HealthBadge';
 import { getGrid, getVerticalProfile, setScenario } from '../api';
 import { GridCell, VerticalProfile } from '../types';
@@ -110,6 +111,13 @@ export const MapScreen: React.FC = () => {
       {/* Top Controls */}
       <View style={styles.topControls}>
         <GlassCard style={styles.controlCard}>
+          <View style={styles.headerRow}>
+            <Logo size="small" />
+            <Text style={styles.pageTitle}>地圖監測</Text>
+          </View>
+          
+          <View style={styles.divider} />
+          
           <View style={styles.pollutantSelector}>
             {(['PM25', 'O3', 'NOX', 'VOCs'] as const).map((pollutant) => (
               <TouchableOpacity
@@ -210,7 +218,23 @@ const styles = StyleSheet.create({
     right: 16,
   },
   controlCard: {
-    padding: 12,
+    padding: 16,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  pageTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#6A8D73',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#E2E8F0',
+    marginBottom: 12,
   },
   pollutantSelector: {
     flexDirection: 'row',
@@ -261,7 +285,7 @@ const styles = StyleSheet.create({
   },
   legend: {
     position: 'absolute',
-    bottom: 120,
+    bottom: 100,
     left: 16,
     right: 16,
   },

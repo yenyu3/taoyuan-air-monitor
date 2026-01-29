@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Slider from '@react-native-community/slider';
+import { Logo } from '../components/Logo';
 import { GlassCard } from '../components/GlassCard';
 import { useStore } from '../store';
 import { getAlerts, setScenario } from '../api';
@@ -66,7 +67,13 @@ export const AlertsScreen: React.FC = () => {
       style={styles.container}
     >
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>警報與 AI</Text>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.titleRow}>
+            <Logo size="medium" />
+            <Text style={styles.title}>警報與 AI</Text>
+          </View>
+        </View>
 
         {/* Tab Selector */}
         <GlassCard style={styles.tabSelector}>
@@ -250,6 +257,9 @@ export const AlertsScreen: React.FC = () => {
         <TouchableOpacity style={styles.addAlertButton}>
           <Text style={styles.addAlertButtonText}>+ 新增警報</Text>
         </TouchableOpacity>
+
+        {/* Bottom spacing */}
+        <View style={styles.bottomSpacing} />
       </ScrollView>
     </LinearGradient>
   );
@@ -261,16 +271,24 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    padding: 16,
+  },
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: 40,
+    paddingBottom: 20,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#6A8D73',
-    marginTop: 40,
-    marginBottom: 20,
   },
   tabSelector: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   segmentedControl: {
@@ -297,6 +315,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   thresholdCard: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   sectionTitle: {
@@ -339,6 +358,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   alertsList: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   alertItem: {
@@ -388,6 +408,7 @@ const styles = StyleSheet.create({
     color: '#888',
   },
   aiSection: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   aiCard: {
@@ -462,11 +483,15 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 24,
     alignItems: 'center',
-    marginBottom: 32,
+    marginHorizontal: 16,
+    marginBottom: 16,
   },
   addAlertButtonText: {
     fontSize: 16,
     color: 'white',
     fontWeight: '600',
+  },
+  bottomSpacing: {
+    height: 100,
   },
 });

@@ -11,6 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '../store';
 import { GlassCard } from '../components/GlassCard';
 import { KpiCard } from '../components/KpiCard';
+import { Logo } from '../components/Logo';
 import { HealthBadge } from '../components/HealthBadge';
 import { getMeta, getGrid, getAlerts, getEvents, setScenario } from '../api';
 
@@ -110,11 +111,13 @@ export const DashboardScreen: React.FC = () => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <View>
-            <Text style={styles.title}>Taoyuan Air • 3D Monitoring</Text>
-            <Text style={styles.subtitle}>Hourly • 3km Grid • Forecast + Health</Text>
+          <View style={styles.titleRow}>
+            <Logo size="medium" />
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>Taoyuan Air</Text>
+              <Text style={styles.subtitle}>Hourly • 3km Grid • Forecast + Health</Text>
+            </View>
           </View>
-          <Text style={styles.updateTime}>更新: {lastUpdate}</Text>
         </View>
 
         {/* Role Switch */}
@@ -164,27 +167,34 @@ export const DashboardScreen: React.FC = () => {
         </GlassCard>
 
         {/* KPI Cards */}
-        <View style={styles.kpiContainer}>
-          {role === 'epa' ? (
-            <>
-              <KpiCard title="全市 PM2.5" value={kpiData.avgPM25} unit="µg/m³" />
-              <KpiCard title="最高熱點" value={kpiData.hotspot} />
-              <KpiCard title="24h 峰值" value={kpiData.peak24h} unit="µg/m³" />
-              <KpiCard 
-                title="近2h變化" 
-                value={kpiData.change2h > 0 ? `+${kpiData.change2h}` : kpiData.change2h} 
-                unit="µg/m³"
-                trend={kpiData.change2h > 0 ? 'up' : kpiData.change2h < 0 ? 'down' : 'stable'}
-              />
-            </>
-          ) : (
-            <>
-              <KpiCard title="資料完整率" value={kpiData.dataCompleteness} unit="%" />
-              <KpiCard title="QC異常" value={kpiData.qcAnomalies} unit="筆" />
-              <KpiCard title="Pipeline ID" value={kpiData.pipelineId} />
-              <KpiCard title="API延遲" value={kpiData.apiLatency} unit="ms" />
-            </>
-          )}
+        <View style={styles.kpiSection}>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.kpiScrollContainer}
+          >
+            {role === 'epa' ? (
+              <>
+                <KpiCard title="全市 PM2.5" value={kpiData.avgPM25} unit="µg/m³" style={styles.kpiCard} />
+                <KpiCard title="最高熱點" value={kpiData.hotspot} style={styles.kpiCard} />
+                <KpiCard title="24h 峰值" value={kpiData.peak24h} unit="µg/m³" style={styles.kpiCard} />
+                <KpiCard 
+                  title="近2h變化" 
+                  value={kpiData.change2h > 0 ? `+${kpiData.change2h}` : kpiData.change2h} 
+                  unit="µg/m³"
+                  trend={kpiData.change2h > 0 ? 'up' : kpiData.change2h < 0 ? 'down' : 'stable'}
+                  style={styles.kpiCard}
+                />
+              </>
+            ) : (
+              <>
+                <KpiCard title="資料完整率" value={kpiData.dataCompleteness} unit="%" style={styles.kpiCard} />
+                <KpiCard title="QC異常" value={kpiData.qcAnomalies} unit="筆" style={styles.kpiCard} />
+                <KpiCard title="Pipeline ID" value={kpiData.pipelineId} style={styles.kpiCard} />
+                <KpiCard title="API延遲" value={kpiData.apiLatency} unit="ms" style={styles.kpiCard} />
+              </>
+            )}
+          </ScrollView>
         </View>
 
         {/* Health Card */}
@@ -225,6 +235,9 @@ export const DashboardScreen: React.FC = () => {
             </View>
           ))}
         </GlassCard>
+
+        {/* Bottom spacing */}
+        <View style={styles.bottomSpacing} />
       </ScrollView>
     </LinearGradient>
   );
@@ -250,27 +263,30 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   header: {
+    paddingHorizontal: 16,
+    paddingTop: 40,
+    paddingBottom: 20,
+  },
+  titleRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 20,
-    marginTop: 40,
+    alignItems: 'center',
+    gap: 12,
+  },
+  titleContainer: {
+    flex: 1,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#6A8D73',
   },
   subtitle: {
     fontSize: 14,
     color: '#666',
-    marginTop: 4,
-  },
-  updateTime: {
-    fontSize: 12,
-    color: '#888',
+    marginTop: 2,
   },
   roleSwitch: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   segmentedControl: {
@@ -297,6 +313,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   scenarioSwitch: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   sectionTitle: {
@@ -328,12 +345,19 @@ const styles = StyleSheet.create({
   activeScenarioButtonText: {
     color: 'white',
   },
-  kpiContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  kpiSection: {
     marginBottom: 16,
   },
+  kpiScrollContainer: {
+    paddingHorizontal: 16,
+    gap: 12,
+  },
+  kpiCard: {
+    width: 160,
+    minWidth: 160,
+  },
   healthCard: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   healthContent: {
@@ -347,6 +371,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   alertsPreview: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   alertItem: {
@@ -371,6 +396,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   eventsPreview: {
+    marginHorizontal: 16,
     marginBottom: 16,
   },
   eventItem: {
@@ -393,5 +419,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     marginTop: 4,
+  },
+  bottomSpacing: {
+    height: 100,
   },
 });

@@ -4,9 +4,11 @@ import {
   Text, 
   StyleSheet, 
   ScrollView, 
-  TouchableOpacity 
+  TouchableOpacity,
+  TextInput
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Logo } from '../components/Logo';
 import { GlassCard } from '../components/GlassCard';
 import { useStore } from '../store';
 import { getEvents, setScenario } from '../api';
@@ -62,7 +64,13 @@ export const EventsScreen: React.FC = () => {
       style={styles.container}
     >
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>事件庫</Text>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.titleRow}>
+            <Logo size="medium" />
+            <Text style={styles.title}>事件庫</Text>
+          </View>
+        </View>
 
         {/* Event List */}
         {events.map((event) => (
@@ -124,13 +132,17 @@ export const EventsScreen: React.FC = () => {
             {/* Expert Notes */}
             <View style={styles.notesSection}>
               <Text style={styles.notesTitle}>專家註記</Text>
-              <View style={styles.notesInput}>
-                <Text style={styles.notesPlaceholder}>
-                  {event.severity === '高' 
+              <TextInput
+                style={styles.notesInput}
+                placeholder={
+                  event.severity === '高' 
                     ? '此事件可能與工業排放異常有關，建議進一步調查排放源...' 
-                    : '點擊添加專家註記...'}
-                </Text>
-              </View>
+                    : '點擊添加專家註記...'
+                }
+                multiline
+                numberOfLines={3}
+                textAlignVertical="top"
+              />
             </View>
 
             {/* Action Buttons */}
@@ -157,6 +169,9 @@ export const EventsScreen: React.FC = () => {
         <TouchableOpacity style={styles.addEventButton}>
           <Text style={styles.addEventButtonText}>+ 新增事件</Text>
         </TouchableOpacity>
+
+        {/* Bottom spacing */}
+        <View style={styles.bottomSpacing} />
       </ScrollView>
     </LinearGradient>
   );
@@ -168,16 +183,24 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    padding: 16,
+  },
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: 40,
+    paddingBottom: 20,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#6A8D73',
-    marginTop: 40,
-    marginBottom: 20,
   },
   eventCard: {
+    marginHorizontal: 16,
     marginBottom: 16,
     padding: 16,
   },
@@ -287,12 +310,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(106, 141, 115, 0.05)',
     borderRadius: 12,
     padding: 12,
-    justifyContent: 'center',
-  },
-  notesPlaceholder: {
     fontSize: 12,
-    color: '#888',
-    lineHeight: 16,
+    color: '#666',
+    textAlignVertical: 'top',
   },
   actionButtons: {
     flexDirection: 'row',
@@ -336,11 +356,15 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 24,
     alignItems: 'center',
-    marginBottom: 32,
+    marginHorizontal: 16,
+    marginBottom: 16,
   },
   addEventButtonText: {
     fontSize: 16,
     color: 'white',
     fontWeight: '600',
+  },
+  bottomSpacing: {
+    height: 100,
   },
 });
