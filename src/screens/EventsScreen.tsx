@@ -15,7 +15,11 @@ import { useStore } from '../store';
 import { getEvents, setScenario } from '../api';
 import { Severity } from '../types';
 
-export const EventsScreen: React.FC = () => {
+interface EventsScreenProps {
+  scrollRef?: (ref: any) => void;
+}
+
+export const EventsScreen: React.FC<EventsScreenProps> = ({ scrollRef }) => {
   const { 
     events, 
     setEvents, 
@@ -66,7 +70,7 @@ export const EventsScreen: React.FC = () => {
       colors={['#F4F2E9', '#E8E6D3']}
       style={styles.container}
     >
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView ref={scrollRef} style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>事件庫</Text>

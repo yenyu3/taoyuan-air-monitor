@@ -1,37 +1,41 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
   TouchableOpacity,
   TextInput,
   Modal,
-  Platform
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Logo } from '../components/Logo';
-import { GlassCard } from '../components/GlassCard';
-import { useStore } from '../store';
+  Platform,
+} from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { LinearGradient } from "expo-linear-gradient";
+import { Logo } from "../components/Logo";
+import { GlassCard } from "../components/GlassCard";
+import { useStore } from "../store";
 
-export const ExplorerScreen: React.FC = () => {
+interface ExplorerScreenProps {
+  scrollRef?: (ref: any) => void;
+}
+
+export const ExplorerScreen: React.FC<ExplorerScreenProps> = ({ scrollRef }) => {
   const { selectedPollutant, setSelectedPollutant } = useStore();
-  const [selectedTimeRange, setSelectedTimeRange] = useState('近24小時');
+  const [selectedTimeRange, setSelectedTimeRange] = useState("近24小時");
   const [customStartDate, setCustomStartDate] = useState<Date | null>(null);
   const [customEndDate, setCustomEndDate] = useState<Date | null>(null);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [selectedSources, setSelectedSources] = useState<string[]>(['EPA']);
-  const [selectedArea, setSelectedArea] = useState('全市');
+  const [selectedSources, setSelectedSources] = useState<string[]>(["EPA"]);
+  const [selectedArea, setSelectedArea] = useState("全市");
 
-  const sources = ['EPA', '微感測', '光達', 'UAV'];
-  const areas = ['全市', '桃園區', '中壢區', '大園區', '觀音區', '龜山區'];
-  const timeRanges = ['近24小時', '近3天', '近7天'];
+  const sources = ["EPA", "微感測", "光達", "UAV"];
+  const areas = ["全市", "桃園區", "中壢區", "大園區", "觀音區", "龜山區"];
+  const timeRanges = ["近24小時", "近3天", "近7天"];
 
   const handleTimeRangeSelect = (range: string) => {
     setSelectedTimeRange(range);
-    if (range !== '自訂') {
+    if (range !== "自訂") {
       setCustomStartDate(null);
       setCustomEndDate(null);
     }
@@ -41,7 +45,7 @@ export const ExplorerScreen: React.FC = () => {
     setShowStartDatePicker(false);
     if (selectedDate) {
       setCustomStartDate(selectedDate);
-      setSelectedTimeRange('自訂');
+      setSelectedTimeRange("自訂");
     }
   };
 
@@ -49,54 +53,64 @@ export const ExplorerScreen: React.FC = () => {
     setShowEndDatePicker(false);
     if (selectedDate) {
       setCustomEndDate(selectedDate);
-      setSelectedTimeRange('自訂');
+      setSelectedTimeRange("自訂");
     }
   };
 
+  const handleReset = () => {
+    setSelectedPollutant("PM25");
+    setSelectedTimeRange("近24小時");
+    setCustomStartDate(null);
+    setCustomEndDate(null);
+    setSelectedArea("全市");
+    setSelectedSources(["EPA"]);
+  };
+
   const toggleSource = (source: string) => {
-    setSelectedSources(prev => 
-      prev.includes(source) 
-        ? prev.filter(s => s !== source)
-        : [...prev, source]
+    setSelectedSources((prev) =>
+      prev.includes(source)
+        ? prev.filter((s) => s !== source)
+        : [...prev, source],
     );
   };
 
   const mockResults = [
     {
-      id: '1',
-      time: '2024-01-15 14:00',
-      station: '桃園站',
+      id: "1",
+      time: "2024-01-15 14:00",
+      station: "桃園站",
       value: 52,
-      source: 'EPA',
-      qc: '通過',
-      version: 'v2.1'
+      source: "EPA",
+      qc: "通過",
+      version: "v2.1",
     },
     {
-      id: '2',
-      time: '2024-01-15 14:00',
-      station: '中壢站',
+      id: "2",
+      time: "2024-01-15 14:00",
+      station: "中壢站",
       value: 45,
-      source: 'LOCAL',
-      qc: '通過',
-      version: 'v2.1'
+      source: "LOCAL",
+      qc: "通過",
+      version: "v2.1",
     },
     {
-      id: '3',
-      time: '2024-01-15 14:00',
-      station: '觀音站',
+      id: "3",
+      time: "2024-01-15 14:00",
+      station: "觀音站",
       value: 68,
-      source: 'MOENV',
-      qc: '異常',
-      version: 'v2.0'
-    }
+      source: "MOENV",
+      qc: "異常",
+      version: "v2.0",
+    },
   ];
 
   return (
-    <LinearGradient
-      colors={['#F4F2E9', '#E8E6D3']}
-      style={styles.container}
-    >
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+    <LinearGradient colors={["#F4F2E9", "#E8E6D3"]} style={styles.container}>
+      <ScrollView
+        ref={scrollRef}
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>資料檢索</Text>
@@ -105,25 +119,29 @@ export const ExplorerScreen: React.FC = () => {
         {/* Query Conditions */}
         <GlassCard style={styles.queryCard}>
           <Text style={styles.sectionTitle}>查詢條件</Text>
-          
+
           {/* Pollutant Selection */}
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldLabel}>污染物</Text>
             <View style={styles.pollutantButtons}>
-              {(['PM25', 'O3', 'NOX', 'VOCs'] as const).map((pollutant) => (
+              {(["PM25", "O3", "NOX", "VOCs"] as const).map((pollutant) => (
                 <TouchableOpacity
                   key={pollutant}
                   style={[
                     styles.pollutantButton,
-                    selectedPollutant === pollutant && styles.activePollutantButton
+                    selectedPollutant === pollutant &&
+                      styles.activePollutantButton,
                   ]}
                   onPress={() => setSelectedPollutant(pollutant)}
                 >
-                  <Text style={[
-                    styles.pollutantButtonText,
-                    selectedPollutant === pollutant && styles.activePollutantButtonText
-                  ]}>
-                    {pollutant === 'PM25' ? 'PM2.5' : pollutant}
+                  <Text
+                    style={[
+                      styles.pollutantButtonText,
+                      selectedPollutant === pollutant &&
+                        styles.activePollutantButtonText,
+                    ]}
+                  >
+                    {pollutant === "PM25" ? "PM2.5" : pollutant}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -135,18 +153,21 @@ export const ExplorerScreen: React.FC = () => {
             <Text style={styles.fieldLabel}>時間範圍</Text>
             <View style={styles.timeOptions}>
               {timeRanges.map((range) => (
-                <TouchableOpacity 
+                <TouchableOpacity
                   key={range}
                   style={[
                     styles.timeOption,
-                    selectedTimeRange === range && styles.activeTimeOption
+                    selectedTimeRange === range && styles.activeTimeOption,
                   ]}
                   onPress={() => handleTimeRangeSelect(range)}
                 >
-                  <Text style={[
-                    styles.timeOptionText,
-                    selectedTimeRange === range && styles.activeTimeOptionText
-                  ]}>
+                  <Text
+                    style={[
+                      styles.timeOptionText,
+                      selectedTimeRange === range &&
+                        styles.activeTimeOptionText,
+                    ]}
+                  >
                     {range}
                   </Text>
                 </TouchableOpacity>
@@ -155,26 +176,30 @@ export const ExplorerScreen: React.FC = () => {
             <View style={styles.customDateRow}>
               <View style={styles.dateInputContainer}>
                 <Text style={styles.dateInputLabel}>開始時間</Text>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.dateInput}
                   onPress={() => setShowStartDatePicker(true)}
                 >
                   <Text style={styles.dateInputText}>
-                    {customStartDate ? customStartDate.toLocaleDateString('zh-TW') : '選擇日期'}
+                    {customStartDate
+                      ? customStartDate.toLocaleDateString("zh-TW")
+                      : "選擇日期"}
                   </Text>
                 </TouchableOpacity>
               </View>
-              
+
               <Text style={styles.dateSeparator}>至</Text>
-              
+
               <View style={styles.dateInputContainer}>
                 <Text style={styles.dateInputLabel}>結束時間</Text>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.dateInput}
                   onPress={() => setShowEndDatePicker(true)}
                 >
                   <Text style={styles.dateInputText}>
-                    {customEndDate ? customEndDate.toLocaleDateString('zh-TW') : '選擇日期'}
+                    {customEndDate
+                      ? customEndDate.toLocaleDateString("zh-TW")
+                      : "選擇日期"}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -191,14 +216,16 @@ export const ExplorerScreen: React.FC = () => {
                     key={area}
                     style={[
                       styles.areaButton,
-                      selectedArea === area && styles.activeAreaButton
+                      selectedArea === area && styles.activeAreaButton,
                     ]}
                     onPress={() => setSelectedArea(area)}
                   >
-                    <Text style={[
-                      styles.areaButtonText,
-                      selectedArea === area && styles.activeAreaButtonText
-                    ]}>
+                    <Text
+                      style={[
+                        styles.areaButtonText,
+                        selectedArea === area && styles.activeAreaButtonText,
+                      ]}
+                    >
                       {area}
                     </Text>
                   </TouchableOpacity>
@@ -216,14 +243,17 @@ export const ExplorerScreen: React.FC = () => {
                   key={source}
                   style={[
                     styles.sourceChip,
-                    selectedSources.includes(source) && styles.activeSourceChip
+                    selectedSources.includes(source) && styles.activeSourceChip,
                   ]}
                   onPress={() => toggleSource(source)}
                 >
-                  <Text style={[
-                    styles.sourceChipText,
-                    selectedSources.includes(source) && styles.activeSourceChipText
-                  ]}>
+                  <Text
+                    style={[
+                      styles.sourceChipText,
+                      selectedSources.includes(source) &&
+                        styles.activeSourceChipText,
+                    ]}
+                  >
                     {source}
                   </Text>
                 </TouchableOpacity>
@@ -233,7 +263,7 @@ export const ExplorerScreen: React.FC = () => {
 
           {/* Action Buttons */}
           <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.resetButton}>
+            <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
               <Text style={styles.resetButtonText}>重設</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.queryButton}>
@@ -245,19 +275,24 @@ export const ExplorerScreen: React.FC = () => {
         {/* Results */}
         <GlassCard style={styles.resultsCard}>
           <Text style={styles.sectionTitle}>查詢結果</Text>
-          
+
           {mockResults.map((result) => (
             <View key={result.id} style={styles.resultItem}>
               <View style={styles.resultHeader}>
                 <Text style={styles.resultTime}>{result.time}</Text>
-                <View style={[
-                  styles.qcBadge,
-                  { backgroundColor: result.qc === '通過' ? '#6A8D73' : '#E76F51' }
-                ]}>
+                <View
+                  style={[
+                    styles.qcBadge,
+                    {
+                      backgroundColor:
+                        result.qc === "通過" ? "#6A8D73" : "#E76F51",
+                    },
+                  ]}
+                >
                   <Text style={styles.qcBadgeText}>{result.qc}</Text>
                 </View>
               </View>
-              
+
               <View style={styles.resultContent}>
                 <View style={styles.resultRow}>
                   <Text style={styles.resultLabel}>站點:</Text>
@@ -319,24 +354,28 @@ export const ExplorerScreen: React.FC = () => {
         {/* Bottom spacing */}
         <View style={styles.bottomSpacing} />
       </ScrollView>
-      
+
       {/* Date Pickers */}
       {showStartDatePicker && (
-        <DateTimePicker
-          value={customStartDate || new Date()}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleStartDateChange}
-        />
+        <View style={styles.datePickerContainer}>
+          <DateTimePicker
+            value={customStartDate || new Date()}
+            mode="date"
+            display={Platform.OS === "ios" ? "spinner" : "default"}
+            onChange={handleStartDateChange}
+          />
+        </View>
       )}
-      
+
       {showEndDatePicker && (
-        <DateTimePicker
-          value={customEndDate || new Date()}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleEndDateChange}
-        />
+        <View style={styles.datePickerContainer}>
+          <DateTimePicker
+            value={customEndDate || new Date()}
+            mode="date"
+            display={Platform.OS === "ios" ? "spinner" : "default"}
+            onChange={handleEndDateChange}
+          />
+        </View>
       )}
     </LinearGradient>
   );
@@ -356,8 +395,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#6A8D73',
+    fontWeight: "bold",
+    color: "#6A8D73",
   },
   queryCard: {
     marginHorizontal: 16,
@@ -365,8 +404,8 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#6A8D73',
+    fontWeight: "600",
+    color: "#6A8D73",
     marginBottom: 16,
   },
   fieldContainer: {
@@ -374,12 +413,12 @@ const styles = StyleSheet.create({
   },
   fieldLabel: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#666',
+    fontWeight: "600",
+    color: "#666",
     marginBottom: 8,
   },
   pollutantButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
   },
   pollutantButton: {
@@ -387,22 +426,22 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 16,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
-    alignItems: 'center',
+    backgroundColor: "rgba(106, 141, 115, 0.1)",
+    alignItems: "center",
   },
   activePollutantButton: {
-    backgroundColor: '#6A8D73',
+    backgroundColor: "#6A8D73",
   },
   pollutantButtonText: {
     fontSize: 12,
-    color: '#6A8D73',
-    fontWeight: '600',
+    color: "#6A8D73",
+    fontWeight: "600",
   },
   activePollutantButtonText: {
-    color: 'white',
+    color: "white",
   },
   timeOptions: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
   },
   timeOption: {
@@ -410,23 +449,23 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 12,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
-    alignItems: 'center',
+    backgroundColor: "rgba(106, 141, 115, 0.1)",
+    alignItems: "center",
   },
   activeTimeOption: {
-    backgroundColor: '#6A8D73',
+    backgroundColor: "#6A8D73",
   },
   timeOptionText: {
     fontSize: 14,
-    color: '#6A8D73',
-    fontWeight: '600',
+    color: "#6A8D73",
+    fontWeight: "600",
   },
   activeTimeOptionText: {
-    color: 'white',
+    color: "white",
   },
   customDateRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 12,
   },
   dateInputContainer: {
@@ -434,74 +473,74 @@ const styles = StyleSheet.create({
   },
   dateInputLabel: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     marginBottom: 4,
   },
   dateInput: {
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
+    backgroundColor: "rgba(106, 141, 115, 0.1)",
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   dateInputText: {
     fontSize: 14,
-    color: '#6A8D73',
-    fontWeight: '600',
+    color: "#6A8D73",
+    fontWeight: "600",
   },
   dateSeparator: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
     marginHorizontal: 12,
   },
   areaButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
   },
   areaButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 16,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
+    backgroundColor: "rgba(106, 141, 115, 0.1)",
   },
   activeAreaButton: {
-    backgroundColor: '#6A8D73',
+    backgroundColor: "#6A8D73",
   },
   areaButtonText: {
     fontSize: 12,
-    color: '#6A8D73',
-    fontWeight: '600',
+    color: "#6A8D73",
+    fontWeight: "600",
   },
   activeAreaButtonText: {
-    color: 'white',
+    color: "white",
   },
   sourceChips: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
   },
   sourceChip: {
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 16,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
+    backgroundColor: "rgba(106, 141, 115, 0.1)",
     borderWidth: 1,
-    borderColor: 'transparent',
+    borderColor: "transparent",
   },
   activeSourceChip: {
-    backgroundColor: '#6A8D73',
-    borderColor: '#6A8D73',
+    backgroundColor: "#6A8D73",
+    borderColor: "#6A8D73",
   },
   sourceChipText: {
     fontSize: 12,
-    color: '#6A8D73',
-    fontWeight: '600',
+    color: "#6A8D73",
+    fontWeight: "600",
   },
   activeSourceChipText: {
-    color: 'white',
+    color: "white",
   },
   actionButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     marginTop: 8,
   },
@@ -509,25 +548,25 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     borderRadius: 16,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
-    alignItems: 'center',
+    backgroundColor: "rgba(106, 141, 115, 0.1)",
+    alignItems: "center",
   },
   resetButtonText: {
     fontSize: 14,
-    color: '#6A8D73',
-    fontWeight: '600',
+    color: "#6A8D73",
+    fontWeight: "600",
   },
   queryButton: {
     flex: 2,
     paddingVertical: 12,
     borderRadius: 16,
-    backgroundColor: '#6A8D73',
-    alignItems: 'center',
+    backgroundColor: "#6A8D73",
+    alignItems: "center",
   },
   queryButtonText: {
     fontSize: 14,
-    color: 'white',
-    fontWeight: '600',
+    color: "white",
+    fontWeight: "600",
   },
   resultsCard: {
     marginHorizontal: 16,
@@ -537,18 +576,18 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(106, 141, 115, 0.1)',
+    borderBottomColor: "rgba(106, 141, 115, 0.1)",
   },
   resultHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 8,
   },
   resultTime: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#6A8D73',
+    fontWeight: "600",
+    color: "#6A8D73",
   },
   qcBadge: {
     paddingHorizontal: 8,
@@ -557,77 +596,87 @@ const styles = StyleSheet.create({
   },
   qcBadgeText: {
     fontSize: 10,
-    color: 'white',
-    fontWeight: '600',
+    color: "white",
+    fontWeight: "600",
   },
   resultContent: {
     gap: 4,
   },
   resultRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   resultLabel: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
   },
   resultValue: {
     fontSize: 12,
-    color: '#6A8D73',
-    fontWeight: '600',
+    color: "#6A8D73",
+    fontWeight: "600",
   },
   lineageCard: {
     marginHorizontal: 16,
     marginBottom: 16,
   },
   lineageFlow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 12,
   },
   lineageStep: {
     paddingVertical: 6,
     paddingHorizontal: 8,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
+    backgroundColor: "rgba(106, 141, 115, 0.1)",
     borderRadius: 12,
   },
   lineageStepText: {
     fontSize: 10,
-    color: '#6A8D73',
-    fontWeight: '600',
+    color: "#6A8D73",
+    fontWeight: "600",
   },
   lineageArrow: {
     fontSize: 12,
-    color: '#6A8D73',
+    color: "#6A8D73",
     marginHorizontal: 4,
   },
   runId: {
     fontSize: 12,
-    color: '#888',
-    textAlign: 'center',
+    color: "#888",
+    textAlign: "center",
   },
   exportCard: {
     marginHorizontal: 16,
     marginBottom: 16,
   },
   exportButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   exportButton: {
     flex: 1,
     paddingVertical: 12,
     borderRadius: 16,
-    backgroundColor: '#6A8D73',
-    alignItems: 'center',
+    backgroundColor: "#6A8D73",
+    alignItems: "center",
   },
   exportButtonText: {
     fontSize: 14,
-    color: 'white',
-    fontWeight: '600',
+    color: "white",
+    fontWeight: "600",
   },
   bottomSpacing: {
     height: 100,
+  },
+  datePickerContainer: {
+    position: "absolute",
+    top: "67%",
+    left: 0,
+    right: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(244, 242, 233, 0.9)",
+    zIndex: 1000,
   },
 });

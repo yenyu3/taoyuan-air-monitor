@@ -15,7 +15,11 @@ import { useStore } from '../store';
 import { getAlerts, setScenario } from '../api';
 import { AlertKind } from '../types';
 
-export const AlertsScreen: React.FC = () => {
+interface AlertsScreenProps {
+  scrollRef?: (ref: any) => void;
+}
+
+export const AlertsScreen: React.FC<AlertsScreenProps> = ({ scrollRef }) => {
   const { 
     alerts, 
     setAlerts, 
@@ -66,7 +70,7 @@ export const AlertsScreen: React.FC = () => {
       colors={['#F4F2E9', '#E8E6D3']}
       style={styles.container}
     >
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView ref={scrollRef} style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>警報與 AI</Text>

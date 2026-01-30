@@ -15,7 +15,11 @@ import { Logo } from '../components/Logo';
 import { HealthBadge } from '../components/HealthBadge';
 import { getMeta, getGrid, getAlerts, getEvents, setScenario } from '../api';
 
-export const DashboardScreen: React.FC = () => {
+interface DashboardScreenProps {
+  scrollRef?: (ref: any) => void;
+}
+
+export const DashboardScreen: React.FC<DashboardScreenProps> = ({ scrollRef }) => {
   const { 
     role, 
     setRole, 
@@ -108,7 +112,7 @@ export const DashboardScreen: React.FC = () => {
       colors={['#F4F2E9', '#E8E6D3']}
       style={styles.container}
     >
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView ref={scrollRef} style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.titleRow}>
@@ -182,9 +186,9 @@ export const DashboardScreen: React.FC = () => {
                     <Text style={styles.kpiUnit}>μg/m³</Text>
                   </View>
                 </View>
-                <View style={[styles.kpiCard, { width: 180 }]}>
+                <View style={[styles.kpiCard, { width: 200 }]}>
                   <Text style={styles.kpiTitle}>最高熱點</Text>
-                  <Text style={styles.kpiValue}>{kpiData.hotspot}</Text>
+                  <Text style={styles.kpiValue} numberOfLines={1} ellipsizeMode="tail">{kpiData.hotspot}</Text>
                 </View>
                 <View style={[styles.kpiCard, { width: 140 }]}>
                   <Text style={styles.kpiTitle}>24h 峰值</Text>
@@ -391,16 +395,16 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   kpiCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(244, 242, 233, 0.8)',
     borderRadius: 16,
     padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowColor: '#6A8D73',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(106, 141, 115, 0.15)',
     height: 80,
   },
   kpiValueRow: {

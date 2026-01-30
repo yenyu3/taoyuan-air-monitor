@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 import { DashboardScreen } from '../screens/DashboardScreen';
@@ -11,6 +12,34 @@ import { AlertsScreen } from '../screens/AlertsScreen';
 const Tab = createBottomTabNavigator();
 
 export const BottomTabNavigator: React.FC = () => {
+  const scrollRefs = useRef<{[key: string]: any}>({});
+  const lastTapTime = useRef<{[key: string]: number}>({});
+
+  const handleTabPress = (routeName: string, navigation: any) => {
+    const now = Date.now();
+    const lastTap = lastTapTime.current[routeName] || 0;
+    
+    // Always navigate first
+    navigation.navigate(routeName);
+    
+    // Then scroll to top
+    setTimeout(() => {
+      if (scrollRefs.current[routeName]) {
+        scrollRefs.current[routeName].scrollTo({ y: 0, animated: true });
+      }
+    }, 100);
+    
+    if (now - lastTap < 300) {
+      // Double tap - additional scroll to top (redundant but ensures it works)
+      setTimeout(() => {
+        if (scrollRefs.current[routeName]) {
+          scrollRefs.current[routeName].scrollTo({ y: 0, animated: true });
+        }
+      }, 200);
+    }
+    
+    lastTapTime.current[routeName] = now;
+  };
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -73,29 +102,74 @@ export const BottomTabNavigator: React.FC = () => {
     >
       <Tab.Screen 
         name="Dashboard" 
-        component={DashboardScreen}
-        options={{ tabBarLabel: '總覽' }}
-      />
+        options={({ navigation }) => ({
+          tabBarLabel: '總覽',
+          tabBarButton: (props) => (
+            <TouchableOpacity
+              {...props}
+              onPress={() => handleTabPress('Dashboard', navigation)}
+            />
+          )
+        })}
+      >
+        {() => <DashboardScreen scrollRef={(ref: any) => scrollRefs.current.Dashboard = ref} />}
+      </Tab.Screen>
       <Tab.Screen 
         name="Map" 
-        component={MapScreen}
-        options={{ tabBarLabel: '地圖' }}
-      />
+        options={({ navigation }) => ({
+          tabBarLabel: '地圖',
+          tabBarButton: (props) => (
+            <TouchableOpacity
+              {...props}
+              onPress={() => handleTabPress('Map', navigation)}
+            />
+          )
+        })}
+      >
+        {() => <MapScreen scrollRef={(ref: any) => scrollRefs.current.Map = ref} />}
+      </Tab.Screen>
       <Tab.Screen 
         name="Explorer" 
-        component={ExplorerScreen}
-        options={{ tabBarLabel: '檢索' }}
-      />
+        options={({ navigation }) => ({
+          tabBarLabel: '檢索',
+          tabBarButton: (props) => (
+            <TouchableOpacity
+              {...props}
+              onPress={() => handleTabPress('Explorer', navigation)}
+            />
+          )
+        })}
+      >
+        {() => <ExplorerScreen scrollRef={(ref: any) => scrollRefs.current.Explorer = ref} />}
+      </Tab.Screen>
       <Tab.Screen 
         name="Events" 
-        component={EventsScreen}
-        options={{ tabBarLabel: '事件' }}
-      />
+        options={({ navigation }) => ({
+          tabBarLabel: '事件',
+          tabBarButton: (props) => (
+            <TouchableOpacity
+              {...props}
+              onPress={() => handleTabPress('Events', navigation)}
+            />
+          )
+        })}
+      >
+        {() => <EventsScreen scrollRef={(ref: any) => scrollRefs.current.Events = ref} />}
+      </Tab.Screen>
       <Tab.Screen 
         name="Alerts" 
-        component={AlertsScreen}
-        options={{ tabBarLabel: '警報' }}
-      />
+        options={({ navigation }) => ({
+          tabBarLabel: '警報',
+          tabBarButton: (props) => (
+            <TouchableOpacity
+              {...props}
+              onPress={() => handleTabPress('Alerts', navigation)}
+            />
+          )
+        })}
+      >
+        {() => <AlertsScreen scrollRef={(ref: any) => scrollRefs.current.Alerts = ref} />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };

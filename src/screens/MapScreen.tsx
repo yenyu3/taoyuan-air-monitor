@@ -22,7 +22,17 @@ const TAOYUAN_REGION: Region = {
   longitudeDelta: 0.5,
 };
 
-export const MapScreen: React.FC = () => {
+interface MapScreenProps {
+  scrollRef?: (ref: any) => void;
+}
+
+export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
+  // MapView doesn't have scroll functionality, so we'll ignore the scrollRef
+  React.useEffect(() => {
+    if (scrollRef) {
+      scrollRef(null); // Pass null since MapView doesn't scroll
+    }
+  }, [scrollRef]);
   const { 
     selectedPollutant,
     setSelectedPollutant,
