@@ -110,10 +110,9 @@ export const MapScreen: React.FC = () => {
 
       {/* Top Controls */}
       <View style={styles.topControls}>
-        <GlassCard style={styles.controlCard}>
-          <View style={styles.headerRow}>
-            <Logo size="small" />
-            <Text style={styles.pageTitle}>地圖監測</Text>
+        <View style={styles.controlCard}>
+          <View style={styles.pageTitle}>
+            <Text style={styles.pageTitleText}>地圖監測</Text>
           </View>
           
           <View style={styles.divider} />
@@ -156,12 +155,12 @@ export const MapScreen: React.FC = () => {
               </Text>
             </TouchableOpacity>
           </View>
-        </GlassCard>
+        </View>
       </View>
 
       {/* Legend */}
       <View style={styles.legend}>
-        <GlassCard style={styles.legendCard}>
+        <View style={styles.legendCard}>
           <Text style={styles.legendTitle}>{getPollutantLabel()} (µg/m³)</Text>
           <View style={styles.legendGradient}>
             <View style={styles.gradientBar} />
@@ -171,7 +170,7 @@ export const MapScreen: React.FC = () => {
               <Text style={styles.legendLabel}>100+</Text>
             </View>
           </View>
-        </GlassCard>
+        </View>
       </View>
 
       {/* Loading Indicator */}
@@ -218,15 +217,21 @@ const styles = StyleSheet.create({
     right: 16,
   },
   controlCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 16,
     padding: 16,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   pageTitle: {
+    marginBottom: 12,
+  },
+  pageTitleText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#6A8D73',
@@ -290,7 +295,16 @@ const styles = StyleSheet.create({
     right: 16,
   },
   legendCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 16,
     padding: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   legendTitle: {
     fontSize: 12,

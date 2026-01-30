@@ -69,10 +69,7 @@ export const AlertsScreen: React.FC = () => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <View style={styles.titleRow}>
-            <Logo size="medium" />
-            <Text style={styles.title}>警報與 AI</Text>
-          </View>
+          <Text style={styles.title}>警報與 AI</Text>
         </View>
 
         {/* Tab Selector */}
@@ -276,11 +273,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 40,
     paddingBottom: 20,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
   },
   title: {
     fontSize: 24,

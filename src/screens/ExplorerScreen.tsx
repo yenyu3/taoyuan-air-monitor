@@ -5,7 +5,8 @@ import {
   StyleSheet, 
   ScrollView, 
   TouchableOpacity,
-  TextInput 
+  TextInput,
+  Modal
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Logo } from '../components/Logo';
@@ -17,6 +18,7 @@ export const ExplorerScreen: React.FC = () => {
   const [timeRange, setTimeRange] = useState({ start: '', end: '' });
   const [selectedSources, setSelectedSources] = useState<string[]>(['EPA']);
   const [selectedArea, setSelectedArea] = useState('全市');
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const sources = ['EPA', '微感測', '光達', 'UAV'];
   const areas = ['全市', '桃園區', '中壢區', '大園區', '觀音區', '龜山區'];
@@ -67,10 +69,7 @@ export const ExplorerScreen: React.FC = () => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <View style={styles.titleRow}>
-            <Logo size="medium" />
-            <Text style={styles.title}>資料檢索</Text>
-          </View>
+          <Text style={styles.title}>資料檢索</Text>
         </View>
 
         {/* Query Conditions */}
@@ -114,6 +113,23 @@ export const ExplorerScreen: React.FC = () => {
               <TouchableOpacity style={[styles.timeOption, styles.activeTimeOption]}>
                 <Text style={[styles.timeOptionText, styles.activeTimeOptionText]}>近 7 天</Text>
               </TouchableOpacity>
+            </View>
+            <View style={styles.customDateRow}>
+              <View style={styles.dateInputContainer}>
+                <Text style={styles.dateInputLabel}>開始時間</Text>
+                <TouchableOpacity style={styles.dateInput}>
+                  <Text style={styles.dateInputText}>2024/01/01</Text>
+                </TouchableOpacity>
+              </View>
+              
+              <Text style={styles.dateSeparator}>至</Text>
+              
+              <View style={styles.dateInputContainer}>
+                <Text style={styles.dateInputLabel}>結束時間</Text>
+                <TouchableOpacity style={styles.dateInput}>
+                  <Text style={styles.dateInputText}>2024/01/07</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
 
@@ -271,11 +287,6 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 20,
   },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -345,6 +356,36 @@ const styles = StyleSheet.create({
   },
   activeTimeOptionText: {
     color: 'white',
+  },
+  customDateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  dateInputContainer: {
+    flex: 1,
+  },
+  dateInputLabel: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 4,
+  },
+  dateInput: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: 'rgba(106, 141, 115, 0.1)',
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  dateInputText: {
+    fontSize: 14,
+    color: '#6A8D73',
+    fontWeight: '600',
+  },
+  dateSeparator: {
+    fontSize: 16,
+    color: '#666',
+    marginHorizontal: 12,
   },
   areaButtons: {
     flexDirection: 'row',

@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
   ScrollView, 
   TouchableOpacity,
-  TextInput
+  TextInput,
+  Modal
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Logo } from '../components/Logo';
@@ -20,8 +21,10 @@ export const EventsScreen: React.FC = () => {
     setEvents, 
     selectedScenario,
     isLoading,
-    setIsLoading 
+    setIsLoading
   } = useStore();
+  
+  const [selectedEvidence, setSelectedEvidence] = useState<string | null>(null);
 
   useEffect(() => {
     loadEvents();
@@ -66,10 +69,7 @@ export const EventsScreen: React.FC = () => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <View style={styles.titleRow}>
-            <Logo size="medium" />
-            <Text style={styles.title}>事件庫</Text>
-          </View>
+          <Text style={styles.title}>事件庫</Text>
         </View>
 
         {/* Event List */}
@@ -102,12 +102,20 @@ export const EventsScreen: React.FC = () => {
             <View style={styles.evidenceSection}>
               <Text style={styles.evidenceTitle}>證據資料</Text>
               <View style={styles.evidenceGrid}>
-                <View style={styles.evidenceCard}>
+                <TouchableOpacity 
+                  style={styles.evidenceCard} 
+                  onPress={() => setSelectedEvidence('地圖回放')}
+                >
                   <Text style={styles.evidenceCardTitle}>地圖回放</Text>
                   <View style={styles.evidencePlaceholder}>
-                    <Text style={styles.placeholderText}>時空分布</Text>
+                    <View style={styles.mockChart}>
+                      <View style={[styles.mockBar, { height: 20, backgroundColor: '#6A8D73' }]} />
+                      <View style={[styles.mockBar, { height: 35, backgroundColor: '#F4A261' }]} />
+                      <View style={[styles.mockBar, { height: 45, backgroundColor: '#E76F51' }]} />
+                      <View style={[styles.mockBar, { height: 30, backgroundColor: '#6A8D73' }]} />
+                    </View>
                   </View>
-                </View>
+                </TouchableOpacity>
                 <View style={styles.evidenceCard}>
                   <Text style={styles.evidenceCardTitle}>趨勢分析</Text>
                   <View style={styles.evidencePlaceholder}>
@@ -173,6 +181,93 @@ export const EventsScreen: React.FC = () => {
         {/* Bottom spacing */}
         <View style={styles.bottomSpacing} />
       </ScrollView>
+
+      {/* Evidence Detail Modal */}
+      <Modal
+        visible={selectedEvidence !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSelectedEvidence(null)}
+      >
+        <View style={styles.modalOverlay}>
+          <GlassCard style={styles.evidenceModal}>
+            <Text style={styles.modalTitle}>{selectedEvidence}</Text>
+            
+            <View style={styles.evidenceDetail}>
+              {selectedEvidence === '地圖回放' && (
+                <View style={styles.detailChart}>
+                  <View style={styles.chartGrid}>
+                    {Array.from({ length: 16 }, (_, i) => (
+                      <View 
+                        key={i} 
+                        style={[
+                          styles.gridCell, 
+                          { backgroundColor: `rgba(106, 141, 115, ${0.2 + (i % 4) * 0.2})` }
+                        ]} 
+                      />
+                    ))}
+                  </View>
+                  <Text style={styles.chartLabel}>PM2.5 濃度分布 (μg/m³)</Text>
+                </View>
+              )}
+              
+              {selectedEvidence === '趋勢分析' && (
+                <View style={styles.detailChart}>
+                  <View style={styles.lineChart}>
+                    <View style={styles.chartLine} />
+                    <View style={styles.chartPoints}>
+                      {[20, 35, 45, 30, 25].map((height, i) => (
+                        <View key={i} style={[styles.chartPoint, { bottom: height }]} />
+                      ))}
+                    </View>
+                  </View>
+                  <Text style={styles.chartLabel}>24小時變化趋勢</Text>
+                </View>
+              )}
+              
+              {selectedEvidence === '風場資料' && (
+                <View style={styles.detailChart}>
+                  <View style={styles.windChart}>
+                    <Text style={styles.windDirection}>→</Text>
+                    <Text style={styles.windSpeed}>12 m/s</Text>
+                    <Text style={styles.windInfo}>東北風</Text>
+                    <Text style={styles.windTemp}>溫度: 25°C</Text>
+                    <Text style={styles.windHumidity}>濕度: 65%</Text>
+                  </View>
+                  <Text style={styles.chartLabel}>氣象條件</Text>
+                </View>
+              )}
+              
+              {selectedEvidence === '垂直剖面' && (
+                <View style={styles.detailChart}>
+                  <View style={styles.profileChart}>
+                    <View style={styles.profileAxis}>
+                      <Text style={styles.axisLabel}>1000m</Text>
+                      <Text style={styles.axisLabel}>500m</Text>
+                      <Text style={styles.axisLabel}>100m</Text>
+                      <Text style={styles.axisLabel}>0m</Text>
+                    </View>
+                    <View style={styles.profileBars}>
+                      <View style={[styles.profileBar, { height: 60, backgroundColor: '#E76F51' }]} />
+                      <View style={[styles.profileBar, { height: 45, backgroundColor: '#F4A261' }]} />
+                      <View style={[styles.profileBar, { height: 30, backgroundColor: '#6A8D73' }]} />
+                      <View style={[styles.profileBar, { height: 20, backgroundColor: '#6A8D73' }]} />
+                    </View>
+                  </View>
+                  <Text style={styles.chartLabel}>高度分布剖面</Text>
+                </View>
+              )}
+            </View>
+            
+            <TouchableOpacity 
+              style={styles.modalCloseButton}
+              onPress={() => setSelectedEvidence(null)}
+            >
+              <Text style={styles.modalCloseText}>關閉</Text>
+            </TouchableOpacity>
+          </GlassCard>
+        </View>
+      </Modal>
     </LinearGradient>
   );
 };
@@ -188,11 +283,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 40,
     paddingBottom: 20,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
   },
   title: {
     fontSize: 24,
@@ -366,5 +456,183 @@ const styles = StyleSheet.create({
   },
   bottomSpacing: {
     height: 100,
+  },
+  mockChart: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-around',
+    height: 40,
+    width: '100%',
+  },
+  mockBar: {
+    width: 8,
+    borderRadius: 2,
+  },
+  mockLine: {
+    width: '100%',
+    height: 40,
+    justifyContent: 'center',
+  },
+  mockLineChart: {
+    height: 2,
+    backgroundColor: '#6A8D73',
+    borderRadius: 1,
+  },
+  mockWind: {
+    alignItems: 'center',
+  },
+  mockWindText: {
+    fontSize: 20,
+    color: '#6A8D73',
+  },
+  mockWindSpeed: {
+    fontSize: 10,
+    color: '#666',
+    marginTop: 2,
+  },
+  mockProfile: {
+    width: '100%',
+    gap: 4,
+  },
+  mockLayer: {
+    height: 8,
+    borderRadius: 2,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  evidenceModal: {
+    margin: 20,
+    padding: 20,
+    minWidth: 300,
+    maxHeight: '80%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#6A8D73',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  evidenceDetail: {
+    marginBottom: 20,
+  },
+  detailChart: {
+    alignItems: 'center',
+  },
+  chartGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+  },
+  gridCell: {
+    width: 48,
+    height: 48,
+    margin: 1,
+    borderRadius: 4,
+  },
+  lineChart: {
+    width: 200,
+    height: 100,
+    position: 'relative',
+    marginBottom: 10,
+  },
+  chartLine: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    height: 2,
+    backgroundColor: '#6A8D73',
+  },
+  chartPoints: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  chartPoint: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#6A8D73',
+    position: 'absolute',
+  },
+  chartLabel: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
+  },
+  modalCloseButton: {
+    backgroundColor: '#6A8D73',
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  modalCloseText: {
+    fontSize: 14,
+    color: 'white',
+    fontWeight: '600',
+  },
+  windChart: {
+    alignItems: 'center',
+    padding: 20,
+  },
+  windDirection: {
+    fontSize: 40,
+    color: '#6A8D73',
+    marginBottom: 10,
+  },
+  windSpeed: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#6A8D73',
+    marginBottom: 5,
+  },
+  windInfo: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 5,
+  },
+  windTemp: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 2,
+  },
+  windHumidity: {
+    fontSize: 14,
+    color: '#666',
+  },
+  profileChart: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    height: 120,
+    marginBottom: 10,
+  },
+  profileAxis: {
+    justifyContent: 'space-between',
+    height: 100,
+    marginRight: 10,
+  },
+  axisLabel: {
+    fontSize: 10,
+    color: '#666',
+  },
+  profileBars: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 8,
+    flex: 1,
+  },
+  profileBar: {
+    flex: 1,
+    borderRadius: 4,
   },
 });

@@ -175,23 +175,61 @@ export const DashboardScreen: React.FC = () => {
           >
             {role === 'epa' ? (
               <>
-                <KpiCard title="全市 PM2.5" value={kpiData.avgPM25} unit="µg/m³" style={styles.kpiCard} />
-                <KpiCard title="最高熱點" value={kpiData.hotspot} style={styles.kpiCard} />
-                <KpiCard title="24h 峰值" value={kpiData.peak24h} unit="µg/m³" style={styles.kpiCard} />
-                <KpiCard 
-                  title="近2h變化" 
-                  value={kpiData.change2h > 0 ? `+${kpiData.change2h}` : kpiData.change2h} 
-                  unit="µg/m³"
-                  trend={kpiData.change2h > 0 ? 'up' : kpiData.change2h < 0 ? 'down' : 'stable'}
-                  style={styles.kpiCard}
-                />
+                <View style={[styles.kpiCard, { width: 140 }]}>
+                  <Text style={styles.kpiTitle}>全市 PM2.5</Text>
+                  <View style={styles.kpiValueRow}>
+                    <Text style={styles.kpiUnit}>μg/m³</Text>
+                    <Text style={styles.kpiValue}>{kpiData.avgPM25}</Text>
+                  </View>
+                </View>
+                <View style={[styles.kpiCard, { width: 180 }]}>
+                  <Text style={styles.kpiTitle}>最高熱點</Text>
+                  <Text style={styles.kpiValue}>{kpiData.hotspot}</Text>
+                </View>
+                <View style={[styles.kpiCard, { width: 140 }]}>
+                  <Text style={styles.kpiTitle}>24h 峰值</Text>
+                  <View style={styles.kpiValueRow}>
+                    <Text style={styles.kpiUnit}>μg/m³</Text>
+                    <Text style={styles.kpiValue}>{kpiData.peak24h}</Text>
+                  </View>
+                </View>
+                <View style={[styles.kpiCard, { width: 150 }]}>
+                  <Text style={styles.kpiTitle}>近2h變化</Text>
+                  <View style={styles.kpiValueRow}>
+                    <Text style={styles.kpiUnit}>μg/m³</Text>
+                    <Text style={styles.kpiValue}>
+                      {kpiData.change2h > 0 ? `+${kpiData.change2h}` : kpiData.change2h}
+                    </Text>
+                  </View>
+                </View>
               </>
             ) : (
               <>
-                <KpiCard title="資料完整率" value={kpiData.dataCompleteness} unit="%" style={styles.kpiCard} />
-                <KpiCard title="QC異常" value={kpiData.qcAnomalies} unit="筆" style={styles.kpiCard} />
-                <KpiCard title="Pipeline ID" value={kpiData.pipelineId} style={styles.kpiCard} />
-                <KpiCard title="API延遲" value={kpiData.apiLatency} unit="ms" style={styles.kpiCard} />
+                <View style={[styles.kpiCard, { width: 150 }]}>
+                  <Text style={styles.kpiTitle}>資料完整率</Text>
+                  <View style={styles.kpiValueRow}>
+                    <Text style={styles.kpiUnit}>%</Text>
+                    <Text style={styles.kpiValue}>{kpiData.dataCompleteness}</Text>
+                  </View>
+                </View>
+                <View style={[styles.kpiCard, { width: 120 }]}>
+                  <Text style={styles.kpiTitle}>QC異常</Text>
+                  <View style={styles.kpiValueRow}>
+                    <Text style={styles.kpiUnit}>筆</Text>
+                    <Text style={styles.kpiValue}>{kpiData.qcAnomalies}</Text>
+                  </View>
+                </View>
+                <View style={[styles.kpiCard, { width: 160 }]}>
+                  <Text style={styles.kpiTitle}>Pipeline ID</Text>
+                  <Text style={styles.kpiValue}>{kpiData.pipelineId}</Text>
+                </View>
+                <View style={[styles.kpiCard, { width: 130 }]}>
+                  <Text style={styles.kpiTitle}>API延遲</Text>
+                  <View style={styles.kpiValueRow}>
+                    <Text style={styles.kpiUnit}>ms</Text>
+                    <Text style={styles.kpiValue}>{kpiData.apiLatency}</Text>
+                  </View>
+                </View>
               </>
             )}
           </ScrollView>
@@ -353,8 +391,37 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   kpiCard: {
-    width: 160,
-    minWidth: 160,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    height: 80,
+  },
+  kpiValueRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 4,
+  },
+  kpiTitle: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 8,
+  },
+  kpiValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#6A8D73',
+    marginBottom: 4,
+  },
+  kpiUnit: {
+    fontSize: 12,
+    color: '#666',
   },
   healthCard: {
     marginHorizontal: 16,
