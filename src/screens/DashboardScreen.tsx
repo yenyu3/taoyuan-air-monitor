@@ -178,8 +178,8 @@ export const DashboardScreen: React.FC = () => {
                 <View style={[styles.kpiCard, { width: 140 }]}>
                   <Text style={styles.kpiTitle}>全市 PM2.5</Text>
                   <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiUnit}>μg/m³</Text>
                     <Text style={styles.kpiValue}>{kpiData.avgPM25}</Text>
+                    <Text style={styles.kpiUnit}>μg/m³</Text>
                   </View>
                 </View>
                 <View style={[styles.kpiCard, { width: 180 }]}>
@@ -189,17 +189,17 @@ export const DashboardScreen: React.FC = () => {
                 <View style={[styles.kpiCard, { width: 140 }]}>
                   <Text style={styles.kpiTitle}>24h 峰值</Text>
                   <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiUnit}>μg/m³</Text>
                     <Text style={styles.kpiValue}>{kpiData.peak24h}</Text>
+                    <Text style={styles.kpiUnit}>μg/m³</Text>
                   </View>
                 </View>
                 <View style={[styles.kpiCard, { width: 150 }]}>
                   <Text style={styles.kpiTitle}>近2h變化</Text>
                   <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiUnit}>μg/m³</Text>
                     <Text style={styles.kpiValue}>
                       {kpiData.change2h > 0 ? `+${kpiData.change2h}` : kpiData.change2h}
                     </Text>
+                    <Text style={styles.kpiUnit}>μg/m³</Text>
                   </View>
                 </View>
               </>
@@ -208,15 +208,15 @@ export const DashboardScreen: React.FC = () => {
                 <View style={[styles.kpiCard, { width: 150 }]}>
                   <Text style={styles.kpiTitle}>資料完整率</Text>
                   <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiUnit}>%</Text>
                     <Text style={styles.kpiValue}>{kpiData.dataCompleteness}</Text>
+                    <Text style={styles.kpiUnit}>%</Text>
                   </View>
                 </View>
                 <View style={[styles.kpiCard, { width: 120 }]}>
                   <Text style={styles.kpiTitle}>QC異常</Text>
                   <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiUnit}>筆</Text>
                     <Text style={styles.kpiValue}>{kpiData.qcAnomalies}</Text>
+                    <Text style={styles.kpiUnit}>筆</Text>
                   </View>
                 </View>
                 <View style={[styles.kpiCard, { width: 160 }]}>
@@ -226,8 +226,8 @@ export const DashboardScreen: React.FC = () => {
                 <View style={[styles.kpiCard, { width: 130 }]}>
                   <Text style={styles.kpiTitle}>API延遲</Text>
                   <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiUnit}>ms</Text>
                     <Text style={styles.kpiValue}>{kpiData.apiLatency}</Text>
+                    <Text style={styles.kpiUnit}>ms</Text>
                   </View>
                 </View>
               </>

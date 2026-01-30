@@ -7,6 +7,7 @@ import {
   ActivityIndicator 
 } from 'react-native';
 import MapView, { Polygon, Marker, Region } from 'react-native-maps';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useStore } from '../store';
 import { GlassCard } from '../components/GlassCard';
 import { Logo } from '../components/Logo';
@@ -108,7 +109,7 @@ export const MapScreen: React.FC = () => {
         )}
       </MapView>
 
-      {/* Top Controls */}
+      {/* Controls and Legend */}
       <View style={styles.topControls}>
         <View style={styles.controlCard}>
           <View style={styles.pageTitle}>
@@ -155,23 +156,30 @@ export const MapScreen: React.FC = () => {
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </View>
-
-      {/* Legend */}
-      <View style={styles.legend}>
-        <View style={styles.legendCard}>
-          <Text style={styles.legendTitle}>{getPollutantLabel()} (µg/m³)</Text>
-          <View style={styles.legendGradient}>
-            <View style={styles.gradientBar} />
-            <View style={styles.legendLabels}>
-              <Text style={styles.legendLabel}>0</Text>
-              <Text style={styles.legendLabel}>50</Text>
-              <Text style={styles.legendLabel}>100+</Text>
+          
+          <View style={styles.divider} />
+          
+          {/* Legend */}
+          <View style={styles.legendSection}>
+            <Text style={styles.legendTitle}>{getPollutantLabel()} (µg/m³)</Text>
+            <View style={styles.legendGradient}>
+              <LinearGradient
+                colors={['rgba(106, 141, 115, 0.2)', 'rgba(106, 141, 115, 0.8)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.gradientBar}
+              />
+              <View style={styles.legendLabels}>
+                <Text style={styles.legendLabel}>0</Text>
+                <Text style={styles.legendLabel}>50</Text>
+                <Text style={styles.legendLabel}>100+</Text>
+              </View>
             </View>
           </View>
         </View>
       </View>
+
+
 
       {/* Loading Indicator */}
       {isLoading && (
@@ -288,23 +296,8 @@ const styles = StyleSheet.create({
   activeModeButtonText: {
     color: 'white',
   },
-  legend: {
-    position: 'absolute',
-    bottom: 100,
-    left: 16,
-    right: 16,
-  },
-  legendCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 16,
-    padding: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+  legendSection: {
+    marginTop: 12,
   },
   legendTitle: {
     fontSize: 12,
@@ -318,8 +311,6 @@ const styles = StyleSheet.create({
   gradientBar: {
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#6A8D73',
-    opacity: 0.3,
   },
   legendLabels: {
     flexDirection: 'row',

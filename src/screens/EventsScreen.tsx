@@ -116,24 +116,48 @@ export const EventsScreen: React.FC = () => {
                     </View>
                   </View>
                 </TouchableOpacity>
-                <View style={styles.evidenceCard}>
+                <TouchableOpacity 
+                  style={styles.evidenceCard}
+                  onPress={() => setSelectedEvidence('趨勢分析')}
+                >
                   <Text style={styles.evidenceCardTitle}>趨勢分析</Text>
                   <View style={styles.evidencePlaceholder}>
-                    <Text style={styles.placeholderText}>時間序列</Text>
+                    <View style={styles.mockLineChart}>
+                      <View style={styles.chartLine} />
+                      <View style={styles.chartPoints}>
+                        {[20, 35, 45, 30, 25].map((height, i) => (
+                          <View key={i} style={[styles.chartPoint, { bottom: height }]} />
+                        ))}
+                      </View>
+                    </View>
                   </View>
-                </View>
-                <View style={styles.evidenceCard}>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.evidenceCard}
+                  onPress={() => setSelectedEvidence('風場資料')}
+                >
                   <Text style={styles.evidenceCardTitle}>風場資料</Text>
                   <View style={styles.evidencePlaceholder}>
-                    <Text style={styles.placeholderText}>氣象條件</Text>
+                    <View style={styles.mockWindChart}>
+                      <Text style={styles.windArrow}>→</Text>
+                      <Text style={styles.windSpeed}>12 m/s</Text>
+                    </View>
                   </View>
-                </View>
-                <View style={styles.evidenceCard}>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={styles.evidenceCard}
+                  onPress={() => setSelectedEvidence('垂直剖面')}
+                >
                   <Text style={styles.evidenceCardTitle}>垂直剖面</Text>
                   <View style={styles.evidencePlaceholder}>
-                    <Text style={styles.placeholderText}>高度分布</Text>
+                    <View style={styles.mockProfileChart}>
+                      <View style={[styles.profileLayer, { backgroundColor: '#E76F51', width: '80%' }]} />
+                      <View style={[styles.profileLayer, { backgroundColor: '#F4A261', width: '60%' }]} />
+                      <View style={[styles.profileLayer, { backgroundColor: '#6A8D73', width: '40%' }]} />
+                      <View style={[styles.profileLayer, { backgroundColor: '#6A8D73', width: '20%' }]} />
+                    </View>
                   </View>
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -211,7 +235,7 @@ export const EventsScreen: React.FC = () => {
                 </View>
               )}
               
-              {selectedEvidence === '趋勢分析' && (
+              {selectedEvidence === '趨勢分析' && (
                 <View style={styles.detailChart}>
                   <View style={styles.lineChart}>
                     <View style={styles.chartLine} />
@@ -221,7 +245,7 @@ export const EventsScreen: React.FC = () => {
                       ))}
                     </View>
                   </View>
-                  <Text style={styles.chartLabel}>24小時變化趋勢</Text>
+                  <Text style={styles.chartLabel}>24小時變化趨勢</Text>
                 </View>
               )}
               
@@ -474,27 +498,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   mockLineChart: {
-    height: 2,
-    backgroundColor: '#6A8D73',
-    borderRadius: 1,
+    width: '100%',
+    height: 40,
+    position: 'relative',
+    justifyContent: 'center',
   },
-  mockWind: {
+  mockWindChart: {
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  mockWindText: {
+  windArrow: {
     fontSize: 20,
     color: '#6A8D73',
+    marginBottom: 4,
   },
-  mockWindSpeed: {
-    fontSize: 10,
-    color: '#666',
-    marginTop: 2,
-  },
-  mockProfile: {
+  mockProfileChart: {
     width: '100%',
     gap: 4,
+    alignItems: 'flex-start',
   },
-  mockLayer: {
+  profileLayer: {
     height: 8,
     borderRadius: 2,
   },

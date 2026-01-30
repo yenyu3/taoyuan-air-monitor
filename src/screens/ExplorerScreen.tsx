@@ -6,8 +6,10 @@ import {
   ScrollView, 
   TouchableOpacity,
   TextInput,
-  Modal
+  Modal,
+  Platform
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Logo } from '../components/Logo';
 import { GlassCard } from '../components/GlassCard';
@@ -15,13 +17,41 @@ import { useStore } from '../store';
 
 export const ExplorerScreen: React.FC = () => {
   const { selectedPollutant, setSelectedPollutant } = useStore();
-  const [timeRange, setTimeRange] = useState({ start: '', end: '' });
+  const [selectedTimeRange, setSelectedTimeRange] = useState('近24小時');
+  const [customStartDate, setCustomStartDate] = useState<Date | null>(null);
+  const [customEndDate, setCustomEndDate] = useState<Date | null>(null);
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [selectedSources, setSelectedSources] = useState<string[]>(['EPA']);
   const [selectedArea, setSelectedArea] = useState('全市');
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const sources = ['EPA', '微感測', '光達', 'UAV'];
   const areas = ['全市', '桃園區', '中壢區', '大園區', '觀音區', '龜山區'];
+  const timeRanges = ['近24小時', '近3天', '近7天'];
+
+  const handleTimeRangeSelect = (range: string) => {
+    setSelectedTimeRange(range);
+    if (range !== '自訂') {
+      setCustomStartDate(null);
+      setCustomEndDate(null);
+    }
+  };
+
+  const handleStartDateChange = (event: any, selectedDate?: Date) => {
+    setShowStartDatePicker(false);
+    if (selectedDate) {
+      setCustomStartDate(selectedDate);
+      setSelectedTimeRange('自訂');
+    }
+  };
+
+  const handleEndDateChange = (event: any, selectedDate?: Date) => {
+    setShowEndDatePicker(false);
+    if (selectedDate) {
+      setCustomEndDate(selectedDate);
+      setSelectedTimeRange('自訂');
+    }
+  };
 
   const toggleSource = (source: string) => {
     setSelectedSources(prev => 
@@ -104,21 +134,34 @@ export const ExplorerScreen: React.FC = () => {
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldLabel}>時間範圍</Text>
             <View style={styles.timeOptions}>
-              <TouchableOpacity style={styles.timeOption}>
-                <Text style={styles.timeOptionText}>近 24 小時</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.timeOption}>
-                <Text style={styles.timeOptionText}>近 3 天</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.timeOption, styles.activeTimeOption]}>
-                <Text style={[styles.timeOptionText, styles.activeTimeOptionText]}>近 7 天</Text>
-              </TouchableOpacity>
+              {timeRanges.map((range) => (
+                <TouchableOpacity 
+                  key={range}
+                  style={[
+                    styles.timeOption,
+                    selectedTimeRange === range && styles.activeTimeOption
+                  ]}
+                  onPress={() => handleTimeRangeSelect(range)}
+                >
+                  <Text style={[
+                    styles.timeOptionText,
+                    selectedTimeRange === range && styles.activeTimeOptionText
+                  ]}>
+                    {range}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
             <View style={styles.customDateRow}>
               <View style={styles.dateInputContainer}>
                 <Text style={styles.dateInputLabel}>開始時間</Text>
-                <TouchableOpacity style={styles.dateInput}>
-                  <Text style={styles.dateInputText}>2024/01/01</Text>
+                <TouchableOpacity 
+                  style={styles.dateInput}
+                  onPress={() => setShowStartDatePicker(true)}
+                >
+                  <Text style={styles.dateInputText}>
+                    {customStartDate ? customStartDate.toLocaleDateString('zh-TW') : '選擇日期'}
+                  </Text>
                 </TouchableOpacity>
               </View>
               
@@ -126,8 +169,13 @@ export const ExplorerScreen: React.FC = () => {
               
               <View style={styles.dateInputContainer}>
                 <Text style={styles.dateInputLabel}>結束時間</Text>
-                <TouchableOpacity style={styles.dateInput}>
-                  <Text style={styles.dateInputText}>2024/01/07</Text>
+                <TouchableOpacity 
+                  style={styles.dateInput}
+                  onPress={() => setShowEndDatePicker(true)}
+                >
+                  <Text style={styles.dateInputText}>
+                    {customEndDate ? customEndDate.toLocaleDateString('zh-TW') : '選擇日期'}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -271,6 +319,25 @@ export const ExplorerScreen: React.FC = () => {
         {/* Bottom spacing */}
         <View style={styles.bottomSpacing} />
       </ScrollView>
+      
+      {/* Date Pickers */}
+      {showStartDatePicker && (
+        <DateTimePicker
+          value={customStartDate || new Date()}
+          mode="date"
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          onChange={handleStartDateChange}
+        />
+      )}
+      
+      {showEndDatePicker && (
+        <DateTimePicker
+          value={customEndDate || new Date()}
+          mode="date"
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          onChange={handleEndDateChange}
+        />
+      )}
     </LinearGradient>
   );
 };
