@@ -123,7 +123,7 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
 
   return (
     <View style={styles.container}>
-      <TopNavigation title="Spatial Distribution" subtitle="Real-time air quality metrics across 3km sectors" />
+      <TopNavigation title="Map View" subtitle="REAL-TIME MONITORING" />
       
       {/* Top Controls */}
       <View style={styles.topControls}>
@@ -158,7 +158,7 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
           <View style={styles.searchDivider} />
           <TouchableOpacity style={styles.mapModeButton} onPress={toggleMapMode}>
             <Ionicons 
-              name={mapMode === '2D' ? 'map' : mapMode === '3D' ? 'cube' : 'satellite'} 
+              name={mapMode === '2D' ? 'map' : mapMode === '3D' ? 'cube-outline' : 'globe'} 
               size={20} 
               color="#6A8D73" 
             />
@@ -240,12 +240,6 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
           </View>
         </View>
       </View>
-
-
-
-
-
-
 
       {/* Loading Indicator */}
       {isLoading && (
