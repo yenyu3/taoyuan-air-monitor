@@ -4,10 +4,16 @@ import {
   Text, 
   StyleSheet, 
   TouchableOpacity,
-  ActivityIndicator 
+  ActivityIndicator,
+  TextInput,
+  Dimensions,
+  Modal,
+  Animated,
+  PanResponder
 } from 'react-native';
 import MapView, { Polygon, Marker, Region } from 'react-native-maps';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { useStore } from '../store';
 import { GlassCard } from '../components/GlassCard';
 import { Logo } from '../components/Logo';
@@ -15,6 +21,8 @@ import { HealthBadge } from '../components/HealthBadge';
 import { TopNavigation } from '../components/TopNavigation';
 import { getGrid, getVerticalProfile, setScenario } from '../api';
 import { GridCell, VerticalProfile } from '../types';
+
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const TAOYUAN_REGION: Region = {
   latitude: 25.0,
@@ -49,7 +57,8 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
   } = useStore();
 
   const [selectedGrid, setSelectedGrid] = React.useState<GridCell | null>(null);
-  const [showDetails, setShowDetails] = React.useState(false);
+  const [showBottomSheet, setShowBottomSheet] = React.useState(false);
+  const slideAnim = React.useRef(new Animated.Value(screenHeight)).current;
 
   React.useEffect(() => {
     loadGridData();
@@ -71,7 +80,22 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
   const handleGridPress = async (grid: GridCell) => {
     setSelectedGrid(grid);
     setSelectedGridId(grid.gridId);
-    setShowDetails(true);
+    setShowBottomSheet(true);
+    Animated.timing(slideAnim, {
+      toValue: screenHeight * 0.5,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const closeBottomSheet = () => {
+    Animated.timing(slideAnim, {
+      toValue: screenHeight,
+      duration: 300,
+      useNativeDriver: false,
+    }).start(() => {
+      setShowBottomSheet(false);
+    });
   };
 
   const getGridColor = (value: number) => {
@@ -91,7 +115,44 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
 
   return (
     <View style={styles.container}>
-      <TopNavigation title="Map View" subtitle="REAL-TIME MONITORING" />
+      <TopNavigation title="Spatial Distribution" subtitle="Real-time air quality metrics across 3km sectors" />
+      
+      {/* Top Controls */}
+      <View style={styles.topControls}>
+        {/* Mode Toggle */}
+        <View style={styles.modeToggle}>
+          <TouchableOpacity
+            style={[styles.modeButton, mode === 'NOW' && styles.activeModeButton]}
+            onPress={() => setMode('NOW')}
+          >
+            <Text style={[styles.modeButtonText, mode === 'NOW' && styles.activeModeButtonText]}>
+              REAL-TIME
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.modeButton, mode === 'FORECAST' && styles.activeModeButton]}
+            onPress={() => setMode('FORECAST')}
+          >
+            <Text style={[styles.modeButtonText, mode === 'FORECAST' && styles.activeModeButtonText]}>
+              FORECAST
+            </Text>
+          </TouchableOpacity>
+        </View>
+        
+        {/* Search Bar */}
+        <View style={styles.searchBar}>
+          <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search districts or monitoring sites"
+            placeholderTextColor="#999"
+          />
+          <TouchableOpacity style={styles.filterButton}>
+            <Ionicons name="options" size={20} color="#999" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <MapView
         style={styles.map}
         initialRegion={TAOYUAN_REGION}
@@ -121,75 +182,27 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
         )}
       </MapView>
 
-      {/* Controls and Legend */}
-      <View style={styles.topControls}>
-        <View style={styles.controlCard}>
-          <View style={styles.pageTitle}>
-            <Text style={styles.pageTitleText}>地圖監測</Text>
-          </View>
-          
-          <View style={styles.divider} />
-          
-          <View style={styles.pollutantSelector}>
-            {(['PM25', 'O3', 'NOX', 'VOCs'] as const).map((pollutant) => (
-              <TouchableOpacity
-                key={pollutant}
-                style={[
-                  styles.pollutantButton,
-                  selectedPollutant === pollutant && styles.activePollutantButton
-                ]}
-                onPress={() => setSelectedPollutant(pollutant)}
-              >
-                <Text style={[
-                  styles.pollutantButtonText,
-                  selectedPollutant === pollutant && styles.activePollutantButtonText
-                ]}>
-                  {pollutant === 'PM25' ? 'PM2.5' : pollutant}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          
-          <View style={styles.modeSelector}>
-            <TouchableOpacity
-              style={[styles.modeButton, mode === 'NOW' && styles.activeModeButton]}
-              onPress={() => setMode('NOW')}
-            >
-              <Text style={[styles.modeButtonText, mode === 'NOW' && styles.activeModeButtonText]}>
-                即時
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.modeButton, mode === 'FORECAST' && styles.activeModeButton]}
-              onPress={() => setMode('FORECAST')}
-            >
-              <Text style={[styles.modeButtonText, mode === 'FORECAST' && styles.activeModeButtonText]}>
-                預報
-              </Text>
-            </TouchableOpacity>
-          </View>
-          
-          <View style={styles.divider} />
-          
-          {/* Legend */}
-          <View style={styles.legendSection}>
-            <Text style={styles.legendTitle}>{getPollutantLabel()} (µg/m³)</Text>
-            <View style={styles.legendGradient}>
-              <LinearGradient
-                colors={['rgba(106, 141, 115, 0.2)', 'rgba(106, 141, 115, 0.8)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.gradientBar}
-              />
-              <View style={styles.legendLabels}>
-                <Text style={styles.legendLabel}>0</Text>
-                <Text style={styles.legendLabel}>50</Text>
-                <Text style={styles.legendLabel}>100+</Text>
-              </View>
-            </View>
+      {/* Legend */}
+      <View style={styles.legendPanel}>
+        <View style={styles.legendCard}>
+          <Text style={styles.legendTitle}>{getPollutantLabel()} (µg/m³)</Text>
+          <LinearGradient
+            colors={['rgba(106, 141, 115, 0.2)', 'rgba(106, 141, 115, 0.8)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.gradientBar}
+          />
+          <View style={styles.legendLabels}>
+            <Text style={styles.legendLabel}>0</Text>
+            <Text style={styles.legendLabel}>50</Text>
+            <Text style={styles.legendLabel}>100+</Text>
           </View>
         </View>
       </View>
+
+
+
+
 
 
 
@@ -200,25 +213,98 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
         </View>
       )}
 
-      {/* Simple Details Modal */}
-      {showDetails && selectedGrid && (
-        <View style={styles.detailsOverlay}>
-          <GlassCard style={styles.detailsCard}>
-            <Text style={styles.detailsTitle}>網格 {selectedGrid.gridId}</Text>
-            <Text style={styles.detailsText}>
-              {getPollutantLabel()}: {selectedGrid.values.value} {selectedGrid.values.unit}
-            </Text>
-            <HealthBadge level={selectedGrid.health.level} />
-            <Text style={styles.detailsText}>{selectedGrid.health.summary}</Text>
-            <TouchableOpacity 
-              style={styles.closeButton}
-              onPress={() => setShowDetails(false)}
-            >
-              <Text style={styles.closeButtonText}>關閉</Text>
-            </TouchableOpacity>
-          </GlassCard>
+      {/* Bottom Sheet Modal */}
+      <Modal
+        visible={showBottomSheet}
+        transparent
+        animationType="none"
+        onRequestClose={closeBottomSheet}
+      >
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity 
+            style={styles.modalBackground} 
+            activeOpacity={1} 
+            onPress={closeBottomSheet}
+          />
+          <Animated.View style={[styles.bottomSheet, { top: slideAnim }]}>
+            <View style={styles.sheetHandle} />
+            <View style={styles.bottomSheetContent}>
+              {selectedGrid && (
+                <>
+                  {/* Header with location and risk */}
+                  <View style={styles.sheetHeader}>
+                    <View style={styles.locationInfo}>
+                      <Text style={styles.districtName}>蘆竹區</Text>
+                      <Text style={styles.gridId}>GRID ID: {selectedGrid.gridId}</Text>
+                    </View>
+                    <View style={styles.riskBadge}>
+                      <Text style={styles.riskText}>中等風險</Text>
+                    </View>
+                  </View>
+
+                  {/* Pollutant levels */}
+                  <View style={styles.pollutantSection}>
+                    <View style={styles.pollutantItem}>
+                      <Text style={styles.pollutantLabel}>PM2.5 濃度</Text>
+                      <View style={styles.pollutantValue}>
+                        <Text style={styles.pollutantNumber}>{selectedGrid.values.value}</Text>
+                        <Text style={styles.pollutantUnit}>μg/m³</Text>
+                      </View>
+                      <View style={styles.levelIndicator}>
+                        {[1,2,3,4,5].map((level) => (
+                          <View 
+                            key={level}
+                            style={[
+                              styles.levelBar,
+                              level <= 3 && styles.activeLevelBar
+                            ]} 
+                          />
+                        ))}
+                      </View>
+                    </View>
+
+                    <View style={styles.pollutantItem}>
+                      <Text style={styles.pollutantLabel}>O3 濃度</Text>
+                      <View style={styles.pollutantValue}>
+                        <Text style={styles.pollutantNumber}>42</Text>
+                        <Text style={styles.pollutantUnit}>ppb</Text>
+                      </View>
+                      <View style={styles.levelIndicator}>
+                        {[1,2,3,4,5].map((level) => (
+                          <View 
+                            key={level}
+                            style={[
+                              styles.levelBar,
+                              level <= 2 && styles.activeLevelBar
+                            ]} 
+                          />
+                        ))}
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* AI Insight */}
+                  <View style={styles.aiSection}>
+                    <View style={styles.aiHeader}>
+                      <Ionicons name="bulb" size={16} color="#B5C99A" />
+                      <Text style={styles.aiTitle}>AI 分析</Text>
+                    </View>
+                    <Text style={styles.aiText}>
+                      預計空氣品質將在 2 小時內因風向變化而下降。建議敏感族群配戴口罩。
+                    </Text>
+                  </View>
+
+                  {/* Full Analysis Button */}
+                  <TouchableOpacity style={styles.analysisButton}>
+                    <Text style={styles.analysisButtonText}>完整分析</Text>
+                    <Ionicons name="arrow-forward" size={20} color="white" />
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          </Animated.View>
         </View>
-      )}
+      </Modal>
     </View>
   );
 };
@@ -227,89 +313,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  map: {
-    flex: 1,
-  },
   topControls: {
     position: 'absolute',
     top: 120,
-    left: 16,
-    right: 16,
+    left: 20,
+    right: 20,
+    zIndex: 10,
   },
-  controlCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 16,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  pageTitle: {
-    marginBottom: 12,
-  },
-  pageTitleText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#6A8D73',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#E2E8F0',
-    marginBottom: 12,
-  },
-  pollutantSelector: {
+  modeToggle: {
     flexDirection: 'row',
-    marginBottom: 12,
-    gap: 8,
-  },
-  pollutantButton: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
-    alignItems: 'center',
-  },
-  activePollutantButton: {
-    backgroundColor: '#6A8D73',
-  },
-  pollutantButtonText: {
-    fontSize: 12,
-    color: '#6A8D73',
-    fontWeight: '600',
-  },
-  activePollutantButtonText: {
-    color: 'white',
-  },
-  modeSelector: {
-    flexDirection: 'row',
-    gap: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 25,
+    padding: 4,
+    alignSelf: 'flex-start',
   },
   modeButton: {
-    flex: 1,
     paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
-    alignItems: 'center',
+    paddingHorizontal: 20,
+    borderRadius: 20,
   },
   activeModeButton: {
-    backgroundColor: '#6A8D73',
+    backgroundColor: '#B5C99A',
   },
   modeButtonText: {
-    fontSize: 12,
-    color: '#6A8D73',
+    fontSize: 14,
     fontWeight: '600',
+    color: '#666',
   },
   activeModeButtonText: {
     color: 'white',
   },
-  legendSection: {
-    marginTop: 12,
+  map: {
+    flex: 1,
+  },
+  legendPanel: {
+    position: 'absolute',
+    left: 20,
+    bottom: 120,
+    zIndex: 10,
+  },
+  legendCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 16,
+    padding: 16,
+    minWidth: 140,
   },
   legendTitle: {
     fontSize: 12,
@@ -317,21 +364,44 @@ const styles = StyleSheet.create({
     color: '#6A8D73',
     marginBottom: 8,
   },
-  legendGradient: {
-    height: 20,
-  },
   gradientBar: {
     height: 8,
     borderRadius: 4,
+    marginBottom: 4,
   },
   legendLabels: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 4,
   },
   legendLabel: {
     fontSize: 10,
     color: '#666',
+  },
+
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 25,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginTop: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  searchIcon: {
+    marginRight: 12,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+  },
+  filterButton: {
+    marginLeft: 12,
   },
   loadingOverlay: {
     position: 'absolute',
@@ -343,41 +413,146 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  detailsOverlay: {
+  modalOverlay: {
+    flex: 1,
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  bottomSheet: {
     position: 'absolute',
-    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: 'white',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    minHeight: screenHeight * 0.5,
   },
-  detailsCard: {
-    margin: 20,
-    padding: 20,
+  sheetHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginTop: 12,
+    marginBottom: 20,
   },
-  detailsTitle: {
-    fontSize: 20,
+  bottomSheetContent: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  sheetHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 24,
+  },
+  locationInfo: {
+    flex: 1,
+  },
+  districtName: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#6A8D73',
-    marginBottom: 16,
+    color: '#333',
+    marginBottom: 4,
   },
-  detailsText: {
+  gridId: {
     fontSize: 14,
     color: '#666',
+    letterSpacing: 1,
+  },
+  riskBadge: {
+    backgroundColor: '#B5C99A',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  riskText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  pollutantSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  pollutantItem: {
+    flex: 1,
+    marginHorizontal: 8,
+  },
+  pollutantLabel: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  pollutantValue: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginBottom: 12,
+  },
+  pollutantNumber: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  pollutantUnit: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 4,
+  },
+  levelIndicator: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  levelBar: {
+    width: 16,
+    height: 8,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 4,
+  },
+  activeLevelBar: {
+    backgroundColor: '#B5C99A',
+  },
+  aiSection: {
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+  },
+  aiHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 8,
   },
-  closeButton: {
-    backgroundColor: '#6A8D73',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 16,
-    alignItems: 'center',
-    marginTop: 16,
+  aiTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#B5C99A',
+    marginLeft: 6,
   },
-  closeButtonText: {
+  aiText: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
+  },
+  analysisButton: {
+    backgroundColor: '#333',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 12,
+    gap: 8,
+  },
+  analysisButtonText: {
     color: 'white',
+    fontSize: 16,
     fontWeight: '600',
   },
 });
