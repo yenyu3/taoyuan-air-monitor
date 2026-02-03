@@ -56,6 +56,7 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
     setIsLoading
   } = useStore();
 
+  const [mapMode, setMapMode] = React.useState<'2D' | '3D' | 'Satellite'>('2D');
   const [selectedGrid, setSelectedGrid] = React.useState<GridCell | null>(null);
   const [showBottomSheet, setShowBottomSheet] = React.useState(false);
   const slideAnim = React.useRef(new Animated.Value(screenHeight)).current;
@@ -86,6 +87,13 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
       duration: 300,
       useNativeDriver: false,
     }).start();
+  };
+
+  const toggleMapMode = () => {
+    const modes: ('2D' | '3D' | 'Satellite')[] = ['2D', '3D', 'Satellite'];
+    const currentIndex = modes.indexOf(mapMode);
+    const nextIndex = (currentIndex + 1) % modes.length;
+    setMapMode(modes[nextIndex]);
   };
 
   const closeBottomSheet = () => {
@@ -147,8 +155,14 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
             placeholder="Search districts or monitoring sites"
             placeholderTextColor="#999"
           />
-          <TouchableOpacity style={styles.filterButton}>
-            <Ionicons name="options" size={20} color="#999" />
+          <View style={styles.searchDivider} />
+          <TouchableOpacity style={styles.mapModeButton} onPress={toggleMapMode}>
+            <Ionicons 
+              name={mapMode === '2D' ? 'map' : mapMode === '3D' ? 'cube' : 'satellite'} 
+              size={20} 
+              color="#6A8D73" 
+            />
+            <Text style={styles.mapModeText}>{mapMode}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -185,7 +199,34 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
       {/* Legend */}
       <View style={styles.legendPanel}>
         <View style={styles.legendCard}>
+          {/* Pollutant Switcher */}
+          <View style={styles.pollutantSwitcher}>
+            {(['PM25', 'O3', 'NOX', 'VOCs'] as const).map((pollutant) => {
+              const isActive = selectedPollutant === pollutant;
+              return (
+                <TouchableOpacity
+                  key={pollutant}
+                  style={[
+                    styles.pollutantDot,
+                    isActive && styles.activePollutantDot
+                  ]}
+                  onPress={() => setSelectedPollutant(pollutant)}
+                >
+                  <Text style={[
+                    styles.pollutantDotText,
+                    isActive && styles.activePollutantDotText
+                  ]}>
+                    {pollutant === 'PM25' ? 'P' : pollutant === 'NOX' ? 'N' : pollutant === 'VOCs' ? 'V' : 'O'}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          
+          {/* Pollutant Name */}
           <Text style={styles.legendTitle}>{getPollutantLabel()} (µg/m³)</Text>
+          
+          {/* Gradient Bar */}
           <LinearGradient
             colors={['rgba(106, 141, 115, 0.2)', 'rgba(106, 141, 115, 0.8)']}
             start={{ x: 0, y: 0 }}
@@ -358,11 +399,37 @@ const styles = StyleSheet.create({
     padding: 16,
     minWidth: 140,
   },
+  pollutantSwitcher: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  pollutantDot: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(106, 141, 115, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  activePollutantDot: {
+    backgroundColor: '#6A8D73',
+  },
+  pollutantDotText: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#6A8D73',
+  },
+  activePollutantDotText: {
+    color: 'white',
+  },
   legendTitle: {
     fontSize: 12,
     fontWeight: '600',
     color: '#6A8D73',
-    marginBottom: 8,
+    textAlign: 'left',
+    marginBottom: 12,
   },
   gradientBar: {
     height: 8,
@@ -400,8 +467,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  filterButton: {
-    marginLeft: 12,
+  searchDivider: {
+    width: 1,
+    height: 20,
+    backgroundColor: '#E0E0E0',
+    marginHorizontal: 12,
+  },
+  mapModeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  mapModeText: {
+    fontSize: 12,
+    color: '#6A8D73',
+    fontWeight: '600',
   },
   loadingOverlay: {
     position: 'absolute',
