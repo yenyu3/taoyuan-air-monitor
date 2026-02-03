@@ -172,9 +172,19 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
         initialRegion={TAOYUAN_REGION}
         showsUserLocation={false}
         showsMyLocationButton={false}
+        mapType={mapMode === 'Satellite' ? 'satellite' : 'standard'}
+        pitchEnabled={mapMode === '3D'}
+        rotateEnabled={mapMode === '3D'}
+        camera={mapMode === '3D' ? {
+          center: TAOYUAN_REGION,
+          pitch: 45,
+          heading: 0,
+          altitude: 3000,
+          zoom: 10
+        } : undefined}
       >
-        {/* Grid Polygons */}
-        {gridCells.map((grid) => (
+        {/* Grid Polygons - Different rendering based on mode */}
+        {mapMode === '2D' && gridCells.map((grid) => (
           <Polygon
             key={grid.gridId}
             coordinates={grid.polygonCoords}
@@ -185,8 +195,45 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
           />
         ))}
         
-        {/* Selected Grid Highlight */}
-        {selectedGrid && (
+        {/* 3D Mode - Hexagonal markers with elevation effect */}
+        {mapMode === '3D' && gridCells.map((grid) => {
+          const centerLat = grid.polygonCoords.reduce((sum, coord) => sum + coord.latitude, 0) / grid.polygonCoords.length;
+          const centerLng = grid.polygonCoords.reduce((sum, coord) => sum + coord.longitude, 0) / grid.polygonCoords.length;
+          return (
+            <Marker
+              key={grid.gridId}
+              coordinate={{ latitude: centerLat, longitude: centerLng }}
+              onPress={() => handleGridPress(grid)}
+            >
+              <View style={[styles.hexMarker, { backgroundColor: getGridColor(grid.values.value) }]}>
+                <Text style={styles.hexValue}>{Math.round(grid.values.value)}</Text>
+              </View>
+            </Marker>
+          );
+        })}
+        
+        {/* Satellite Mode - Circular markers with glow effect */}
+        {mapMode === 'Satellite' && gridCells.map((grid) => {
+          const centerLat = grid.polygonCoords.reduce((sum, coord) => sum + coord.latitude, 0) / grid.polygonCoords.length;
+          const centerLng = grid.polygonCoords.reduce((sum, coord) => sum + coord.longitude, 0) / grid.polygonCoords.length;
+          return (
+            <Marker
+              key={grid.gridId}
+              coordinate={{ latitude: centerLat, longitude: centerLng }}
+              onPress={() => handleGridPress(grid)}
+            >
+              <View style={styles.satelliteMarker}>
+                <View style={[styles.satelliteGlow, { backgroundColor: getGridColor(grid.values.value) }]} />
+                <View style={styles.satelliteCore}>
+                  <Text style={styles.satelliteValue}>{Math.round(grid.values.value)}</Text>
+                </View>
+              </View>
+            </Marker>
+          );
+        })}
+        
+        {/* Selected Grid Highlight - Only for 2D mode */}
+        {mapMode === '2D' && selectedGrid && (
           <Polygon
             coordinates={selectedGrid.polygonCoords}
             fillColor="rgba(106, 141, 115, 0.9)"
@@ -628,5 +675,60 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+  },
+  hexMarker: {
+    width: 40,
+    height: 40,
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.8)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  hexValue: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  satelliteMarker: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  satelliteGlow: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    opacity: 0.3,
+  },
+  satelliteCore: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#6A8D73',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  satelliteValue: {
+    color: '#6A8D73',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 });

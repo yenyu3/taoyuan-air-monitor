@@ -6,13 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  Modal,
-  Platform,
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
-import { Logo } from "../components/Logo";
-import { GlassCard } from "../components/GlassCard";
 import { TopNavigation } from "../components/TopNavigation";
 import { useStore } from "../store";
 
@@ -21,360 +17,271 @@ interface ExplorerScreenProps {
 }
 
 export const ExplorerScreen: React.FC<ExplorerScreenProps> = ({ scrollRef }) => {
-  const { selectedPollutant, setSelectedPollutant } = useStore();
-  const [selectedTimeRange, setSelectedTimeRange] = useState("近24小時");
-  const [customStartDate, setCustomStartDate] = useState<Date | null>(null);
-  const [customEndDate, setCustomEndDate] = useState<Date | null>(null);
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [selectedSources, setSelectedSources] = useState<string[]>(["EPA"]);
-  const [selectedArea, setSelectedArea] = useState("全市");
+  const [searchText, setSearchText] = useState("");
+  const [selectedTimeFilter, setSelectedTimeFilter] = useState("近24小時");
+  const [selectedPollutantFilter, setSelectedPollutantFilter] = useState("PM2.5");
+  const [selectedRegionFilter, setSelectedRegionFilter] = useState("全市");
+  const [selectedDataSources, setSelectedDataSources] = useState<string[]>(["EPA"]);
+  const [showTimeFilter, setShowTimeFilter] = useState(false);
+  const [showPollutantFilter, setShowPollutantFilter] = useState(false);
+  const [showRegionFilter, setShowRegionFilter] = useState(false);
+  const [showDataSourceFilter, setShowDataSourceFilter] = useState(false);
 
-  const sources = ["EPA", "微感測", "光達", "UAV"];
-  const areas = ["全市", "桃園區", "中壢區", "大園區", "觀音區", "龜山區"];
-  const timeRanges = ["近24小時", "近3天", "近7天"];
+  const timeOptions = ["近24小時", "近3天", "近7天"];
+  const pollutantOptions = ["PM2.5", "O3", "NOX", "VOCs"];
+  const regionOptions = ["全市", "桃園區", "中壢區", "大園區", "觀音區"];
+  const dataSourceOptions = ["EPA", "微感測", "光達", "LUV"];
 
-  const handleTimeRangeSelect = (range: string) => {
-    setSelectedTimeRange(range);
-    if (range !== "自訂") {
-      setCustomStartDate(null);
-      setCustomEndDate(null);
-    }
-  };
-
-  const handleStartDateChange = (event: any, selectedDate?: Date) => {
-    setShowStartDatePicker(false);
-    if (selectedDate) {
-      setCustomStartDate(selectedDate);
-      setSelectedTimeRange("自訂");
-    }
-  };
-
-  const handleEndDateChange = (event: any, selectedDate?: Date) => {
-    setShowEndDatePicker(false);
-    if (selectedDate) {
-      setCustomEndDate(selectedDate);
-      setSelectedTimeRange("自訂");
-    }
-  };
-
-  const handleReset = () => {
-    setSelectedPollutant("PM25");
-    setSelectedTimeRange("近24小時");
-    setCustomStartDate(null);
-    setCustomEndDate(null);
-    setSelectedArea("全市");
-    setSelectedSources(["EPA"]);
-  };
-
-  const toggleSource = (source: string) => {
-    setSelectedSources((prev) =>
-      prev.includes(source)
-        ? prev.filter((s) => s !== source)
-        : [...prev, source],
+  const toggleDataSource = (source: string) => {
+    setSelectedDataSources(prev => 
+      prev.includes(source) 
+        ? prev.filter(s => s !== source)
+        : [...prev, source]
     );
   };
 
-  const mockResults = [
+  const monitoringData = [
     {
-      id: "1",
-      time: "2024-01-15 14:00",
-      station: "桃園站",
-      value: 52,
+      id: 1,
+      district: "中壢區",
+      station: "Station TY-09",
+      time: "14:02 PM",
+      passed: true,
+      pollutant: "PM2.5",
+      value: 12,
+      unit: "μg/m³",
       source: "EPA",
-      qc: "通過",
       version: "v2.1",
+      color: "#4CAF50"
     },
     {
-      id: "2",
-      time: "2024-01-15 14:00",
-      station: "中壢站",
-      value: 45,
-      source: "LOCAL",
-      qc: "通過",
-      version: "v2.1",
-    },
-    {
-      id: "3",
-      time: "2024-01-15 14:00",
-      station: "觀音站",
-      value: 68,
-      source: "MOENV",
-      qc: "異常",
+      id: 2,
+      district: "蘆竹工業區",
+      station: "Grid Alpha-4",
+      time: "13:45 PM",
+      passed: false,
+      pollutant: "PM2.5",
+      value: 48,
+      unit: "μg/m³",
+      source: "微感測",
       version: "v2.0",
+      color: "#FFA868"
     },
+    {
+      id: 3,
+      district: "觀音海岸",
+      station: "Sensor TY-42",
+      time: "13:20 PM",
+      passed: true,
+      pollutant: "PM2.5",
+      value: 8,
+      unit: "μg/m³",
+      source: "光達",
+      version: "v2.1",
+      color: "#4CAF50"
+    }
   ];
 
   return (
     <LinearGradient colors={["#F4F2E9", "#E8E6D3"]} style={styles.container}>
+      <TopNavigation title="資料檢索" subtitle="QUERY & ANALYSIS" />
+      
       <ScrollView
         ref={scrollRef}
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        <TopNavigation title="Data Explorer" subtitle="QUERY & ANALYSIS" />
-
-        {/* Query Conditions */}
-        <GlassCard style={styles.queryCard}>
-          <Text style={styles.sectionTitle}>查詢條件</Text>
-
-          {/* Pollutant Selection */}
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>污染物</Text>
-            <View style={styles.pollutantButtons}>
-              {(["PM25", "O3", "NOX", "VOCs"] as const).map((pollutant) => (
-                <TouchableOpacity
-                  key={pollutant}
-                  style={[
-                    styles.pollutantButton,
-                    selectedPollutant === pollutant &&
-                      styles.activePollutantButton,
-                  ]}
-                  onPress={() => setSelectedPollutant(pollutant)}
-                >
-                  <Text
-                    style={[
-                      styles.pollutantButtonText,
-                      selectedPollutant === pollutant &&
-                        styles.activePollutantButtonText,
-                    ]}
-                  >
-                    {pollutant === "PM25" ? "PM2.5" : pollutant}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <View style={styles.searchBar}>
+            <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="搜尋區域或感測器 ID"
+              placeholderTextColor="#999"
+              value={searchText}
+              onChangeText={setSearchText}
+            />
           </View>
+        </View>
 
-          {/* Time Range */}
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>時間範圍</Text>
-            <View style={styles.timeOptions}>
-              {timeRanges.map((range) => (
-                <TouchableOpacity
-                  key={range}
-                  style={[
-                    styles.timeOption,
-                    selectedTimeRange === range && styles.activeTimeOption,
-                  ]}
-                  onPress={() => handleTimeRangeSelect(range)}
-                >
-                  <Text
-                    style={[
-                      styles.timeOptionText,
-                      selectedTimeRange === range &&
-                        styles.activeTimeOptionText,
-                    ]}
-                  >
-                    {range}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <View style={styles.customDateRow}>
-              <View style={styles.dateInputContainer}>
-                <Text style={styles.dateInputLabel}>開始時間</Text>
-                <TouchableOpacity
-                  style={styles.dateInput}
-                  onPress={() => setShowStartDatePicker(true)}
-                >
-                  <Text style={styles.dateInputText}>
-                    {customStartDate
-                      ? customStartDate.toLocaleDateString("zh-TW")
-                      : "選擇日期"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+        {/* Filter Buttons */}
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          style={styles.filterScrollView}
+          contentContainerStyle={styles.filterContainer}
+        >
+          <TouchableOpacity 
+            style={[styles.filterButton, showTimeFilter && styles.activeFilter]}
+            onPress={() => setShowTimeFilter(!showTimeFilter)}
+          >
+            <Text style={[styles.filterText, showTimeFilter && styles.activeFilterText]}>{selectedTimeFilter}</Text>
+            <Ionicons name="chevron-down" size={16} color={showTimeFilter ? "white" : "#6A8D73"} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.filterButton, showPollutantFilter && styles.activeFilter]}
+            onPress={() => setShowPollutantFilter(!showPollutantFilter)}
+          >
+            <Text style={[styles.filterText, showPollutantFilter && styles.activeFilterText]}>{selectedPollutantFilter}</Text>
+            <Ionicons name="chevron-down" size={16} color={showPollutantFilter ? "white" : "#6A8D73"} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.filterButton, showRegionFilter && styles.activeFilter]}
+            onPress={() => setShowRegionFilter(!showRegionFilter)}
+          >
+            <Text style={[styles.filterText, showRegionFilter && styles.activeFilterText]}>{selectedRegionFilter}</Text>
+            <Ionicons name="chevron-down" size={16} color={showRegionFilter ? "white" : "#6A8D73"} />
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.filterButton, showDataSourceFilter && styles.activeFilter]}
+            onPress={() => setShowDataSourceFilter(!showDataSourceFilter)}
+          >
+            <Text style={[styles.filterText, showDataSourceFilter && styles.activeFilterText]}>資料來源</Text>
+            <Ionicons name="chevron-down" size={16} color={showDataSourceFilter ? "white" : "#6A8D73"} />
+          </TouchableOpacity>
+        </ScrollView>
 
-              <Text style={styles.dateSeparator}>至</Text>
-
-              <View style={styles.dateInputContainer}>
-                <Text style={styles.dateInputLabel}>結束時間</Text>
-                <TouchableOpacity
-                  style={styles.dateInput}
-                  onPress={() => setShowEndDatePicker(true)}
-                >
-                  <Text style={styles.dateInputText}>
-                    {customEndDate
-                      ? customEndDate.toLocaleDateString("zh-TW")
-                      : "選擇日期"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+        {/* Filter Dropdowns */}
+        {showTimeFilter && (
+          <View style={styles.dropdownContainer}>
+            {timeOptions.map(option => (
+              <TouchableOpacity 
+                key={option}
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setSelectedTimeFilter(option);
+                  setShowTimeFilter(false);
+                }}
+              >
+                <Text style={styles.dropdownText}>{option}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
+        )}
 
-          {/* Area Selection */}
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>空間範圍</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View style={styles.areaButtons}>
-                {areas.map((area) => (
-                  <TouchableOpacity
-                    key={area}
-                    style={[
-                      styles.areaButton,
-                      selectedArea === area && styles.activeAreaButton,
-                    ]}
-                    onPress={() => setSelectedArea(area)}
-                  >
-                    <Text
-                      style={[
-                        styles.areaButtonText,
-                        selectedArea === area && styles.activeAreaButtonText,
-                      ]}
-                    >
-                      {area}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </ScrollView>
+        {showPollutantFilter && (
+          <View style={styles.dropdownContainer}>
+            {pollutantOptions.map(option => (
+              <TouchableOpacity 
+                key={option}
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setSelectedPollutantFilter(option);
+                  setShowPollutantFilter(false);
+                }}
+              >
+                <Text style={styles.dropdownText}>{option}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
+        )}
 
-          {/* Data Sources */}
-          <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>資料來源</Text>
-            <View style={styles.sourceChips}>
-              {sources.map((source) => (
-                <TouchableOpacity
-                  key={source}
-                  style={[
-                    styles.sourceChip,
-                    selectedSources.includes(source) && styles.activeSourceChip,
-                  ]}
-                  onPress={() => toggleSource(source)}
-                >
-                  <Text
-                    style={[
-                      styles.sourceChipText,
-                      selectedSources.includes(source) &&
-                        styles.activeSourceChipText,
-                    ]}
-                  >
-                    {source}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+        {showRegionFilter && (
+          <View style={styles.dropdownContainer}>
+            {regionOptions.map(option => (
+              <TouchableOpacity 
+                key={option}
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setSelectedRegionFilter(option);
+                  setShowRegionFilter(false);
+                }}
+              >
+                <Text style={styles.dropdownText}>{option}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
+        )}
 
-          {/* Action Buttons */}
-          <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
-              <Text style={styles.resetButtonText}>重設</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.queryButton}>
-              <Text style={styles.queryButtonText}>執行查詢</Text>
-            </TouchableOpacity>
+        {showDataSourceFilter && (
+          <View style={styles.dropdownContainer}>
+            {dataSourceOptions.map(option => (
+              <TouchableOpacity 
+                key={option}
+                style={[styles.dropdownItem, styles.checkboxItem]}
+                onPress={() => toggleDataSource(option)}
+              >
+                <Text style={styles.dropdownText}>{option}</Text>
+                {selectedDataSources.includes(option) && (
+                  <Ionicons name="checkmark" size={16} color="#6A8D73" />
+                )}
+              </TouchableOpacity>
+            ))}
           </View>
-        </GlassCard>
+        )}
 
-        {/* Results */}
-        <GlassCard style={styles.resultsCard}>
-          <Text style={styles.sectionTitle}>查詢結果</Text>
+        {/* Monitoring Feed Header */}
+        <View style={styles.feedHeader}>
+          <Text style={styles.feedTitle}>監測動態</Text>
+        </View>
 
-          {mockResults.map((result) => (
-            <View key={result.id} style={styles.resultItem}>
-              <View style={styles.resultHeader}>
-                <Text style={styles.resultTime}>{result.time}</Text>
-                <View
-                  style={[
-                    styles.qcBadge,
-                    {
-                      backgroundColor:
-                        result.qc === "通過" ? "#6A8D73" : "#E76F51",
-                    },
-                  ]}
-                >
-                  <Text style={styles.qcBadgeText}>{result.qc}</Text>
+        {/* Monitoring Cards */}
+        <View style={styles.cardsContainer}>
+          {monitoringData.map((item) => (
+            <View key={item.id} style={styles.monitoringCard}>
+              {/* Top Section: District, Station, Time, Status Badge */}
+              <View style={styles.cardHeader}>
+                <View style={styles.cardTitleContainer}>
+                  <Text style={styles.cardTitle}>{item.district}</Text>
+                  <Text style={styles.cardSubtitle}>{item.station} • {item.time}</Text>
+                </View>
+                <View style={[styles.statusBadge, { backgroundColor: item.passed ? '#A8D5A8' : '#FFD4B3' }]}>
+                  <Text style={[styles.statusBadgeText, { color: item.passed ? '#2E7D32' : '#D2691E' }]}>{item.passed ? '通過' : '異常'}</Text>
                 </View>
               </View>
-
-              <View style={styles.resultContent}>
-                <View style={styles.resultRow}>
-                  <Text style={styles.resultLabel}>站點:</Text>
-                  <Text style={styles.resultValue}>{result.station}</Text>
+              
+              {/* Bottom Section */}
+              <View style={styles.cardBottom}>
+                {/* Left: Pollutant, Source, Version */}
+                <View style={styles.cardInfo}>
+                  <Text style={styles.pollutantName}>{item.pollutant}</Text>
+                  <Text style={styles.infoText}>來源: {item.source}</Text>
+                  <Text style={styles.infoText}>版本: {item.version}</Text>
                 </View>
-                <View style={styles.resultRow}>
-                  <Text style={styles.resultLabel}>數值:</Text>
-                  <Text style={styles.resultValue}>{result.value} µg/m³</Text>
+                
+                {/* Right: Value */}
+                <View style={styles.valueContainer}>
+                  <Text style={styles.value}>{item.value}</Text>
+                  <Text style={styles.unit}>{item.unit}</Text>
                 </View>
-                <View style={styles.resultRow}>
-                  <Text style={styles.resultLabel}>來源:</Text>
-                  <Text style={styles.resultValue}>{result.source}</Text>
-                </View>
-                <View style={styles.resultRow}>
-                  <Text style={styles.resultLabel}>版本:</Text>
-                  <Text style={styles.resultValue}>{result.version}</Text>
-                </View>
+              </View>
+              
+              <View style={styles.progressContainer}>
+                <LinearGradient
+                  colors={[item.color, `${item.color}80`]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[
+                    styles.progressBar,
+                    { width: `${Math.min(item.value * 1.5, 80)}%` }
+                  ]}
+                />
               </View>
             </View>
           ))}
-        </GlassCard>
+        </View>
 
-        {/* Data Lineage */}
-        <GlassCard style={styles.lineageCard}>
-          <Text style={styles.sectionTitle}>資料血緣</Text>
-          <View style={styles.lineageFlow}>
-            <View style={styles.lineageStep}>
-              <Text style={styles.lineageStepText}>原始資料</Text>
-            </View>
-            <Text style={styles.lineageArrow}>→</Text>
-            <View style={styles.lineageStep}>
-              <Text style={styles.lineageStepText}>品質控制</Text>
-            </View>
-            <Text style={styles.lineageArrow}>→</Text>
-            <View style={styles.lineageStep}>
-              <Text style={styles.lineageStepText}>校正處理</Text>
-            </View>
-            <Text style={styles.lineageArrow}>→</Text>
-            <View style={styles.lineageStep}>
-              <Text style={styles.lineageStepText}>小時平均</Text>
-            </View>
+        {/* Health Advisory */}
+        <View style={styles.advisoryContainer}>
+          <View style={styles.advisoryHeader}>
+            <Text style={styles.advisoryTitle}>健康建議</Text>
           </View>
-          <Text style={styles.runId}>Run ID: RUN_240115_001</Text>
-        </GlassCard>
-
-        {/* Export Options */}
-        <GlassCard style={styles.exportCard}>
-          <Text style={styles.sectionTitle}>匯出選項</Text>
-          <View style={styles.exportButtons}>
-            <TouchableOpacity style={styles.exportButton}>
-              <Text style={styles.exportButtonText}>下載 CSV</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.exportButton}>
-              <Text style={styles.exportButtonText}>複製 API</Text>
-            </TouchableOpacity>
+          <View style={styles.advisoryContent}>
+            <View style={styles.advisoryIcon}>
+              <Ionicons name="sparkles" size={24} color="white" />
+            </View>
+            <Text style={styles.advisoryText}>
+              桃園空氣品質保持穩定。今日適合戶外活動。
+            </Text>
           </View>
-        </GlassCard>
+        </View>
 
-        {/* Bottom spacing */}
         <View style={styles.bottomSpacing} />
       </ScrollView>
-
-      {/* Date Pickers */}
-      {showStartDatePicker && (
-        <View style={styles.datePickerContainer}>
-          <DateTimePicker
-            value={customStartDate || new Date()}
-            mode="date"
-            display={Platform.OS === "ios" ? "spinner" : "default"}
-            onChange={handleStartDateChange}
-          />
-        </View>
-      )}
-
-      {showEndDatePicker && (
-        <View style={styles.datePickerContainer}>
-          <DateTimePicker
-            value={customEndDate || new Date()}
-            mode="date"
-            display={Platform.OS === "ios" ? "spinner" : "default"}
-            onChange={handleEndDateChange}
-          />
-        </View>
-      )}
     </LinearGradient>
   );
 };
@@ -386,296 +293,255 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  header: {
+  searchContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 16,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 25,
     paddingHorizontal: 16,
-    paddingTop: 40,
+    paddingVertical: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  searchIcon: {
+    marginRight: 12,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+  },
+  voiceButton: {
+    marginLeft: 12,
+  },
+  dropdownContainer: {
+    marginHorizontal: 20,
+    marginBottom: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  dropdownItem: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  checkboxItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  dropdownText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  filterScrollView: {
     paddingBottom: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#6A8D73",
+  filterContainer: {
+    paddingHorizontal: 20,
+    gap: 12,
   },
-  queryCard: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-    marginTop: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#6A8D73",
-    marginBottom: 16,
-  },
-  fieldContainer: {
-    marginBottom: 16,
-  },
-  fieldLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#666",
-    marginBottom: 8,
-  },
-  pollutantButtons: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  pollutantButton: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: "rgba(106, 141, 115, 0.1)",
-    alignItems: "center",
-  },
-  activePollutantButton: {
-    backgroundColor: "#6A8D73",
-  },
-  pollutantButtonText: {
-    fontSize: 12,
-    color: "#6A8D73",
-    fontWeight: "600",
-  },
-  activePollutantButtonText: {
-    color: "white",
-  },
-  timeOptions: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  timeOption: {
-    flex: 1,
+  filterButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
     paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    backgroundColor: "rgba(106, 141, 115, 0.1)",
-    alignItems: "center",
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 20,
+    gap: 6,
   },
-  activeTimeOption: {
-    backgroundColor: "#6A8D73",
+  activeFilter: {
+    backgroundColor: '#6A8D73',
   },
-  timeOptionText: {
+  filterText: {
     fontSize: 14,
-    color: "#6A8D73",
-    fontWeight: "600",
+    fontWeight: '600',
+    color: '#6A8D73',
   },
-  activeTimeOptionText: {
-    color: "white",
+  activeFilterText: {
+    color: 'white',
   },
-  customDateRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 12,
+  feedHeader: {
+    paddingHorizontal: 20,
+    paddingBottom: 16,
   },
-  dateInputContainer: {
-    flex: 1,
+  feedTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#6A8D73',
+    letterSpacing: 2,
   },
-  dateInputLabel: {
+  statusDots: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  statusBadgeText: {
     fontSize: 12,
-    color: "#666",
+    fontWeight: '600',
+  },
+  cardBottom: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  pollutantName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
     marginBottom: 4,
   },
-  dateInput: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: "rgba(106, 141, 115, 0.1)",
-    borderRadius: 12,
-    alignItems: "center",
+  infoText: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 2,
   },
-  dateInputText: {
+  cardsContainer: {
+    paddingHorizontal: 20,
+    gap: 16,
+  },
+  monitoringCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  cardTitleContainer: {
+    flex: 1,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  cardSubtitle: {
     fontSize: 14,
-    color: "#6A8D73",
-    fontWeight: "600",
+    color: '#666',
   },
-  dateSeparator: {
+  cardIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(106, 141, 115, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cardContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  cardInfo: {
+    flex: 1,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  infoLabel: {
+    fontSize: 12,
+    color: '#666',
+  },
+  infoValue: {
+    fontSize: 12,
+    color: '#333',
+    fontWeight: '600',
+  },
+  progressContainer: {
+    height: 6,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  progressBar: {
+    height: '100%',
+    borderRadius: 3,
+  },
+  valueContainer: {
+    alignItems: 'flex-end',
+  },
+  value: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  unit: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: -4,
+  },
+  advisoryContainer: {
+    marginHorizontal: 20,
+    marginTop: 24,
+    backgroundColor: '#B5C99A',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  advisoryHeader: {
+    marginBottom: 12,
+  },
+  advisoryTitle: {
     fontSize: 16,
-    color: "#666",
-    marginHorizontal: 12,
+    fontWeight: '600',
+    color: 'white',
+    letterSpacing: 2,
   },
-  areaButtons: {
-    flexDirection: "row",
-    gap: 8,
+  advisoryContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  areaButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: "rgba(106, 141, 115, 0.1)",
+  advisoryIcon: {
+    marginRight: 12,
   },
-  activeAreaButton: {
-    backgroundColor: "#6A8D73",
-  },
-  areaButtonText: {
-    fontSize: 12,
-    color: "#6A8D73",
-    fontWeight: "600",
-  },
-  activeAreaButtonText: {
-    color: "white",
-  },
-  sourceChips: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  sourceChip: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: "rgba(106, 141, 115, 0.1)",
-    borderWidth: 1,
-    borderColor: "transparent",
-  },
-  activeSourceChip: {
-    backgroundColor: "#6A8D73",
-    borderColor: "#6A8D73",
-  },
-  sourceChipText: {
-    fontSize: 12,
-    color: "#6A8D73",
-    fontWeight: "600",
-  },
-  activeSourceChipText: {
-    color: "white",
-  },
-  actionButtons: {
-    flexDirection: "row",
-    gap: 12,
-    marginTop: 8,
-  },
-  resetButton: {
+  advisoryText: {
     flex: 1,
-    paddingVertical: 12,
-    borderRadius: 16,
-    backgroundColor: "rgba(106, 141, 115, 0.1)",
-    alignItems: "center",
-  },
-  resetButtonText: {
     fontSize: 14,
-    color: "#6A8D73",
-    fontWeight: "600",
-  },
-  queryButton: {
-    flex: 2,
-    paddingVertical: 12,
-    borderRadius: 16,
-    backgroundColor: "#6A8D73",
-    alignItems: "center",
-  },
-  queryButtonText: {
-    fontSize: 14,
-    color: "white",
-    fontWeight: "600",
-  },
-  resultsCard: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  resultItem: {
-    marginBottom: 12,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(106, 141, 115, 0.1)",
-  },
-  resultHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  resultTime: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#6A8D73",
-  },
-  qcBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  qcBadgeText: {
-    fontSize: 10,
-    color: "white",
-    fontWeight: "600",
-  },
-  resultContent: {
-    gap: 4,
-  },
-  resultRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  resultLabel: {
-    fontSize: 12,
-    color: "#666",
-  },
-  resultValue: {
-    fontSize: 12,
-    color: "#6A8D73",
-    fontWeight: "600",
-  },
-  lineageCard: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  lineageFlow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 12,
-  },
-  lineageStep: {
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-    backgroundColor: "rgba(106, 141, 115, 0.1)",
-    borderRadius: 12,
-  },
-  lineageStepText: {
-    fontSize: 10,
-    color: "#6A8D73",
-    fontWeight: "600",
-  },
-  lineageArrow: {
-    fontSize: 12,
-    color: "#6A8D73",
-    marginHorizontal: 4,
-  },
-  runId: {
-    fontSize: 12,
-    color: "#888",
-    textAlign: "center",
-  },
-  exportCard: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  exportButtons: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  exportButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 16,
-    backgroundColor: "#6A8D73",
-    alignItems: "center",
-  },
-  exportButtonText: {
-    fontSize: 14,
-    color: "white",
-    fontWeight: "600",
+    color: 'white',
+    lineHeight: 20,
   },
   bottomSpacing: {
     height: 100,
-  },
-  datePickerContainer: {
-    position: "absolute",
-    top: "67%",
-    left: 0,
-    right: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(244, 242, 233, 0.9)",
-    zIndex: 1000,
   },
 });
