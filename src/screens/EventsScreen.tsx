@@ -1,301 +1,342 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
   TouchableOpacity,
-  TextInput,
-  Modal
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Logo } from '../components/Logo';
-import { GlassCard } from '../components/GlassCard';
-import { useStore } from '../store';
-import { getEvents, setScenario } from '../api';
-import { Severity } from '../types';
+  ImageBackground,
+} from "react-native";
+import MapView, { Polygon, Marker, Region } from 'react-native-maps';
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { TopNavigation } from "../components/TopNavigation";
+import { useStore } from "../store";
 
 interface EventsScreenProps {
   scrollRef?: (ref: any) => void;
 }
 
 export const EventsScreen: React.FC<EventsScreenProps> = ({ scrollRef }) => {
-  const { 
-    events, 
-    setEvents, 
-    selectedScenario,
-    isLoading,
-    setIsLoading
-  } = useStore();
-  
-  const [selectedEvidence, setSelectedEvidence] = useState<string | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState("活躍事件");
+  const [selectedDistrict, setSelectedDistrict] = useState("所有區域");
+  const [selectedSeverity, setSelectedSeverity] = useState("嚴重度");
+  const [showFilterDropdown, setShowFilterDropdown] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadEvents();
-  }, [selectedScenario]);
-
-  const loadEvents = async () => {
-    setIsLoading(true);
-    try {
-      setScenario(selectedScenario);
-      const eventsData = await getEvents();
-      setEvents(eventsData);
-    } catch (error) {
-      console.error('Failed to load events:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  const filterOptions = {
+    events: ["活躍事件", "歷史事件", "已解決事件"],
+    districts: ["所有區域", "蘆竹區", "觀音區", "中壢區", "桃園區", "大園區"],
+    severity: ["嚴重度", "高風險", "中等風險", "低風險"]
   };
 
-  const getSeverityColor = (severity: Severity) => {
-    switch (severity) {
-      case '低': return '#6A8D73';
-      case '中': return '#F4A261';
-      case '高': return '#E76F51';
-      default: return '#6A8D73';
-    }
-  };
-
-  const getHealthImpactColor = (impact: Severity) => {
-    switch (impact) {
-      case '低': return '#6A8D73';
-      case '中': return '#F4A261';
-      case '高': return '#E76F51';
-      default: return '#6A8D73';
-    }
-  };
+  const eventData = [
+    {
+      id: 1,
+      category: "工業聚集區",
+      title: "觀音中心排放",
+      description: "在工業區範圍內檢測到局部 SO2 尖峰。",
+      severity: "中等風險",
+      status: "固定站",
+      trend: "穩定中",
+      exposure: "~1.2k 人",
+      duration: "45分鐘 持續",
+      location: "觀音區",
+      healthIndex: "敏感警告",
+      severityColor: "#FFB74D",
+      statusColor: "#FFFFFF",
+      icon: "business",
+    },
+    {
+      id: 2,
+      category: "大氣流入",
+      title: "重度 PM2.5 流入",
+      description: "跨境污染物影響北部住宅區域。",
+      severity: "嚴重程度",
+      status: "AI 識別",
+      duration: "2小時15分鐘 活躍",
+      location: "蘆竹區",
+      confidence: "98.4%",
+      severityColor: "#E57373",
+      statusColor: "#FFFFFF",
+      icon: "warning",
+    },
+  ];
 
   return (
-    <LinearGradient
-      colors={['#F4F2E9', '#E8E6D3']}
-      style={styles.container}
-    >
-      <ScrollView ref={scrollRef} style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>事件庫</Text>
-        </View>
+    <LinearGradient colors={["#F4F2E9", "#E8E6D3"]} style={styles.container}>
+      <TopNavigation
+        title="事件庫"
+        subtitle="INCIDENT TRACKING"
+      />
 
-        {/* Event List */}
-        {events.map((event) => (
-          <GlassCard key={event.id} style={styles.eventCard}>
-            <View style={styles.eventHeader}>
-              <View style={styles.eventTitleRow}>
-                <Text style={styles.eventType}>{event.type}</Text>
-                <View style={styles.badges}>
-                  <View style={[styles.severityBadge, { backgroundColor: getSeverityColor(event.severity) }]}>
-                    <Text style={styles.badgeText}>嚴重度: {event.severity}</Text>
-                  </View>
-                  <View style={[styles.healthBadge, { backgroundColor: getHealthImpactColor(event.healthImpact) }]}>
-                    <Text style={styles.badgeText}>健康影響: {event.healthImpact}</Text>
-                  </View>
-                </View>
-              </View>
-              
-              <View style={styles.eventMeta}>
-                <Text style={styles.eventDate}>
-                  {new Date(event.date).toLocaleDateString('zh-TW')} {new Date(event.date).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' })}
-                </Text>
-                <Text style={styles.eventArea}>{event.area}</Text>
-              </View>
-            </View>
+      <ScrollView
+        ref={scrollRef}
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Filter Buttons */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.filterScrollView}
+          contentContainerStyle={styles.filterContainer}
+        >
+          <TouchableOpacity 
+            style={[styles.filterButton, showFilterDropdown === 'events' && styles.activeFilter]}
+            onPress={() => setShowFilterDropdown(showFilterDropdown === 'events' ? null : 'events')}
+          >
+            <Text style={[styles.filterText, showFilterDropdown === 'events' && styles.activeFilterText]}>
+              {selectedFilter}
+            </Text>
+            <Ionicons name="chevron-down" size={16} color={showFilterDropdown === 'events' ? "white" : "#6A8D73"} />
+          </TouchableOpacity>
 
-            <Text style={styles.eventNote}>{event.note}</Text>
+          <TouchableOpacity 
+            style={[styles.filterButton, showFilterDropdown === 'districts' && styles.activeFilter]}
+            onPress={() => setShowFilterDropdown(showFilterDropdown === 'districts' ? null : 'districts')}
+          >
+            <Text style={[styles.filterText, showFilterDropdown === 'districts' && styles.activeFilterText]}>{selectedDistrict}</Text>
+            <Ionicons name="chevron-down" size={16} color={showFilterDropdown === 'districts' ? "white" : "#6A8D73"} />
+          </TouchableOpacity>
 
-            {/* Event Detail Placeholder */}
-            <View style={styles.evidenceSection}>
-              <Text style={styles.evidenceTitle}>證據資料</Text>
-              <View style={styles.evidenceGrid}>
-                <TouchableOpacity 
-                  style={styles.evidenceCard} 
-                  onPress={() => setSelectedEvidence('地圖回放')}
-                >
-                  <Text style={styles.evidenceCardTitle}>地圖回放</Text>
-                  <View style={styles.evidencePlaceholder}>
-                    <View style={styles.mockChart}>
-                      <View style={[styles.mockBar, { height: 20, backgroundColor: '#6A8D73' }]} />
-                      <View style={[styles.mockBar, { height: 35, backgroundColor: '#F4A261' }]} />
-                      <View style={[styles.mockBar, { height: 45, backgroundColor: '#E76F51' }]} />
-                      <View style={[styles.mockBar, { height: 30, backgroundColor: '#6A8D73' }]} />
-                    </View>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={styles.evidenceCard}
-                  onPress={() => setSelectedEvidence('趨勢分析')}
-                >
-                  <Text style={styles.evidenceCardTitle}>趨勢分析</Text>
-                  <View style={styles.evidencePlaceholder}>
-                    <View style={styles.mockLineChart}>
-                      <View style={styles.chartLine} />
-                      <View style={styles.chartPoints}>
-                        {[20, 35, 45, 30, 25].map((height, i) => (
-                          <View key={i} style={[styles.chartPoint, { bottom: height }]} />
-                        ))}
-                      </View>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={styles.evidenceCard}
-                  onPress={() => setSelectedEvidence('風場資料')}
-                >
-                  <Text style={styles.evidenceCardTitle}>風場資料</Text>
-                  <View style={styles.evidencePlaceholder}>
-                    <View style={styles.mockWindChart}>
-                      <Text style={styles.windArrow}>→</Text>
-                      <Text style={styles.windSpeed}>12 m/s</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={styles.evidenceCard}
-                  onPress={() => setSelectedEvidence('垂直剖面')}
-                >
-                  <Text style={styles.evidenceCardTitle}>垂直剖面</Text>
-                  <View style={styles.evidencePlaceholder}>
-                    <View style={styles.mockProfileChart}>
-                      <View style={[styles.profileLayer, { backgroundColor: '#E76F51', width: '80%' }]} />
-                      <View style={[styles.profileLayer, { backgroundColor: '#F4A261', width: '60%' }]} />
-                      <View style={[styles.profileLayer, { backgroundColor: '#6A8D73', width: '40%' }]} />
-                      <View style={[styles.profileLayer, { backgroundColor: '#6A8D73', width: '20%' }]} />
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
+          <TouchableOpacity 
+            style={[styles.filterButton, showFilterDropdown === 'severity' && styles.activeFilter]}
+            onPress={() => setShowFilterDropdown(showFilterDropdown === 'severity' ? null : 'severity')}
+          >
+            <Text style={[styles.filterText, showFilterDropdown === 'severity' && styles.activeFilterText]}>{selectedSeverity}</Text>
+            <Ionicons name="filter" size={16} color={showFilterDropdown === 'severity' ? "white" : "#6A8D73"} />
+          </TouchableOpacity>
+        </ScrollView>
 
-            {/* Expert Notes */}
-            <View style={styles.notesSection}>
-              <Text style={styles.notesTitle}>專家註記</Text>
-              <TextInput
-                style={styles.notesInput}
-                placeholder={
-                  event.severity === '高' 
-                    ? '此事件可能與工業排放異常有關，建議進一步調查排放源...' 
-                    : '點擊添加專家註記...'
-                }
-                multiline
-                numberOfLines={3}
-                textAlignVertical="top"
-              />
-            </View>
-
-            {/* Action Buttons */}
-            <View style={styles.actionButtons}>
-              <TouchableOpacity style={styles.actionButton}>
-                <Text style={styles.actionButtonText}>匯出 PDF</Text>
+        {/* Filter Dropdowns */}
+        {showFilterDropdown === 'events' && (
+          <View style={styles.dropdownContainer}>
+            {filterOptions.events.map(option => (
+              <TouchableOpacity 
+                key={option}
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setSelectedFilter(option);
+                  setShowFilterDropdown(null);
+                }}
+              >
+                <Text style={styles.dropdownText}>{option}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.actionButton, styles.primaryButton]}>
-                <Text style={[styles.actionButtonText, styles.primaryButtonText]}>提交審核</Text>
-              </TouchableOpacity>
-            </View>
-          </GlassCard>
-        ))}
-
-        {/* Empty State */}
-        {events.length === 0 && !isLoading && (
-          <GlassCard style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>目前沒有事件記錄</Text>
-            <Text style={styles.emptyStateSubtext}>當系統偵測到異常事件時，會自動在此顯示</Text>
-          </GlassCard>
+            ))}
+          </View>
         )}
 
-        {/* Add Event Button */}
-        <TouchableOpacity style={styles.addEventButton}>
-          <Text style={styles.addEventButtonText}>+ 新增事件</Text>
-        </TouchableOpacity>
+        {showFilterDropdown === 'districts' && (
+          <View style={styles.dropdownContainer}>
+            {filterOptions.districts.map(option => (
+              <TouchableOpacity 
+                key={option}
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setSelectedDistrict(option);
+                  setShowFilterDropdown(null);
+                }}
+              >
+                <Text style={styles.dropdownText}>{option}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
 
-        {/* Bottom spacing */}
+        {showFilterDropdown === 'severity' && (
+          <View style={styles.dropdownContainer}>
+            {filterOptions.severity.map(option => (
+              <TouchableOpacity 
+                key={option}
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setSelectedSeverity(option);
+                  setShowFilterDropdown(null);
+                }}
+              >
+                <Text style={styles.dropdownText}>{option}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        {/* Event Cards */}
+        <View style={styles.eventsContainer}>
+          {eventData.map((event) => (
+            <View key={event.id} style={styles.eventCard}>
+              {/* Event Image with Overlay */}
+              <View style={styles.eventImageContainer}>
+                <MapView
+                  style={styles.eventMap}
+                  initialRegion={{
+                    latitude: event.id === 1 ? 25.035 : 25.0,
+                    longitude: event.id === 1 ? 121.3 : 121.25,
+                    latitudeDelta: 0.1,
+                    longitudeDelta: 0.1,
+                  }}
+                  scrollEnabled={true}
+                  zoomEnabled={true}
+                  pitchEnabled={false}
+                  rotateEnabled={false}
+                >
+                  <Marker
+                    coordinate={{
+                      latitude: event.id === 1 ? 25.035 : 25.0,
+                      longitude: event.id === 1 ? 121.3 : 121.25,
+                    }}
+                  >
+                    <View style={[styles.eventMarkerPin, { backgroundColor: event.severityColor }]} />
+                  </Marker>
+                </MapView>
+
+                  {/* Gradient Overlay */}
+                  <LinearGradient
+                    colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.6)"]}
+                    style={styles.gradientOverlay}
+                  />
+
+                  {/* Top Badges */}
+                  <View style={styles.topBadges}>
+                    <View
+                      style={[
+                        styles.severityBadge,
+                        { backgroundColor: event.severityColor },
+                      ]}
+                    >
+                      <Text style={styles.badgeText}>{event.severity}</Text>
+                    </View>
+                    <View
+                      style={[
+                        styles.statusBadge,
+                        { backgroundColor: "rgba(255,255,255,0.9)" },
+                      ]}
+                    >
+                      <Text style={[styles.badgeText, { color: "#333" }]}>
+                        {event.status}
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* Bottom Info */}
+                  <View style={styles.bottomInfo}>
+                    <Text style={styles.categoryText}>影響類別</Text>
+                    <Text style={styles.categoryTitle}>{event.category}</Text>
+                  </View>
+              </View>
+
+              {/* Event Content */}
+              <View style={styles.eventContent}>
+                <View style={styles.eventHeader}>
+                  <View style={styles.eventTitleContainer}>
+                    <Text style={styles.eventTitle}>{event.title}</Text>
+                    <Text style={styles.eventDescription}>
+                      {event.description}
+                    </Text>
+                  </View>
+                  <View style={styles.eventIcon}>
+                    <Ionicons
+                      name={event.icon as any}
+                      size={28}
+                      color="#6ABD73"
+                    />
+                  </View>
+                </View>
+
+                {/* Event Details Grid */}
+                <View style={styles.detailsGrid}>
+                  <View style={styles.detailItem}>
+                    <View style={styles.detailIcon}>
+                      <Ionicons name="time" size={20} color="#666" />
+                    </View>
+                    <View style={styles.detailContent}>
+                      <Text style={styles.detailLabel}>持續時間</Text>
+                      <Text style={styles.detailValue}>{event.duration}</Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.detailItem}>
+                    <View style={styles.detailIcon}>
+                      <Ionicons name="location" size={20} color="#666" />
+                    </View>
+                    <View style={styles.detailContent}>
+                      <Text style={styles.detailLabel}>位置</Text>
+                      <Text style={styles.detailValue}>{event.location}</Text>
+                    </View>
+                  </View>
+
+                  {event.trend && (
+                    <View style={styles.detailItem}>
+                      <View style={styles.detailIcon}>
+                        <Ionicons name="trending-up" size={20} color="#666" />
+                      </View>
+                      <View style={styles.detailContent}>
+                        <Text style={styles.detailLabel}>趨勢</Text>
+                        <Text style={styles.detailValue}>{event.trend}</Text>
+                      </View>
+                    </View>
+                  )}
+
+                  {event.exposure && (
+                    <View style={styles.detailItem}>
+                      <View style={styles.detailIcon}>
+                        <Ionicons name="people" size={20} color="#666" />
+                      </View>
+                      <View style={styles.detailContent}>
+                        <Text style={styles.detailLabel}>暴露人口</Text>
+                        <Text style={styles.detailValue}>{event.exposure}</Text>
+                      </View>
+                    </View>
+                  )}
+                </View>
+
+                {/* Bottom Action */}
+                <View style={styles.eventFooter}>
+                  <View style={styles.confidenceContainer}>
+                    <Text style={styles.confidenceLabel}>
+                      {event.confidence ? "AI 信心分數" : "健康指數"}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.confidenceValue,
+                        { color: event.confidence ? "#6ABD73" : "#F59E0B" },
+                      ]}
+                    >
+                      {event.confidence || event.healthIndex}
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.actionButton,
+                      event.confidence
+                        ? styles.primaryActionButton
+                        : styles.secondaryActionButton,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.actionButtonText,
+                        event.confidence
+                          ? styles.primaryActionText
+                          : styles.secondaryActionText,
+                      ]}
+                    >
+                      {event.confidence ? "AI 證據" : "完整分析"}
+                    </Text>
+                    <Ionicons
+                      name={event.confidence ? "analytics" : "trending-up"}
+                      size={18}
+                      color={event.confidence ? "white" : "#333"}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          ))}
+        </View>
+
         <View style={styles.bottomSpacing} />
       </ScrollView>
-
-      {/* Evidence Detail Modal */}
-      <Modal
-        visible={selectedEvidence !== null}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setSelectedEvidence(null)}
-      >
-        <View style={styles.modalOverlay}>
-          <GlassCard style={styles.evidenceModal}>
-            <Text style={styles.modalTitle}>{selectedEvidence}</Text>
-            
-            <View style={styles.evidenceDetail}>
-              {selectedEvidence === '地圖回放' && (
-                <View style={styles.detailChart}>
-                  <View style={styles.chartGrid}>
-                    {Array.from({ length: 16 }, (_, i) => (
-                      <View 
-                        key={i} 
-                        style={[
-                          styles.gridCell, 
-                          { backgroundColor: `rgba(106, 141, 115, ${0.2 + (i % 4) * 0.2})` }
-                        ]} 
-                      />
-                    ))}
-                  </View>
-                  <Text style={styles.chartLabel}>PM2.5 濃度分布 (μg/m³)</Text>
-                </View>
-              )}
-              
-              {selectedEvidence === '趨勢分析' && (
-                <View style={styles.detailChart}>
-                  <View style={styles.lineChart}>
-                    <View style={styles.chartLine} />
-                    <View style={styles.chartPoints}>
-                      {[20, 35, 45, 30, 25].map((height, i) => (
-                        <View key={i} style={[styles.chartPoint, { bottom: height }]} />
-                      ))}
-                    </View>
-                  </View>
-                  <Text style={styles.chartLabel}>24小時變化趨勢</Text>
-                </View>
-              )}
-              
-              {selectedEvidence === '風場資料' && (
-                <View style={styles.detailChart}>
-                  <View style={styles.windChart}>
-                    <Text style={styles.windDirection}>→</Text>
-                    <Text style={styles.windSpeed}>12 m/s</Text>
-                    <Text style={styles.windInfo}>東北風</Text>
-                    <Text style={styles.windTemp}>溫度: 25°C</Text>
-                    <Text style={styles.windHumidity}>濕度: 65%</Text>
-                  </View>
-                  <Text style={styles.chartLabel}>氣象條件</Text>
-                </View>
-              )}
-              
-              {selectedEvidence === '垂直剖面' && (
-                <View style={styles.detailChart}>
-                  <View style={styles.profileChart}>
-                    <View style={styles.profileAxis}>
-                      <Text style={styles.axisLabel}>1000m</Text>
-                      <Text style={styles.axisLabel}>500m</Text>
-                      <Text style={styles.axisLabel}>100m</Text>
-                      <Text style={styles.axisLabel}>0m</Text>
-                    </View>
-                    <View style={styles.profileBars}>
-                      <View style={[styles.profileBar, { height: 60, backgroundColor: '#E76F51' }]} />
-                      <View style={[styles.profileBar, { height: 45, backgroundColor: '#F4A261' }]} />
-                      <View style={[styles.profileBar, { height: 30, backgroundColor: '#6A8D73' }]} />
-                      <View style={[styles.profileBar, { height: 20, backgroundColor: '#6A8D73' }]} />
-                    </View>
-                  </View>
-                  <Text style={styles.chartLabel}>高度分布剖面</Text>
-                </View>
-              )}
-            </View>
-            
-            <TouchableOpacity 
-              style={styles.modalCloseButton}
-              onPress={() => setSelectedEvidence(null)}
-            >
-              <Text style={styles.modalCloseText}>關閉</Text>
-            </TouchableOpacity>
-          </GlassCard>
-        </View>
-      </Modal>
     </LinearGradient>
   );
 };
@@ -307,359 +348,265 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  header: {
-    paddingHorizontal: 16,
-    paddingTop: 40,
+  filterScrollView: {
     paddingBottom: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#6A8D73',
-  },
-  eventCard: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 16,
-  },
-  eventHeader: {
-    marginBottom: 12,
-  },
-  eventTitleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  eventType: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#6A8D73',
-    flex: 1,
-  },
-  badges: {
-    gap: 4,
-  },
-  severityBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-end',
-  },
-  healthBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    alignSelf: 'flex-end',
-  },
-  badgeText: {
-    fontSize: 10,
-    color: 'white',
-    fontWeight: '600',
-  },
-  eventMeta: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  eventDate: {
-    fontSize: 12,
-    color: '#888',
-  },
-  eventArea: {
-    fontSize: 12,
-    color: '#6A8D73',
-    fontWeight: '600',
-  },
-  eventNote: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 16,
-    lineHeight: 20,
-  },
-  evidenceSection: {
-    marginBottom: 16,
-  },
-  evidenceTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6A8D73',
-    marginBottom: 8,
-  },
-  evidenceGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  evidenceCard: {
-    width: '48%',
-    backgroundColor: 'rgba(106, 141, 115, 0.05)',
-    borderRadius: 12,
-    padding: 8,
-  },
-  evidenceCardTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#6A8D73',
-    marginBottom: 4,
-  },
-  evidencePlaceholder: {
-    height: 60,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  placeholderText: {
-    fontSize: 10,
-    color: '#888',
-  },
-  notesSection: {
-    marginBottom: 16,
-  },
-  notesTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6A8D73',
-    marginBottom: 8,
-  },
-  notesInput: {
-    minHeight: 60,
-    backgroundColor: 'rgba(106, 141, 115, 0.05)',
-    borderRadius: 12,
-    padding: 12,
-    fontSize: 12,
-    color: '#666',
-    textAlignVertical: 'top',
-  },
-  actionButtons: {
-    flexDirection: 'row',
+  filterContainer: {
+    paddingHorizontal: 20,
     gap: 12,
   },
-  actionButton: {
-    flex: 1,
+  filterButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
     paddingVertical: 10,
-    borderRadius: 16,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
-    alignItems: 'center',
+    backgroundColor: "rgba(255, 255, 255, 0.6)",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.8)",
+    gap: 6,
   },
-  primaryButton: {
-    backgroundColor: '#6A8D73',
+  activeFilter: {
+    backgroundColor: "#6ABD73",
+    shadowColor: "#6ABD73",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  actionButtonText: {
-    fontSize: 12,
-    color: '#6A8D73',
-    fontWeight: '600',
+  filterText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#6A8D73",
   },
-  primaryButtonText: {
-    color: 'white',
+  activeFilterText: {
+    color: "white",
   },
-  emptyState: {
-    padding: 32,
-    alignItems: 'center',
+  eventsContainer: {
+    paddingHorizontal: 20,
+    gap: 24,
   },
-  emptyStateText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#6A8D73',
-    marginBottom: 8,
+  eventCard: {
+    backgroundColor: "rgba(255, 255, 255, 0.4)",
+    borderRadius: 32,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.05,
+    shadowRadius: 24,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.5)",
   },
-  emptyStateSubtext: {
-    fontSize: 12,
-    color: '#888',
-    textAlign: 'center',
+  eventImageContainer: {
+    width: "100%",
+    aspectRatio: 4 / 3,
+    position: "relative",
   },
-  addEventButton: {
-    backgroundColor: '#6A8D73',
-    paddingVertical: 16,
-    borderRadius: 24,
-    alignItems: 'center',
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  addEventButtonText: {
-    fontSize: 16,
-    color: 'white',
-    fontWeight: '600',
-  },
-  bottomSpacing: {
-    height: 100,
-  },
-  mockChart: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-around',
-    height: 40,
+  eventMap: {
     width: '100%',
+    height: '100%',
   },
-  mockBar: {
-    width: 8,
-    borderRadius: 2,
+  eventMarkerPin: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  mockLine: {
-    width: '100%',
-    height: 40,
-    justifyContent: 'center',
-  },
-  mockLineChart: {
-    width: '100%',
-    height: 40,
-    position: 'relative',
-    justifyContent: 'center',
-  },
-  mockWindChart: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  windArrow: {
-    fontSize: 20,
-    color: '#6A8D73',
-    marginBottom: 4,
-  },
-  mockProfileChart: {
-    width: '100%',
-    gap: 4,
-    alignItems: 'flex-start',
-  },
-  profileLayer: {
-    height: 8,
-    borderRadius: 2,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  evidenceModal: {
-    margin: 20,
-    padding: 20,
-    minWidth: 300,
-    maxHeight: '80%',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#6A8D73',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  evidenceDetail: {
-    marginBottom: 20,
-  },
-  detailChart: {
-    alignItems: 'center',
-  },
-  chartGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    width: 200,
-    height: 200,
-    marginBottom: 10,
-  },
-  gridCell: {
-    width: 48,
-    height: 48,
-    margin: 1,
-    borderRadius: 4,
-  },
-  lineChart: {
-    width: 200,
-    height: 100,
-    position: 'relative',
-    marginBottom: 10,
-  },
-  chartLine: {
-    position: 'absolute',
-    bottom: 20,
-    left: 0,
-    right: 0,
-    height: 2,
-    backgroundColor: '#6A8D73',
-  },
-  chartPoints: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    position: 'absolute',
+  gradientOverlay: {
+    position: "absolute",
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
   },
-  chartPoint: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#6A8D73',
-    position: 'absolute',
-  },
-  chartLabel: {
-    fontSize: 12,
-    color: '#666',
-    textAlign: 'center',
-  },
-  modalCloseButton: {
-    backgroundColor: '#6A8D73',
-    paddingVertical: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  modalCloseText: {
-    fontSize: 14,
-    color: 'white',
-    fontWeight: '600',
-  },
-  windChart: {
-    alignItems: 'center',
-    padding: 20,
-  },
-  windDirection: {
-    fontSize: 40,
-    color: '#6A8D73',
-    marginBottom: 10,
-  },
-  windSpeed: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#6A8D73',
-    marginBottom: 5,
-  },
-  windInfo: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 5,
-  },
-  windTemp: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 2,
-  },
-  windHumidity: {
-    fontSize: 14,
-    color: '#666',
-  },
-  profileChart: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    height: 120,
-    marginBottom: 10,
-  },
-  profileAxis: {
-    justifyContent: 'space-between',
-    height: 100,
-    marginRight: 10,
-  },
-  axisLabel: {
-    fontSize: 10,
-    color: '#666',
-  },
-  profileBars: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
+  topBadges: {
+    position: "absolute",
+    top: 16,
+    left: 16,
+    flexDirection: "row",
     gap: 8,
+    flexWrap: "wrap",
+    zIndex: 10,
+  },
+  severityBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  badgeText: {
+    fontSize: 11,
+    fontWeight: "bold",
+    color: "white",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  bottomInfo: {
+    position: "absolute",
+    bottom: 16,
+    left: 16,
+    zIndex: 10,
+  },
+  categoryText: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "rgba(255, 255, 255, 0.8)",
+    textTransform: "uppercase",
+    letterSpacing: 1,
+    marginBottom: 4,
+  },
+  categoryTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+    lineHeight: 28,
+  },
+  dropdownContainer: {
+    marginHorizontal: 20,
+    marginBottom: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    borderRadius: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  dropdownItem: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0, 0, 0, 0.05)",
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "500",
+  },
+  eventContent: {
+    padding: 24,
+  },
+  eventHeader: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 20,
+  },
+  eventTitleContainer: {
+    flex: 1,
+    marginRight: 16,
+  },
+  eventTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 8,
+  },
+  eventDescription: {
+    fontSize: 14,
+    color: "#666",
+    lineHeight: 20,
+  },
+  eventIcon: {
+    width: 48,
+    height: 48,
+    backgroundColor: "rgba(106, 189, 115, 0.1)",
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  detailsGrid: {
+    gap: 16,
+    marginBottom: 24,
+  },
+  detailItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  detailIcon: {
+    width: 40,
+    height: 40,
+    backgroundColor: "rgba(0, 0, 0, 0.05)",
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 16,
+  },
+  detailContent: {
     flex: 1,
   },
-  profileBar: {
+  detailLabel: {
+    fontSize: 12,
+    color: "#999",
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  detailValue: {
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "600",
+  },
+  eventFooter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  confidenceContainer: {
     flex: 1,
-    borderRadius: 4,
+  },
+  confidenceLabel: {
+    fontSize: 12,
+    color: "#999",
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  confidenceValue: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  actionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 24,
+    gap: 8,
+  },
+  primaryActionButton: {
+    backgroundColor: "#6ABD73",
+  },
+  secondaryActionButton: {
+    backgroundColor: "rgba(0, 0, 0, 0.05)",
+    borderWidth: 1,
+    borderColor: "rgba(0, 0, 0, 0.1)",
+  },
+  actionButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  primaryActionText: {
+    color: "white",
+  },
+  secondaryActionText: {
+    color: "#333",
+  },
+  bottomSpacing: {
+    height: 100,
   },
 });
+
+export default EventsScreen;
