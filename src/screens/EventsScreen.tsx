@@ -11,6 +11,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Logo } from '../components/Logo';
 import { GlassCard } from '../components/GlassCard';
+import { TopNavigation } from '../components/TopNavigation';
 import { useStore } from '../store';
 import { getEvents, setScenario } from '../api';
 import { Severity } from '../types';
@@ -71,10 +72,7 @@ export const EventsScreen: React.FC<EventsScreenProps> = ({ scrollRef }) => {
       style={styles.container}
     >
       <ScrollView ref={scrollRef} style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>事件庫</Text>
-        </View>
+        <TopNavigation title="Event History" subtitle="INCIDENT TRACKING" />
 
         {/* Event List */}
         {events.map((event) => (
@@ -320,6 +318,7 @@ const styles = StyleSheet.create({
   eventCard: {
     marginHorizontal: 16,
     marginBottom: 16,
+    marginTop: 16,
     padding: 16,
   },
   eventHeader: {

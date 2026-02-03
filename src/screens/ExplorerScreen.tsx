@@ -13,6 +13,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
 import { Logo } from "../components/Logo";
 import { GlassCard } from "../components/GlassCard";
+import { TopNavigation } from "../components/TopNavigation";
 import { useStore } from "../store";
 
 interface ExplorerScreenProps {
@@ -111,10 +112,7 @@ export const ExplorerScreen: React.FC<ExplorerScreenProps> = ({ scrollRef }) => 
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>資料檢索</Text>
-        </View>
+        <TopNavigation title="Data Explorer" subtitle="QUERY & ANALYSIS" />
 
         {/* Query Conditions */}
         <GlassCard style={styles.queryCard}>
@@ -401,6 +399,7 @@ const styles = StyleSheet.create({
   queryCard: {
     marginHorizontal: 16,
     marginBottom: 16,
+    marginTop: 16,
   },
   sectionTitle: {
     fontSize: 16,

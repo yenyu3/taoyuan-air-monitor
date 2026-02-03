@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 import { DashboardScreen } from '../screens/DashboardScreen';
@@ -67,7 +67,13 @@ export const BottomTabNavigator: React.FC = () => {
               iconName = 'circle';
           }
 
-          return <Feather name={iconName} size={size} color={color} />;
+          return (
+            <Feather 
+              name={iconName} 
+              size={24} 
+              color={focused ? '#6A8D73' : '#B5C99A'} 
+            />
+          );
         },
         tabBarActiveTintColor: '#6A8D73',
         tabBarInactiveTintColor: '#B5C99A',
@@ -77,9 +83,7 @@ export const BottomTabNavigator: React.FC = () => {
           left: 0,
           right: 0,
           height: 90,
-          backgroundColor: 'rgba(244, 242, 233, 0.7)',
-          borderTopWidth: 1,
-          borderTopColor: 'rgba(226, 232, 240, 0.3)',
+          backgroundColor: '#F4F2E9',
           paddingBottom: 30,
           paddingTop: 10,
           elevation: 8,
@@ -87,16 +91,17 @@ export const BottomTabNavigator: React.FC = () => {
           shadowOffset: { width: 0, height: -2 },
           shadowOpacity: 0.15,
           shadowRadius: 12,
-          backdropFilter: 'blur(20px)',
+          borderTopWidth: 1,
+          borderTopColor: 'rgba(106, 141, 115, 0.2)',
         },
         tabBarBackground: undefined,
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 12,
           fontWeight: '500',
-          marginBottom: 4,
+          marginTop: 4,
         },
         tabBarItemStyle: {
-          paddingTop: 8,
+          paddingTop: 5,
         },
       })}
     >

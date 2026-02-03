@@ -11,6 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Slider from '@react-native-community/slider';
 import { Logo } from '../components/Logo';
 import { GlassCard } from '../components/GlassCard';
+import { TopNavigation } from '../components/TopNavigation';
 import { useStore } from '../store';
 import { getAlerts, setScenario } from '../api';
 import { AlertKind } from '../types';
@@ -71,10 +72,7 @@ export const AlertsScreen: React.FC<AlertsScreenProps> = ({ scrollRef }) => {
       style={styles.container}
     >
       <ScrollView ref={scrollRef} style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>警報與 AI</Text>
-        </View>
+        <TopNavigation title="AI Alerts" subtitle="SMART MONITORING" />
 
         {/* Tab Selector */}
         <GlassCard style={styles.tabSelector}>
@@ -286,6 +284,7 @@ const styles = StyleSheet.create({
   tabSelector: {
     marginHorizontal: 16,
     marginBottom: 16,
+    marginTop: 16,
   },
   segmentedControl: {
     flexDirection: 'row',

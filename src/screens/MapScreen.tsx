@@ -12,6 +12,7 @@ import { useStore } from '../store';
 import { GlassCard } from '../components/GlassCard';
 import { Logo } from '../components/Logo';
 import { HealthBadge } from '../components/HealthBadge';
+import { TopNavigation } from '../components/TopNavigation';
 import { getGrid, getVerticalProfile, setScenario } from '../api';
 import { GridCell, VerticalProfile } from '../types';
 
@@ -90,6 +91,7 @@ export const MapScreen: React.FC<MapScreenProps> = ({ scrollRef }) => {
 
   return (
     <View style={styles.container}>
+      <TopNavigation title="Map View" subtitle="REAL-TIME MONITORING" />
       <MapView
         style={styles.map}
         initialRegion={TAOYUAN_REGION}
@@ -230,7 +232,7 @@ const styles = StyleSheet.create({
   },
   topControls: {
     position: 'absolute',
-    top: 60,
+    top: 120,
     left: 16,
     right: 16,
   },

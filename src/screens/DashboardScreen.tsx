@@ -4,15 +4,12 @@ import {
   Text, 
   StyleSheet, 
   ScrollView, 
-  TouchableOpacity,
   ActivityIndicator 
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Feather } from '@expo/vector-icons';
 import { useStore } from '../store';
-import { GlassCard } from '../components/GlassCard';
-import { KpiCard } from '../components/KpiCard';
-import { Logo } from '../components/Logo';
-import { HealthBadge } from '../components/HealthBadge';
+import { TopNavigation } from '../components/TopNavigation';
 import { getMeta, getGrid, getAlerts, getEvents, setScenario } from '../api';
 
 interface DashboardScreenProps {
@@ -21,10 +18,7 @@ interface DashboardScreenProps {
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({ scrollRef }) => {
   const { 
-    role, 
-    setRole, 
     selectedScenario, 
-    setSelectedScenario,
     gridCells,
     setGridCells,
     alerts,
@@ -34,8 +28,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ scrollRef }) =
     isLoading,
     setIsLoading
   } = useStore();
-
-  const [lastUpdate, setLastUpdate] = useState<string>('');
 
   useEffect(() => {
     loadData();
@@ -55,7 +47,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ scrollRef }) =
       setGridCells(grid);
       setAlerts(alertsData);
       setEvents(eventsData);
-      setLastUpdate(new Date(meta.lastUpdate).toLocaleTimeString());
     } catch (error) {
       console.error('Failed to load data:', error);
     } finally {
@@ -63,231 +54,168 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ scrollRef }) =
     }
   };
 
-  const getKpiData = () => {
-    if (gridCells.length === 0) return null;
+  const getAQIData = () => {
+    if (gridCells.length === 0) return { aqi: 65, level: '普通' };
     
     const avgPM25 = Math.round(
       gridCells.reduce((sum, cell) => sum + cell.values.value, 0) / gridCells.length
     );
     
-    const maxCell = gridCells.reduce((max, cell) => 
-      cell.values.value > max.values.value ? cell : max
-    );
+    let level = '良好';
+    if (avgPM25 > 75) level = '對敏感族群不健康';
+    else if (avgPM25 > 50) level = '普通';
     
-    const healthyCount = gridCells.filter(cell => cell.health.aqi <= 50).length;
-    const totalCells = gridCells.length;
-    
-    if (role === 'epa') {
-      return {
-        avgPM25,
-        hotspot: `${maxCell.gridId} (${Math.round(maxCell.values.value)}µg/m³)`,
-        peak24h: Math.round(avgPM25 * 1.2),
-        change2h: Math.round((Math.random() - 0.5) * 10),
-        healthyRatio: Math.round((healthyCount / totalCells) * 100)
-      };
-    } else {
-      return {
-        dataCompleteness: Math.round(95 + Math.random() * 5),
-        qcAnomalies: Math.floor(Math.random() * 5),
-        pipelineId: `RUN_${Date.now().toString().slice(-6)}`,
-        apiLatency: Math.round(150 + Math.random() * 100),
-        healthyRatio: Math.round((healthyCount / totalCells) * 100)
-      };
-    }
+    return { aqi: avgPM25, level };
   };
 
-  const kpiData = getKpiData();
+  const getPollutantData = () => {
+    if (gridCells.length === 0) return [
+      { name: 'PM2.5', value: 12, unit: 'μg/m³', icon: 'wind' },
+      { name: 'PM10', value: 24, unit: 'μg/m³', icon: 'layers' },
+      { name: 'O3', value: 48, unit: 'ppb', icon: 'sun' },
+      { name: 'NO2', value: 15, unit: 'ppb', icon: 'cloud' },
+    ];
+    
+    const avgPM25 = Math.round(
+      gridCells.reduce((sum, cell) => sum + cell.values.value, 0) / gridCells.length
+    );
+    
+    return [
+      { name: 'PM2.5', value: avgPM25, unit: 'μg/m³', icon: 'wind' },
+      { name: 'PM10', value: Math.round(avgPM25 * 1.3), unit: 'μg/m³', icon: 'layers' },
+      { name: 'O3', value: Math.round(avgPM25 * 0.8), unit: 'ppb', icon: 'sun' },
+      { name: 'NO2', value: Math.round(avgPM25 * 0.3), unit: 'ppb', icon: 'cloud' },
+    ];
+  };
 
-  if (isLoading || !kpiData) {
+  const aqiData = getAQIData();
+  const pollutantData = getPollutantData();
+
+  if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6A8D73" />
+        <ActivityIndicator size="large" color="#6abe74" />
         <Text style={styles.loadingText}>載入中...</Text>
       </View>
     );
   }
 
   return (
-    <LinearGradient
-      colors={['#F4F2E9', '#E8E6D3']}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <ScrollView ref={scrollRef} style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.titleRow}>
-            <Logo size="medium" />
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>Taoyuan Air</Text>
-              <Text style={styles.subtitle}>Hourly • 3km Grid • Forecast + Health</Text>
+        <TopNavigation />
+
+        {/* Large AQI Gauge */}
+        <View style={styles.gaugeSection}>
+          <View style={styles.gaugeContainer}>
+            {/* Outer ring with gradient effect */}
+            <View style={styles.gaugeOuterRing}>
+              <View style={styles.gaugeProgressRing} />
             </View>
-          </View>
-        </View>
-
-        {/* Role Switch */}
-        <GlassCard style={styles.roleSwitch}>
-          <View style={styles.segmentedControl}>
-            <TouchableOpacity
-              style={[styles.segment, role === 'epa' && styles.activeSegment]}
-              onPress={() => setRole('epa')}
-            >
-              <Text style={[styles.segmentText, role === 'epa' && styles.activeSegmentText]}>
-                EPA
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.segment, role === 'team' && styles.activeSegment]}
-              onPress={() => setRole('team')}
-            >
-              <Text style={[styles.segmentText, role === 'team' && styles.activeSegmentText]}>
-                Team
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </GlassCard>
-
-        {/* Scenario Switch */}
-        <GlassCard style={styles.scenarioSwitch}>
-          <Text style={styles.sectionTitle}>情境模式</Text>
-          <View style={styles.scenarioButtons}>
-            {(['normal', 'industrial', 'event'] as const).map((scenario) => (
-              <TouchableOpacity
-                key={scenario}
-                style={[
-                  styles.scenarioButton,
-                  selectedScenario === scenario && styles.activeScenarioButton
-                ]}
-                onPress={() => setSelectedScenario(scenario)}
-              >
-                <Text style={[
-                  styles.scenarioButtonText,
-                  selectedScenario === scenario && styles.activeScenarioButtonText
-                ]}>
-                  {scenario === 'normal' ? '正常' : scenario === 'industrial' ? '工業' : '事件'}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </GlassCard>
-
-        {/* KPI Cards */}
-        <View style={styles.kpiSection}>
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.kpiScrollContainer}
-          >
-            {role === 'epa' ? (
-              <>
-                <View style={[styles.kpiCard, { width: 140 }]}>
-                  <Text style={styles.kpiTitle}>全市 PM2.5</Text>
-                  <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiValue}>{kpiData.avgPM25}</Text>
-                    <Text style={styles.kpiUnit}>μg/m³</Text>
-                  </View>
-                </View>
-                <View style={[styles.kpiCard, { width: 200 }]}>
-                  <Text style={styles.kpiTitle}>最高熱點</Text>
-                  <Text style={styles.kpiValue} numberOfLines={1} ellipsizeMode="tail">{kpiData.hotspot}</Text>
-                </View>
-                <View style={[styles.kpiCard, { width: 140 }]}>
-                  <Text style={styles.kpiTitle}>24h 峰值</Text>
-                  <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiValue}>{kpiData.peak24h}</Text>
-                    <Text style={styles.kpiUnit}>μg/m³</Text>
-                  </View>
-                </View>
-                <View style={[styles.kpiCard, { width: 150 }]}>
-                  <Text style={styles.kpiTitle}>近2h變化</Text>
-                  <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiValue}>
-                      {kpiData.change2h > 0 ? `+${kpiData.change2h}` : kpiData.change2h}
-                    </Text>
-                    <Text style={styles.kpiUnit}>μg/m³</Text>
-                  </View>
-                </View>
-              </>
-            ) : (
-              <>
-                <View style={[styles.kpiCard, { width: 150 }]}>
-                  <Text style={styles.kpiTitle}>資料完整率</Text>
-                  <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiValue}>{kpiData.dataCompleteness}</Text>
-                    <Text style={styles.kpiUnit}>%</Text>
-                  </View>
-                </View>
-                <View style={[styles.kpiCard, { width: 120 }]}>
-                  <Text style={styles.kpiTitle}>QC異常</Text>
-                  <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiValue}>{kpiData.qcAnomalies}</Text>
-                    <Text style={styles.kpiUnit}>筆</Text>
-                  </View>
-                </View>
-                <View style={[styles.kpiCard, { width: 160 }]}>
-                  <Text style={styles.kpiTitle}>Pipeline ID</Text>
-                  <Text style={styles.kpiValue}>{kpiData.pipelineId}</Text>
-                </View>
-                <View style={[styles.kpiCard, { width: 130 }]}>
-                  <Text style={styles.kpiTitle}>API延遲</Text>
-                  <View style={styles.kpiValueRow}>
-                    <Text style={styles.kpiValue}>{kpiData.apiLatency}</Text>
-                    <Text style={styles.kpiUnit}>ms</Text>
-                  </View>
-                </View>
-              </>
-            )}
-          </ScrollView>
-        </View>
-
-        {/* Health Card */}
-        <GlassCard style={styles.healthCard}>
-          <Text style={styles.sectionTitle}>健康狀況</Text>
-          <View style={styles.healthContent}>
-            <HealthBadge 
-              level={kpiData.healthyRatio > 80 ? '良好' : kpiData.healthyRatio > 60 ? '普通' : '對敏感族群不健康'} 
-              size="large" 
-            />
-            <Text style={styles.healthText}>
-              {kpiData.healthyRatio}% 區域空氣品質良好
-            </Text>
-          </View>
-        </GlassCard>
-
-        {/* Alerts Preview */}
-        <GlassCard style={styles.alertsPreview}>
-          <Text style={styles.sectionTitle}>警報概覽</Text>
-          {alerts.slice(0, 3).map((alert) => (
-            <View key={alert.id} style={styles.alertItem}>
-              <View style={[styles.alertBadge, { backgroundColor: alert.kind === 'GOV' ? '#6A8D73' : '#F4A261' }]}>
-                <Text style={styles.alertBadgeText}>{alert.kind === 'GOV' ? '治理' : '健康'}</Text>
+            {/* Inner white circle */}
+            <View style={styles.gaugeInnerCircle}>
+              <Text style={styles.gaugeLabel}>CURRENT AQI</Text>
+              <Text style={styles.gaugeValue}>{aqiData.aqi}</Text>
+              <View style={styles.gaugeBadge}>
+                <Feather name="check-circle" size={12} color="#6abe74" />
+                <Text style={styles.gaugeBadgeText}>Moderate</Text>
               </View>
-              <Text style={styles.alertText}>{alert.message}</Text>
             </View>
-          ))}
-        </GlassCard>
+          </View>
+        </View>
 
-        {/* Events Ticker */}
-        <GlassCard style={styles.eventsPreview}>
-          <Text style={styles.sectionTitle}>近期事件</Text>
-          {events.slice(0, 2).map((event) => (
-            <View key={event.id} style={styles.eventItem}>
-              <Text style={styles.eventType}>{event.type}</Text>
-              <Text style={styles.eventArea}>{event.area}</Text>
-              <Text style={styles.eventNote}>{event.note}</Text>
+        {/* AI Trend Analysis Block */}
+        <View style={styles.insightSection}>
+          <View style={styles.insightCard}>
+            <View style={styles.insightIconContainer}>
+              <View style={styles.insightIconBg}>
+                <Feather name="trending-up" size={20} color="#6abe74" />
+              </View>
             </View>
-          ))}
-        </GlassCard>
+            <View style={styles.insightContent}>
+              <Text style={styles.insightTitle}>AI TREND ANALYSIS</Text>
+              <Text style={styles.insightText}>
+                PM2.5 濃度預計在未來3小時內因海風輻合影響下降 <Text style={styles.highlightText}>12%</Text>。
+              </Text>
+            </View>
+          </View>
+        </View>
 
-        {/* Bottom spacing */}
+        {/* Ozone Concentration Block */}
+        <View style={styles.ozoneSection}>
+          <View style={styles.ozoneCard}>
+            <View style={styles.ozoneHeader}>
+              <Text style={styles.ozoneTitle}>OZONE CONCENTRATION</Text>
+              <Feather name="cloud-rain" size={20} color="#6abe74" />
+            </View>
+            <View style={styles.ozoneContent}>
+              <Text style={styles.ozoneValue}>32</Text>
+              <Text style={styles.ozoneLabel}>SAFE LEVELS</Text>
+            </View>
+            <View style={styles.ozoneBar}>
+              <View style={styles.ozoneProgress} />
+            </View>
+            <View style={styles.ozoneRange}>
+              <Text style={styles.rangeText}>0 PPB</Text>
+              <Text style={styles.rangeText}>100 PPB</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Pollutant Cards Grid - Only 2 cards */}
+        <View style={styles.cardsSection}>
+          <View style={styles.cardsGrid}>
+            <View style={styles.pollutantCard}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>PM2.5</Text>
+                <Text style={styles.cardStatus}>LOW</Text>
+              </View>
+              <View style={styles.cardValue}>
+                <Text style={styles.valueNumber}>12</Text>
+                <Text style={styles.valueUnit}>μg/m³</Text>
+              </View>
+              <View style={styles.chartContainer}>
+                <View style={styles.trendLine}>
+                  <View style={[styles.trendDot, { left: '10%', bottom: '40%' }]} />
+                  <View style={[styles.trendDot, { left: '30%', bottom: '30%' }]} />
+                  <View style={[styles.trendDot, { left: '50%', bottom: '50%' }]} />
+                  <View style={[styles.trendDot, { left: '70%', bottom: '70%' }]} />
+                  <View style={[styles.trendDot, { left: '90%', bottom: '80%' }]} />
+                </View>
+              </View>
+            </View>
+            <View style={styles.pollutantCard}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardTitle}>NO2</Text>
+                <Text style={styles.cardStatusStable}>STABLE</Text>
+              </View>
+              <View style={styles.cardValue}>
+                <Text style={styles.valueNumber}>08</Text>
+                <Text style={styles.valueUnit}>ppb</Text>
+              </View>
+              <View style={styles.chartContainer}>
+                <View style={styles.trendLineFlat}>
+                  <View style={[styles.trendDotGray, { left: '10%', bottom: '50%' }]} />
+                  <View style={[styles.trendDotGray, { left: '30%', bottom: '45%' }]} />
+                  <View style={[styles.trendDotGray, { left: '50%', bottom: '50%' }]} />
+                  <View style={[styles.trendDotGray, { left: '70%', bottom: '48%' }]} />
+                  <View style={[styles.trendDotGray, { left: '90%', bottom: '52%' }]} />
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+
         <View style={styles.bottomSpacing} />
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F4F2E9',
   },
   loadingContainer: {
     flex: 1,
@@ -298,198 +226,277 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#6A8D73',
+    color: '#6abe74',
   },
   scrollView: {
     flex: 1,
-    padding: 16,
   },
-  header: {
-    paddingHorizontal: 16,
-    paddingTop: 40,
-    paddingBottom: 20,
+
+  gaugeSection: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    paddingBottom: 32,
   },
-  titleRow: {
+  gaugeContainer: {
+    position: 'relative',
+    width: 200,
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gaugeOuterRing: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(106, 190, 116, 0.1)',
+    borderWidth: 14,
+    borderColor: 'rgba(106, 190, 116, 0.2)',
+  },
+  gaugeProgressRing: {
+    position: 'absolute',
+    width: 172,
+    height: 172,
+    borderRadius: 86,
+    top: -7,
+    left: -7,
+    borderWidth: 14,
+    borderColor: 'transparent',
+    borderLeftColor: '#6abe74',
+    borderBottomColor: '#6abe74',
+    transform: [{ rotate: '-45deg' }],
+  },
+  gaugeInnerCircle: {
+    width: 158,
+    height: 158,
+    borderRadius: 79,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  gaugeLabel: {
+    fontSize: 10,
+    color: '#9ca3af',
+    fontWeight: '500',
+    letterSpacing: 2,
+    marginBottom: 6,
+  },
+  gaugeValue: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#6abe74',
+    lineHeight: 48,
+    marginBottom: 6,
+  },
+  gaugeBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 6,
   },
-  titleContainer: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#6A8D73',
-  },
-  subtitle: {
+  gaugeBadgeText: {
     fontSize: 14,
-    color: '#666',
+    fontWeight: '500',
+    color: '#6abe74',
+  },
+  insightSection: {
+    paddingHorizontal: 24,
+    marginBottom: 24,
+  },
+  insightCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 20,
+    padding: 20,
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'flex-start',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  insightIconContainer: {
     marginTop: 2,
   },
-  roleSwitch: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  segmentedControl: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
-    borderRadius: 20,
-    padding: 4,
-  },
-  segment: {
-    flex: 1,
-    paddingVertical: 8,
+  insightIconBg: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(106, 190, 116, 0.15)',
+    justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 16,
   },
-  activeSegment: {
-    backgroundColor: '#6A8D73',
+  insightContent: {
+    flex: 1,
   },
-  segmentText: {
+  insightTitle: {
     fontSize: 14,
-    color: '#6A8D73',
-    fontWeight: '600',
+    fontWeight: 'bold',
+    color: '#666',
+    letterSpacing: 1,
+    marginBottom: 8,
   },
-  activeSegmentText: {
-    color: 'white',
+  insightText: {
+    fontSize: 15,
+    color: '#374151',
+    lineHeight: 22,
   },
-  scenarioSwitch: {
-    marginHorizontal: 16,
+  highlightText: {
+    color: '#6abe74',
+    fontWeight: 'bold',
+  },
+  ozoneSection: {
+    paddingHorizontal: 24,
+    marginBottom: 24,
+  },
+  ozoneCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  ozoneHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 16,
   },
-  sectionTitle: {
-    fontSize: 16,
+  ozoneTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#666',
+    letterSpacing: 1,
+  },
+  ozoneContent: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 12,
+    marginBottom: 20,
+  },
+  ozoneValue: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  ozoneLabel: {
+    fontSize: 14,
     fontWeight: '600',
-    color: '#6A8D73',
+    color: '#666',
+  },
+  ozoneBar: {
+    height: 8,
+    backgroundColor: 'rgba(106, 190, 116, 0.2)',
+    borderRadius: 4,
+    marginBottom: 8,
+    overflow: 'hidden',
+  },
+  ozoneProgress: {
+    height: '100%',
+    width: '32%',
+    backgroundColor: '#6abe74',
+    borderRadius: 4,
+  },
+  ozoneRange: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  rangeText: {
+    fontSize: 12,
+    color: '#999',
+  },
+  cardsSection: {
+    paddingHorizontal: 24,
+    paddingBottom: 16,
+  },
+  cardsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+  },
+  pollutantCard: {
+    width: '47%',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 8,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     marginBottom: 12,
   },
-  scenarioButtons: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  scenarioButton: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: 'rgba(106, 141, 115, 0.1)',
-    alignItems: 'center',
-  },
-  activeScenarioButton: {
-    backgroundColor: '#6A8D73',
-  },
-  scenarioButtonText: {
+  cardStatus: {
     fontSize: 12,
-    color: '#6A8D73',
-    fontWeight: '600',
+    fontWeight: 'bold',
+    color: '#6abe74',
   },
-  activeScenarioButtonText: {
-    color: 'white',
+  cardStatusStable: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#999',
   },
-  kpiSection: {
-    marginBottom: 16,
+  cardTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#6b7280',
   },
-  kpiScrollContainer: {
-    paddingHorizontal: 16,
-    gap: 12,
-  },
-  kpiCard: {
-    backgroundColor: 'rgba(244, 242, 233, 0.8)',
-    borderRadius: 16,
-    padding: 16,
-    shadowColor: '#6A8D73',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: 'rgba(106, 141, 115, 0.15)',
-    height: 80,
-  },
-  kpiValueRow: {
+  cardValue: {
     flexDirection: 'row',
     alignItems: 'baseline',
     gap: 4,
-  },
-  kpiTitle: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 8,
-  },
-  kpiValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#6A8D73',
-    marginBottom: 4,
-  },
-  kpiUnit: {
-    fontSize: 12,
-    color: '#666',
-  },
-  healthCard: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  healthContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  healthText: {
-    fontSize: 14,
-    color: '#666',
-    flex: 1,
-  },
-  alertsPreview: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  alertItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-    gap: 8,
-  },
-  alertBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  alertBadgeText: {
-    fontSize: 10,
-    color: 'white',
-    fontWeight: '600',
-  },
-  alertText: {
-    fontSize: 12,
-    color: '#666',
-    flex: 1,
-  },
-  eventsPreview: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  eventItem: {
     marginBottom: 12,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(106, 141, 115, 0.1)',
   },
-  eventType: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6A8D73',
+  valueNumber: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#131613',
+    lineHeight: 32,
   },
-  eventArea: {
-    fontSize: 12,
-    color: '#888',
-    marginTop: 2,
+  valueUnit: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#9ca3af',
+    textTransform: 'uppercase',
   },
-  eventNote: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
+  chartContainer: {
+    height: 40,
+    marginTop: 'auto',
+  },
+  trendLine: {
+    flex: 1,
+    position: 'relative',
+    backgroundColor: 'rgba(106, 190, 116, 0.1)',
+    borderRadius: 2,
+  },
+  trendLineFlat: {
+    flex: 1,
+    position: 'relative',
+    backgroundColor: 'rgba(153, 153, 153, 0.1)',
+    borderRadius: 2,
+  },
+  trendDot: {
+    position: 'absolute',
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#6abe74',
+  },
+  trendDotGray: {
+    position: 'absolute',
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#999',
   },
   bottomSpacing: {
     height: 100,
