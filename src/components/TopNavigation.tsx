@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { SettingsScreen } from './SettingsScreen';
+import { NotificationScreen } from './NotificationScreen';
 
 interface TopNavigationProps {
   title?: string;
@@ -17,10 +18,16 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
   onNotificationPress
 }) => {
   const [showSettings, setShowSettings] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const handleMenuPress = () => {
     setShowSettings(true);
     onMenuPress?.();
+  };
+
+  const handleNotificationPress = () => {
+    setShowNotifications(true);
+    onNotificationPress?.();
   };
 
   return (
@@ -35,7 +42,7 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
           <Text style={styles.subtitle}>{subtitle}</Text>
         </View>
         
-        <TouchableOpacity onPress={onNotificationPress} style={styles.iconButton}>
+        <TouchableOpacity onPress={handleNotificationPress} style={styles.iconButton}>
           <Feather name="bell" size={24} color="#333" />
         </TouchableOpacity>
       </View>
@@ -48,6 +55,11 @@ export const TopNavigation: React.FC<TopNavigationProps> = ({
       >
         <SettingsScreen onClose={() => setShowSettings(false)} />
       </Modal>
+
+      <NotificationScreen
+        visible={showNotifications}
+        onClose={() => setShowNotifications(false)}
+      />
     </>
   );
 };
