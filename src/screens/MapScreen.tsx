@@ -18,7 +18,7 @@ import { useStore } from '../store';
 import { GlassCard } from '../components/GlassCard';
 import { Logo } from '../components/Logo';
 import { HealthBadge } from '../components/HealthBadge';
-import { TopNavigation } from '../components/TopNavigation';
+import { TopNavigation } from '../navigation/TopNavigation';
 import { getGrid, getVerticalProfile, setScenario } from '../api';
 import { GridCell, VerticalProfile } from '../types';
 

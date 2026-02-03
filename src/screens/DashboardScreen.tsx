@@ -9,7 +9,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Feather } from '@expo/vector-icons';
 import { useStore } from '../store';
-import { TopNavigation } from '../components/TopNavigation';
+import { TopNavigation } from '../navigation/TopNavigation';
 import { getMeta, getGrid, getAlerts, getEvents, setScenario } from '../api';
 
 interface DashboardScreenProps {

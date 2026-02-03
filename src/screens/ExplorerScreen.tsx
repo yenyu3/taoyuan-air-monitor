@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
-import { TopNavigation } from "../components/TopNavigation";
+import { TopNavigation } from "../navigation/TopNavigation";
 import { useStore } from "../store";
 
 interface ExplorerScreenProps {

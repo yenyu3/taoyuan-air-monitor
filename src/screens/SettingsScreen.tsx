@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
-import { GlassCard } from "./GlassCard";
+import { GlassCard } from "../components/GlassCard";
 
 interface SettingsScreenProps {
   onClose: () => void;

@@ -10,7 +10,7 @@ import {
 import MapView, { Polygon, Marker, Region } from 'react-native-maps';
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { TopNavigation } from "../components/TopNavigation";
+import { TopNavigation } from "../navigation/TopNavigation";
 import { useStore } from "../store";
 
 interface EventsScreenProps {

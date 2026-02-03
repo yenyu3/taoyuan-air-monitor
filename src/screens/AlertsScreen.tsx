@@ -10,7 +10,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
-import { TopNavigation } from "../components/TopNavigation";
+import { TopNavigation } from "../navigation/TopNavigation";
 import { useStore } from "../store";
 import { getAlerts, setScenario } from "../api";
 import { AlertKind } from "../types";

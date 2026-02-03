@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { SettingsScreen } from './SettingsScreen';
-import { NotificationScreen } from './NotificationScreen';
+import { SettingsScreen } from '../screens/SettingsScreen';
+import { NotificationScreen } from '../screens/NotificationScreen';
 
 interface TopNavigationProps {
   title?: string;
